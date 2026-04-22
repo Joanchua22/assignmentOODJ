@@ -259,7 +259,7 @@ public class FileManager {
             }
             
             String[] parts = line.split(",");
-            if (parts.length >= 10){
+            if (parts.length >= 9){
                 String role = parts[3].trim();
                 
                 if(role.equalsIgnoreCase("Manager") || role.equalsIgnoreCase("Counter Staff") || role.equalsIgnoreCase("Technician")){
@@ -292,7 +292,7 @@ public class FileManager {
             }
             
             String[] parts = line.split(",");
-            if (parts.length >= 10){
+            if (parts.length >= 9){
                 String userId = parts[0].trim();
                 String username = parts[1].trim();
                 String role = parts[3].trim();
@@ -327,7 +327,7 @@ public class FileManager {
             }
 
             String[] parts = line.split(",");
-            if (parts.length >= 10 && parts[0].trim().equalsIgnoreCase(userId)) {
+            if (parts.length >= 9 && parts[0].trim().equalsIgnoreCase(userId)) {
                 return parts;
             }
         }
@@ -398,7 +398,7 @@ public class FileManager {
             
             String[] parts = line.split(",");
             
-            if (parts.length >= 10) {
+            if (parts.length >= 9) {
                 String currentId = parts[0].trim();
                 
                 if(currentId.equalsIgnoreCase(userId)){
@@ -1256,4 +1256,147 @@ public class FileManager {
 
         return null;
     }
+    
+    public static List<String[]> getAllServiceTypes() throws IOException {
+        List<String[]> serviceTypeList = new ArrayList<>();
+        File file = new File(SERVICE_TYPE_FILE);
+
+        if (!file.exists()) {
+            return serviceTypeList;
+        }
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] parts = line.split(",");
+            if (parts.length >= 6) {
+                serviceTypeList.add(parts);
+            }
+        }
+
+        return serviceTypeList;
+    }
+    
+    public static boolean addServiceType(String name, String duration, String price, String updatedBy) throws IOException {
+        String serviceTypeId = generateNextId(SERVICE_TYPE_FILE, "SER");
+        String updatedAt = getCurrentDateTime();
+
+        String newLine = String.join(",",
+                serviceTypeId,
+                name,
+                duration,
+                price,
+                updatedBy,
+                updatedAt
+        );
+
+        appendLine(SERVICE_TYPE_FILE, newLine);
+        return true;
+    }
+    
+    public static String[] getServiceTypeById(String serviceTypeId) throws IOException {
+        File file = new File(SERVICE_TYPE_FILE);
+
+        if (!file.exists()) {
+            return null;
+        }
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] parts = line.split(",");
+            if (parts.length >= 6 && parts[0].trim().equalsIgnoreCase(serviceTypeId)) {
+                return parts;
+            }
+        }
+
+        return null;
+    }
+    
+    public static boolean updateServiceType(String serviceTypeId, String name, String duration, String price, String updatedBy) throws IOException {
+        File file = new File(SERVICE_TYPE_FILE);
+
+        if (!file.exists()) {
+            return false;
+        }
+
+        List<String> updatedLines = new ArrayList<>();
+        boolean updated = false;
+        String updatedAt = getCurrentDateTime();
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] parts = line.split(",");
+
+            if (parts.length >= 6) {
+                String currentId = parts[0].trim();
+
+                if (currentId.equalsIgnoreCase(serviceTypeId)) {
+                    String updatedLine = String.join(",",
+                            serviceTypeId,
+                            name,
+                            duration,
+                            price,
+                            updatedBy,
+                            updatedAt
+                    );
+                    updatedLines.add(updatedLine);
+                    updated = true;
+                } else {
+                    updatedLines.add(line);
+                }
+            }
+        }
+
+        Files.write(file.toPath(), updatedLines, StandardOpenOption.TRUNCATE_EXISTING);
+        return updated;
+    }
+    
+    public static boolean deleteServiceType(String serviceTypeId) throws IOException {
+        File file = new File(SERVICE_TYPE_FILE);
+
+        if (!file.exists()) {
+            return false;
+        }
+
+        List<String> updatedLines = new ArrayList<>();
+        boolean deleted = false;
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] parts = line.split(",");
+
+            if (parts.length >= 6) {
+                String currentId = parts[0].trim();
+
+                if (currentId.equalsIgnoreCase(serviceTypeId)) {
+                    deleted = true;
+                } else {
+                    updatedLines.add(line);
+                }
+            }
+        }
+
+        Files.write(file.toPath(), updatedLines, StandardOpenOption.TRUNCATE_EXISTING);
+        return deleted;
+    }
+    
+    public static boolean serviceTypeNameExists(String name) throws IOException {
+        return valueExistsInColumn(SERVICE_TYPE_FILE, name, 1);
+    }
+    
+    public static boolean serviceTypeNameExistsExcept(String name, String serviceTypeId) throws IOException {
+        return valueExistsInColumnExcept(SERVICE_TYPE_FILE, name, 1, serviceTypeId);
+    }
+    
 }
