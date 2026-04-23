@@ -103,20 +103,22 @@ public class LoginPage extends javax.swing.JFrame {
             return;
         }
 
-        String role = null;
+        String[] userData = null;
 
         try {
-            role = FileManager.verifyUser(username, password);
+            userData = FileManager.verifyUser(username, password);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error reading user file.", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
             return;
         }
 
-        if (role == null) {
+        if (userData == null) {
             JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        String currentUserId = userData[0];
+        String role = userData[1];
 
         if (role.equalsIgnoreCase("INACTIVE")) {
             JOptionPane.showMessageDialog(this, "Your account is inactive. Please contact staff.");
@@ -127,22 +129,14 @@ public class LoginPage extends javax.swing.JFrame {
         this.dispose();
 
         switch (role.toLowerCase()) {
-            case "manager":
-                // new ManagerPage(username).setVisible(true);
-                break;
-            case "counter staff":
-                // new CounterStaffPage(username).setVisible(true);
-                break;
-            case "technician":
-                // new TechnicianPage(username).setVisible(true);
-                break;
-            case "customer":
-                new CustomerPage(username).setVisible(true);
-                break;
-            default:
-                JOptionPane.showMessageDialog(this, "Role not recognized. Please contact staff.");
-                break;
-        }                                      
+            case "manager" -> new ManagerPage(currentUserId).setVisible(true);
+            case "counter staff" -> {
+            }
+            case "technician" -> {
+            }
+            case "customer" -> new CustomerPage(currentUserId).setVisible(true);
+            default -> JOptionPane.showMessageDialog(this, "Role not recognized. Please contact staff.");
+        }                                         
     }//GEN-LAST:event_btnLoginActionPerformed
 
 

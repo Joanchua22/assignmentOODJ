@@ -1,4 +1,4 @@
-USR0001,admin,admin123,Manager,Chow,TP076245,0162181000,chow@gmail.com,Active
-USR0002,cus,cus123,Customer,Yan,TP076666,0123456789,cus1@gmail.com,Active
-USR0003,counter,cs123,Counter Staff,Tim,TP071123,0192837450,cs@gmail.com,Active
-USR0004,tech,tech123,Technician,Cam,TP071289,0112318273,tech@gmail.com,Active
+USR0001,admin,admin123,Manager,Chow,TP076245,0162181000,chow@gmail.com,Active,2026-04-23 17:37:52
+USR0002,cus,cus123,Customer,Yan,TP076666,0123456789,cus1@gmail.com,Active,2026-04-23 17:37:52
+USR0003,counter,cs123,Counter Staff,Tim,TP071123,0192837450,cs@gmail.com,Active,2026-04-23 17:37:52
+USR0004,tech,tech123,Technician,Cam,TP071289,0112318273,tech@gmail.com,Active,2026-04-23 17:37:52
