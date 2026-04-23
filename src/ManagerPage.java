@@ -1,20 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-
-/**
- *
- * @author joanc
- */
 public class ManagerPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerPage.class.getName());
 
+    private final String currentUserId;
+
+    public ManagerPage(String currentUserId) {
+        initComponents();
+        this.currentUserId = currentUserId;
+    }
+    
+
     public ManagerPage() {
         initComponents();
+        this.currentUserId = "USR001"; // test user
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -101,35 +101,16 @@ public class ManagerPage extends javax.swing.JFrame {
     }//GEN-LAST:event_manageStaffBtnActionPerformed
 
     private void setServicePriceBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setServicePriceBtnActionPerformed
-        
+        new SetServicePrices().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_setServicePriceBtnActionPerformed
 
     private void myProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myProfileBtnActionPerformed
         
     }//GEN-LAST:event_myProfileBtnActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
+    public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new ManagerPage().setVisible(true));
     }
 

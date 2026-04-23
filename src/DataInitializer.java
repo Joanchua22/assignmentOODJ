@@ -22,6 +22,15 @@ public class DataInitializer {
                 "SER001,Normal Service,1,80.00,USR0001",
                 "SER002,Major Service,3,200.00,USR0001"
         );
+        
+        createFileIfNotExist("src/service_item.txt",
+                "SER001,SC001,Oil Change,Replace engine oil,120,USR001,2026-04-23 20:00:00",
+                "SER002,SC001,Oil Filter Change,Replace oil filter,35,USR001,2026-04-23 20:05:00",
+                "SER003,SC001,Tire Rotation,Rotate all tires,40,USR001,2026-04-23 20:10:00",
+                "SER004,SC002,Brake Inspection,Check brake pads and discs,60,USR001,2026-04-23 20:15:00",
+                "SER005,SC002,Engine Tune Up,Inspect and tune engine performance,180,USR001,2026-04-23 20:20:00",
+                "SER006,SC002,Battery Check,Check battery condition and voltage,25,USR001,2026-04-23 20:25:00"
+        );
 
         createFileIfNotExist("src/appointments.txt");
         createFileIfNotExist("src/payments.txt");
