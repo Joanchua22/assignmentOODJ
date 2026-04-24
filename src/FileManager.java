@@ -1614,4 +1614,161 @@ public class FileManager {
         return false;
     }
     
+    public static String getUsernameByUserId(String userId) throws IOException {
+        File file = new File(USER_FILE);
+
+        if (!file.exists()) return "-";
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(",");
+
+            // users.txt:
+            // 0=userId, 1=username
+            if (parts.length >= 2 && parts[0].trim().equalsIgnoreCase(userId)) {
+                return parts[1].trim(); // username
+            }
+        }
+
+        return "-";
+    }
+    
+    public static List<String[]> getAllTechnicianFeedbacks() throws IOException {
+        List<String[]> resultList = new ArrayList<>();
+
+        File feedbackFile = new File(FEEDBACK_FILE);
+        File appointmentFile = new File(APPOINTMENT_FILE);
+
+        if (!feedbackFile.exists()) {
+            return resultList;
+        }
+
+        List<String> appointmentLines = appointmentFile.exists()
+                ? Files.readAllLines(appointmentFile.toPath())
+                : new ArrayList<>();
+
+        for (String line : Files.readAllLines(feedbackFile.toPath())) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] fb = line.split(",");
+            if (fb.length < 4) {
+                continue;
+            }
+
+            String feedbackId = fb[0].trim();
+            String appointmentId = fb[1].trim();
+            String content = fb[2].trim();
+            String date = fb[3].trim();
+
+            String technicianUsername = "-";
+
+            for (String apptLine : appointmentLines) {
+                if (apptLine.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] appt = apptLine.split(",");
+
+                if (appt.length >= 5 && appt[0].trim().equalsIgnoreCase(appointmentId)) {
+                    String technicianId = appt[4].trim(); // USR0002
+                    technicianUsername = getUsernameByUserId(technicianId);
+                    break;
+                }
+            }
+
+            resultList.add(new String[]{
+                feedbackId,
+                appointmentId,
+                content,
+                date,
+                technicianUsername
+            });
+        }
+        
+        resultList.sort((a, b) -> b[3].compareTo(a[3]));
+
+        return resultList;
+    }
+    
+    public static String getUserIdByCustomerId(String customerId) throws IOException {
+        File file = new File(CUSTOMER_FILE);
+
+        if (!file.exists()) return "-";
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(",");
+            if (parts.length >= 2 && parts[0].trim().equalsIgnoreCase(customerId)) {
+                return parts[1].trim(); // USR0005
+            }
+        }
+
+        return "-";
+    }
+    
+    public static List<String[]> getAllCustomerComments() throws IOException {
+        List<String[]> resultList = new ArrayList<>();
+
+        File commentFile = new File(CUSTOMER_COMMENT_FILE);
+        File appointmentFile = new File(APPOINTMENT_FILE);
+
+        if (!commentFile.exists()) {
+            return resultList;
+        }
+
+        List<String> appointmentLines = appointmentFile.exists()
+                ? Files.readAllLines(appointmentFile.toPath())
+                : new ArrayList<>();
+
+        for (String line : Files.readAllLines(commentFile.toPath())) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] cmt = line.split(",");
+            if (cmt.length < 4) {
+                continue;
+            }
+
+            String commentId = cmt[0].trim();
+            String appointmentId = cmt[1].trim();
+            String content = cmt[2].trim();
+            String date = cmt[3].trim();
+
+            String customerUsername = "-";
+
+            for (String apptLine : appointmentLines) {
+                if (apptLine.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] appt = apptLine.split(",");
+
+                if (appt.length >= 3 && appt[0].trim().equalsIgnoreCase(appointmentId)) {
+                    String customerId = appt[2].trim();
+                    String customerUserId = getUserIdByCustomerId(customerId);
+                    customerUsername = getUsernameByUserId(customerUserId);
+
+                    break;
+                }
+            }
+
+            resultList.add(new String[]{
+                commentId,
+                appointmentId,
+                content,
+                date,
+                customerUsername
+            });
+        }
+
+        resultList.sort((a, b) -> b[3].compareTo(a[3]));
+
+        return resultList;
+    }
+    
 }
