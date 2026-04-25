@@ -8,12 +8,12 @@ public class LeaveCommentPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LeaveCommentPage.class.getName());
     
-    private String currentUsername;
+    private String currentUserId;
     
     private List<String[]> appointmentDetails = new ArrayList<>();
     
-    public LeaveCommentPage(String username) {
-        this.currentUsername = username;
+    public LeaveCommentPage(String currentUserId) {
+        this.currentUserId = currentUserId;
         initComponents();
         loadAppointmentTable();
         addTableDoubleClickEvent();
@@ -98,13 +98,13 @@ public class LeaveCommentPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new CustomerPage(currentUsername).setVisible(true);
+        new CustomerPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
   
     private void loadAppointmentTable() {
         try {
-            appointmentDetails = FileManager.getCustomerAppointmentsForComment(currentUsername);
+            appointmentDetails = FileManager.getCustomerAppointmentsForComment(currentUserId);
 
             DefaultTableModel model = (DefaultTableModel) appointmentTable.getModel();
             model.setRowCount(0);
