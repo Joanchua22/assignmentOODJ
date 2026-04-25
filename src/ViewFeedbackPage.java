@@ -10,11 +10,11 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewFeedbackPage.class.getName());
     
-    private String currentUsername;
+    private String currentUserId;
     private List<String[]> feedbackDetails = new ArrayList<>();
     
-    public ViewFeedbackPage(String username) {
-        this.currentUsername = username;
+    public ViewFeedbackPage(String currentUserId) {
+        this.currentUserId = currentUserId;
         initComponents();
         loadFeedbackHistory();
         addTableDoubleClickEvent();
@@ -150,13 +150,13 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new CustomerPage(currentUsername).setVisible(true);
+        new CustomerPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
         try {
-            List<String[]> allFeedback = FileManager.getCustomerFeedbackHistory(currentUsername);
+            List<String[]> allFeedback = FileManager.getCustomerFeedbackHistory(currentUserId);
 
             String fromText = fromDateField.getText().trim();
             String toText = toDateField.getText().trim();
@@ -252,7 +252,7 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
  
     private void loadFeedbackHistory() {
         try {
-            feedbackDetails = FileManager.getCustomerFeedbackHistory(currentUsername);
+            feedbackDetails = FileManager.getCustomerFeedbackHistory(currentUserId);
 
             DefaultTableModel model = (DefaultTableModel) feedbackTable.getModel();
             model.setRowCount(0);

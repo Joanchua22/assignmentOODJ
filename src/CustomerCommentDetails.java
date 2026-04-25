@@ -4,22 +4,14 @@ import javax.swing.JOptionPane;
 
 
 public class CustomerCommentDetails extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CustomerCommentDetails.class.getName());
-
-
+   
     private final String commentId;
+    private final String currentUserId;
 
-    public CustomerCommentDetails(String commentId) {
+    public CustomerCommentDetails(String commentId, String currentUserId) {
         initComponents();
         this.commentId = commentId;
-        loadCommentDetails();
-    }
-
-    // test constructor
-    public CustomerCommentDetails() {
-        initComponents();
-        this.commentId = "CMT0001";
+        this.currentUserId = currentUserId;
         loadCommentDetails();
     }
     
@@ -222,7 +214,7 @@ public class CustomerCommentDetails extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new CustomerComment().setVisible(true);
+        new CustomerComment(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -289,10 +281,6 @@ public class CustomerCommentDetails extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_appoinmentBtnActionPerformed
 
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new CustomerCommentDetails().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton appoinmentBtn;

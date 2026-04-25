@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +6,11 @@ import javax.swing.table.DefaultTableModel;
 
 public class TechnicianWorkloadReport extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TechnicianWorkloadReport.class.getName());
-
-
-    public TechnicianWorkloadReport() {
+    private String currentUserId;
+    
+    public TechnicianWorkloadReport(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         loadTechnicianWorkloadTable();
     }
     
@@ -268,15 +267,10 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ViewReport().setVisible(true);
+        new ViewReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
-
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(() -> new TechnicianWorkloadReport().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;

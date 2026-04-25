@@ -6,12 +6,12 @@ import javax.swing.table.DefaultTableModel;
 
 
 public class ServiceItemReport extends javax.swing.JFrame {
+
+    private String currentUserId;
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ServiceItemReport.class.getName());
-
-
-    public ServiceItemReport() {
+    public ServiceItemReport(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         loadServiceItemReportTable();
     }
     
@@ -232,7 +232,7 @@ public class ServiceItemReport extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ViewReport().setVisible(true);
+        new ViewReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -309,10 +309,6 @@ public class ServiceItemReport extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(() -> new ServiceItemReport().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;

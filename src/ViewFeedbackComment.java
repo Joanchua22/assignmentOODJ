@@ -5,10 +5,11 @@ import javax.swing.table.DefaultTableModel;
 
 public class ViewFeedbackComment extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewFeedbackComment.class.getName());
+    private final String currentUserId;
 
-    public ViewFeedbackComment() {
+    public ViewFeedbackComment(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         loadFeedbackTable();
         loadCommentTable();
     }
@@ -179,24 +180,20 @@ public class ViewFeedbackComment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void feedbackBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_feedbackBtnActionPerformed
-        new TechnicianFeedback().setVisible(true);
+        new TechnicianFeedback(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_feedbackBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ManagerPage().setVisible(true);
+        new ManagerPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void commentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentBtnActionPerformed
-        
+        new CustomerComment(currentUserId).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_commentBtnActionPerformed
 
-
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(() -> new ViewFeedbackComment().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;

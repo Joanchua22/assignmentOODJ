@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 public class StaffProfilePage extends javax.swing.JFrame {
     
     private final String currentUserId;
+    private final String selectedUserId;
     private String originalUsername;
     private String originalRole;
     private String originalName;
@@ -11,17 +12,19 @@ public class StaffProfilePage extends javax.swing.JFrame {
     private String originalPhone;
     private String originalEmail;
     private String originalStatus;
+    
 
-    public StaffProfilePage(String userId) {
+    public StaffProfilePage(String selectedUserId, String currentUserId) {
         initComponents();
-        this.currentUserId = userId;
+        this.selectedUserId = selectedUserId;
+        this.currentUserId = currentUserId;
         passwordField.setEditable(false);
         loadStaffProfile();
     }
     
     private void loadStaffProfile(){
         try {
-            String[] staff = FileManager.getStaffById(currentUserId);
+            String[] staff = FileManager.getStaffById(selectedUserId);
             if (staff == null){
                 JOptionPane.showMessageDialog(this, "Staff record not found.");
                 return;
@@ -231,7 +234,7 @@ public class StaffProfilePage extends javax.swing.JFrame {
             }
         }
 
-        new ManageStaffPage().setVisible(true);
+        new ManageStaffPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -269,28 +272,28 @@ public class StaffProfilePage extends javax.swing.JFrame {
             return;
         }
 
-        if (FileManager.usernameExistsExcept(username, currentUserId)) {
+        if (FileManager.usernameExistsExcept(username, selectedUserId)) {
             JOptionPane.showMessageDialog(this, "Username already exists.");
             return;
         }
 
-        if (FileManager.tpExistsExcept(tp, currentUserId)) {
+        if (FileManager.tpExistsExcept(tp, selectedUserId)) {
             JOptionPane.showMessageDialog(this, "TP Number already exists.");
             return;
         }
 
-        if (FileManager.phoneExistsExcept(phone, currentUserId)) {
+        if (FileManager.phoneExistsExcept(phone, selectedUserId)) {
             JOptionPane.showMessageDialog(this, "Phone number already exists.");
             return;
         }
 
-        if (FileManager.emailExistsExcept(email, currentUserId)) {
+        if (FileManager.emailExistsExcept(email, selectedUserId)) {
             JOptionPane.showMessageDialog(this, "Email already exists.");
             return;
         }
 
         boolean success = FileManager.updateStaff(
-                currentUserId, username, role, fullName, tp, phone, email, status
+                selectedUserId, username, role, fullName, tp, phone, email, status
         );
 
         if (success) {
@@ -305,7 +308,8 @@ public class StaffProfilePage extends javax.swing.JFrame {
             originalStatus = status;
             
             this.dispose();
-            new ManageStaffPage().setVisible(true);
+            FileManager.addActivityLog(currentUserId, "Update Staff Profile", selectedUserId + " Profile Updated");
+            new ManageStaffPage(currentUserId).setVisible(true);
 
         } else {
             JOptionPane.showMessageDialog(this, "Staff profile update failed.");
@@ -329,11 +333,12 @@ public class StaffProfilePage extends javax.swing.JFrame {
         }
         
         try {
-            boolean success = FileManager.deleteStaff(currentUserId);
+            boolean success = FileManager.deleteStaff(selectedUserId);
             
             if(success){
                 JOptionPane.showMessageDialog(this, "Staff record deleted successful.");
-                new ManageStaffPage().setVisible(true);
+                FileManager.addActivityLog(currentUserId, "Delete Staff", selectedUserId + " Deleted");
+                new ManageStaffPage(currentUserId).setVisible(true);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Staff record not found.");
@@ -341,7 +346,6 @@ public class StaffProfilePage extends javax.swing.JFrame {
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error deleting staff record.");
-            e.printStackTrace();
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 

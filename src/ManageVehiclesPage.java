@@ -7,11 +7,11 @@ import javax.swing.table.DefaultTableModel;
 public class ManageVehiclesPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageVehiclesPage.class.getName());
-    private String currentUsername;
+    private String currentUserId;
     private List<String[]> vehicleDetails = new ArrayList<>();
     
-    public ManageVehiclesPage(String username) {
-        this.currentUsername = username;
+    public ManageVehiclesPage(String currentUserId) {
+        this.currentUserId = currentUserId;
         initComponents();
         loadVehicleTable();
         addTableDoubleClickEvent();
@@ -104,7 +104,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new UpdateCustomerProfilePage(currentUsername).setVisible(true);
+        new UpdateCustomerProfilePage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
@@ -114,7 +114,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
     
     private void loadVehicleTable() {
         try {
-            vehicleDetails = FileManager.getCustomerVehicles(currentUsername);
+            vehicleDetails = FileManager.getCustomerVehicles(currentUserId);
 
             DefaultTableModel model = (DefaultTableModel) vehicleTable.getModel();
             model.setRowCount(0);
@@ -241,7 +241,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
             }
 
             try {
-                boolean added = FileManager.addVehicle(currentUsername, plateNo, type, model, year);
+                boolean added = FileManager.addVehicle(currentUserId, plateNo, type, model, year);
 
                 if (added) {
                     JOptionPane.showMessageDialog(this, "Vehicle added successfully.");

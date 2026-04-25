@@ -19,13 +19,6 @@ public class UpdateServiceItem extends javax.swing.JFrame {
         loadServiceItemData();
     }
     
-        public UpdateServiceItem(String serviceItemId) {
-        initComponents();
-        this.serviceItemId = serviceItemId;
-        this.currentUserId = "USR001";
-        loadCategoryComboBox();
-        loadServiceItemData();
-    }
     
     private void loadCategoryComboBox() {
         cateComboBox.removeAllItems();
@@ -68,7 +61,7 @@ public class UpdateServiceItem extends javax.swing.JFrame {
 
             } else {
                 JOptionPane.showMessageDialog(this, "Service item not found.");
-                new ServiceItem().setVisible(true);
+                new ServiceItem(currentUserId).setVisible(true);
                 dispose();
             }
 
@@ -246,7 +239,8 @@ public class UpdateServiceItem extends javax.swing.JFrame {
 
             if (updated) {
                 JOptionPane.showMessageDialog(this, "Service item updated successfully.");
-                new ServiceItem().setVisible(true);
+                FileManager.addActivityLog(currentUserId, "Update Service Item", serviceItemId + " Updated");
+                new ServiceItem(currentUserId).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Update failed.");
@@ -273,11 +267,11 @@ public class UpdateServiceItem extends javax.swing.JFrame {
             );
 
             if (confirm == 1) {
-                new ServiceItem().setVisible(true);
+                new ServiceItem(currentUserId).setVisible(true);
                 dispose();
             }
         } else {
-            new ServiceItem().setVisible(true);
+            new ServiceItem(currentUserId).setVisible(true);
             dispose();
         }
     }//GEN-LAST:event_backBtnActionPerformed

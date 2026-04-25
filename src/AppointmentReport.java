@@ -5,12 +5,12 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class AppointmentReport extends javax.swing.JFrame {
+
+    private String currentUserId;
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AppointmentReport.class.getName());
-
-
-    public AppointmentReport() {
+    public AppointmentReport(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         loadAppointmentTable();
     }
     
@@ -270,7 +270,7 @@ public class AppointmentReport extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ViewReport().setVisible(true);
+        new ViewReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -349,11 +349,6 @@ public class AppointmentReport extends javax.swing.JFrame {
         loadAppointmentTable();
     }//GEN-LAST:event_clearBtnActionPerformed
 
-
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(() -> new AppointmentReport().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable appointmentTable;

@@ -1,19 +1,12 @@
 
 public class SetServicePrices extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SetServicePrices.class.getName());
 
     private final String currentUserId;
 
     public SetServicePrices(String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
-    }
-    
-    // test
-    public SetServicePrices() {
-        initComponents();
-        this.currentUserId = "USR001";
     }
 
 
@@ -79,20 +72,16 @@ public class SetServicePrices extends javax.swing.JFrame {
     }//GEN-LAST:event_serviceCategoryBtnActionPerformed
 
     private void serviceItemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serviceItemBtnActionPerformed
-        new ServiceItem().setVisible(true);
+        new ServiceItem(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_serviceItemBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ManagerPage().setVisible(true);
+        new ManagerPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
 
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(() -> new SetServicePrices().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;

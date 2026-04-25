@@ -7,12 +7,13 @@ import javax.swing.table.DefaultTableModel;
 
 public class TechnicianFeedback extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TechnicianFeedback.class.getName());
+    private final String currentUserId;
 
-
-    public TechnicianFeedback() {
+    public TechnicianFeedback(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         loadFeedbackTable();
+        // FileManager.addActivityLog(currentUserId, " View Technician Feedback", " ");
         
         feedbackTable.addMouseListener(new java.awt.event.MouseAdapter() {
         @Override
@@ -34,7 +35,7 @@ public class TechnicianFeedback extends javax.swing.JFrame {
 
         String feedbackId = feedbackTable.getValueAt(selectedRow, 0).toString();
 
-        new TechnicianFeedbackDetails(feedbackId).setVisible(true);
+        new TechnicianFeedbackDetails(feedbackId, currentUserId).setVisible(true);
         dispose();
     }
     
@@ -227,7 +228,7 @@ public class TechnicianFeedback extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ViewFeedbackComment().setVisible(true);
+        new ViewFeedbackComment(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -327,10 +328,6 @@ public class TechnicianFeedback extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_clearBtnActionPerformed
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new TechnicianFeedback().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField appointmentIdField;

@@ -6,10 +6,10 @@ public class CustomerPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CustomerPage.class.getName());
 
-    private String currentUsername;
+    private String currentUserId;
     
-    public CustomerPage(String username) {
-        this.currentUsername = username;
+    public CustomerPage(String currentUserId) {
+        this.currentUserId = currentUserId;
         initComponents();
     }
 
@@ -83,22 +83,22 @@ public class CustomerPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnUpdateProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateProfileActionPerformed
-        new UpdateCustomerProfilePage(currentUsername).setVisible(true);
+        new UpdateCustomerProfilePage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnUpdateProfileActionPerformed
 
     private void btnServiceNPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServiceNPaymentActionPerformed
-        new ViewServiceNPaymentPage(currentUsername).setVisible(true);
+        new ViewServiceNPaymentPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnServiceNPaymentActionPerformed
 
     private void btnViewFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewFeedbackActionPerformed
-        new ViewFeedbackPage(currentUsername).setVisible(true);
+        new ViewFeedbackPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnViewFeedbackActionPerformed
 
     private void btnLeaveCommentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeaveCommentActionPerformed
-        new LeaveCommentPage(currentUsername).setVisible(true);
+        new LeaveCommentPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnLeaveCommentActionPerformed
 

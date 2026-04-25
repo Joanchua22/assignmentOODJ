@@ -7,9 +7,11 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TechnicianFeedbackDetails.class.getName());
 
     private final String feedbackId;
+    private final String currentUserId;
 
-    public TechnicianFeedbackDetails(String feedbackId) {
+    public TechnicianFeedbackDetails(String feedbackId, String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         this.feedbackId = feedbackId;
         loadFeedbackDetails();
     }
@@ -224,7 +226,7 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new TechnicianFeedback().setVisible(true);
+        new TechnicianFeedback(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 

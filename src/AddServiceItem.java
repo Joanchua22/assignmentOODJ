@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 
 
 public class AddServiceItem extends javax.swing.JFrame {    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddServiceItem.class.getName());
+
     private final String currentUserId;
     
     public AddServiceItem(String currentUserId) {
@@ -13,11 +13,6 @@ public class AddServiceItem extends javax.swing.JFrame {
         loadCategoryComboBox();
     }
     
-    public AddServiceItem() {
-        initComponents();
-        this.currentUserId = "USR001";
-        loadCategoryComboBox();
-    }
     
     private void loadCategoryComboBox() {
         cateComboBox.removeAllItems();
@@ -195,7 +190,8 @@ public class AddServiceItem extends javax.swing.JFrame {
 
             if (added) {
                 JOptionPane.showMessageDialog(this, "Service item added successfully.");
-                new ServiceItem().setVisible(true);
+                FileManager.addActivityLog(currentUserId, "Add New Service Item", serviceName + " Added");
+                new ServiceItem(currentUserId).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to add service item.");
@@ -222,19 +218,15 @@ public class AddServiceItem extends javax.swing.JFrame {
             );
 
             if (confirm == 1) {
-                new ServiceItem().setVisible(true);
+                new ServiceItem(currentUserId).setVisible(true);
                 dispose();
             }
         } else {
-            new ServiceItem().setVisible(true);
+            new ServiceItem(currentUserId).setVisible(true);
             dispose();
         }
     }//GEN-LAST:event_backBtnActionPerformed
 
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new AddServiceItem().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;

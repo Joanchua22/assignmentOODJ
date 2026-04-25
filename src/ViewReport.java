@@ -1,9 +1,10 @@
 public class ViewReport extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewReport.class.getName());
+    private String currentUserId;
 
-    public ViewReport() {
+    public ViewReport(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
     }
 
 
@@ -29,6 +30,7 @@ public class ViewReport extends javax.swing.JFrame {
         serviceItemReportBtn.addActionListener(this::serviceItemReportBtnActionPerformed);
 
         technicianWorkloadReportBtn.setText("Technician Workload Report");
+        technicianWorkloadReportBtn.addActionListener(this::technicianWorkloadReportBtnActionPerformed);
 
         revenueReportBtn.setText("Revenue Report");
         revenueReportBtn.addActionListener(this::revenueReportBtnActionPerformed);
@@ -75,24 +77,26 @@ public class ViewReport extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void appointmentReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appointmentReportBtnActionPerformed
-        new AppointmentReport().setVisible(true);
+        new AppointmentReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_appointmentReportBtnActionPerformed
 
     private void serviceItemReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serviceItemReportBtnActionPerformed
-        new ServiceItemReport().setVisible(true);
+        new ServiceItemReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_serviceItemReportBtnActionPerformed
 
     private void revenueReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revenueReportBtnActionPerformed
-        new RevenueReport().setVisible(true);
+        new RevenueReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_revenueReportBtnActionPerformed
 
-    public static void main(String args[]) {
+    private void technicianWorkloadReportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_technicianWorkloadReportBtnActionPerformed
+        new TechnicianWorkloadReport(currentUserId).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_technicianWorkloadReportBtnActionPerformed
 
-        java.awt.EventQueue.invokeLater(() -> new ViewReport().setVisible(true));
-    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton appointmentReportBtn;

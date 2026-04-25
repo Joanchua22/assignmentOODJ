@@ -16,12 +16,6 @@ public class MyProfile extends javax.swing.JFrame {
         saveBtn.addActionListener(this::saveBtnActionPerformed);
     }
     
-    public MyProfile() {
-        initComponents();
-        this.currentUserId = "USR0001";
-        loadProfileData();
-    }
-    
     private void loadProfileData() {
         try {
             String[] user = FileManager.getUserById(currentUserId);
@@ -283,7 +277,7 @@ public class MyProfile extends javax.swing.JFrame {
                 originalPhone = phone;
                 originalEmail = email;
 
-                FileManager.addActivityLog(currentUserId, "UPDATE_PROFILE", "Updated phone/email in profile.");
+                FileManager.addActivityLog(currentUserId, "Update Profile", "Updated phone/email in profile.");
             } else {
                 JOptionPane.showMessageDialog(this, "Update failed. User not found.");
             }

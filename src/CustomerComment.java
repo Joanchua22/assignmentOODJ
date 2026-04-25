@@ -7,10 +7,11 @@ import javax.swing.table.DefaultTableModel;
 
 public class CustomerComment extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CustomerComment.class.getName());
-
-    public CustomerComment() {
+    private final String currentUserId;
+    
+    public CustomerComment(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         loadCommentTable();
         
         commentTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -33,7 +34,7 @@ public class CustomerComment extends javax.swing.JFrame {
 
         String commentId = commentTable.getValueAt(selectedRow, 0).toString();
 
-        new CustomerCommentDetails(commentId).setVisible(true);
+        new CustomerCommentDetails(commentId, currentUserId).setVisible(true);
         dispose();
     }
     
@@ -314,14 +315,10 @@ public class CustomerComment extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ViewFeedbackComment().setVisible(true);
+        new ViewFeedbackComment(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(() -> new CustomerComment().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField appointmentIdField;

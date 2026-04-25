@@ -11,11 +11,6 @@ public class AddServiceCate extends javax.swing.JFrame {
         initComponents();
         this.currentUserId = currentUserId;
     }
-    
-    public AddServiceCate() {
-        initComponents();
-        this.currentUserId = "USR001";
-    }
 
 
     @SuppressWarnings("unchecked")
@@ -124,6 +119,7 @@ public class AddServiceCate extends javax.swing.JFrame {
 
             if (added) {
                 JOptionPane.showMessageDialog(this, "Service category added successfully.");
+                FileManager.addActivityLog(currentUserId, "Add New Service Category", name + " Added");
                 new ServiceCategory(currentUserId).setVisible(true);
                 dispose();
             } else {

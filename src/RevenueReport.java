@@ -8,12 +8,11 @@ import javax.swing.table.DefaultTableModel;
 
 public class RevenueReport extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RevenueReport.class.getName());
+    private String currentUserId;
 
-
-
-    public RevenueReport() {
+    public RevenueReport(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         loadRevenueReport();
     }
     
@@ -330,7 +329,7 @@ public class RevenueReport extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ViewReport().setVisible(true);
+        new ViewReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
