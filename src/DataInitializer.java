@@ -31,13 +31,15 @@ public class DataInitializer {
                 "SER005,SC002,Engine Tune Up,Inspect and tune engine performance,180,USR001,2026-04-23 20:20:00",
                 "SER006,SC002,Battery Check,Check battery condition and voltage,25,USR001,2026-04-23 20:25:00"
         );
-
+        
+        createFileIfNotExist("src/activity_logs.txt");
         createFileIfNotExist("src/appointments.txt");
         createFileIfNotExist("src/payments.txt");
         createFileIfNotExist("src/receipts.txt");
         createFileIfNotExist("src/technician_feedback.txt");
         createFileIfNotExist("src/customer_comments.txt");
     }
+    
 
     private static void createFileIfNotExist(String filePath, String... defaultLines) {
         File file = new File(filePath);

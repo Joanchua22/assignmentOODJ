@@ -5,15 +5,15 @@ import javax.swing.JOptionPane;
 
 public class MyProfile extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MyProfile.class.getName());
-
-
     private String currentUserId;
+    private String originalPhone = "";
+    private String originalEmail = "";
         
     public MyProfile(String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
         loadProfileData();
+        saveBtn.addActionListener(this::saveBtnActionPerformed);
     }
     
     public MyProfile() {
@@ -48,10 +48,18 @@ public class MyProfile extends javax.swing.JFrame {
             tpNumField.setEditable(false);
             statusField.setEditable(false);
             createdAtField.setEditable(false);
+            
+            originalPhone = user[6];
+            originalEmail = user[7];
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error loading profile data.");
         }
+    }
+    
+    private boolean hasChanges() {
+        return !phoneField.getText().trim().equals(originalPhone)
+                || !emailField.getText().trim().equals(originalEmail);
     }
 
 
@@ -103,6 +111,7 @@ public class MyProfile extends javax.swing.JFrame {
         jLabel9.setText("Created At:");
 
         saveBtn.setText("Save");
+        saveBtn.addActionListener(this::saveBtnActionPerformed);
 
         backBtn.setText("Back");
         backBtn.addActionListener(this::backBtnActionPerformed);
@@ -223,9 +232,66 @@ public class MyProfile extends javax.swing.JFrame {
     }//GEN-LAST:event_changePasswordBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        if (hasChanges()) {
+            Object[] options = {"No", "Yes"};
+
+            int confirm = JOptionPane.showOptionDialog(
+                    this,
+                    "You have unsaved changes. Are you sure you want to go back?",
+                    "Unsaved Changes",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    options,
+                    options[0]
+            );
+
+            if (confirm != 1) {
+                return;
+            }
+        }
+
         new ManagerPage(currentUserId).setVisible(true);
         dispose();
     }//GEN-LAST:event_backBtnActionPerformed
+
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        String phone = phoneField.getText().trim();
+        String email = emailField.getText().trim();
+
+        if (phone.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Phone and email cannot be empty.");
+            return;
+        }
+
+        if (!FileManager.isValidPhone(phone)) {
+            JOptionPane.showMessageDialog(this, "Phone number must be 10 to 11 digits.");
+            return;
+        }
+
+        if (!FileManager.isValidEmail(email)) {
+            JOptionPane.showMessageDialog(this, "Invalid email format.");
+            return;
+        }
+
+        try {
+            boolean updated = FileManager.updateProfileByUserId(currentUserId, phone, email);
+
+            if (updated) {
+                JOptionPane.showMessageDialog(this, "Profile updated successfully.");
+
+                originalPhone = phone;
+                originalEmail = email;
+
+                FileManager.addActivityLog(currentUserId, "UPDATE_PROFILE", "Updated phone/email in profile.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Update failed. User not found.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error updating profile.");
+        }
+    }//GEN-LAST:event_saveBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -53,6 +53,7 @@ public class ManagerPage extends javax.swing.JFrame {
         logoutBtn.addActionListener(this::logoutBtnActionPerformed);
 
         activityLogsBtn.setText("Activity Logs");
+        activityLogsBtn.addActionListener(this::activityLogsBtnActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -140,6 +141,11 @@ public class ManagerPage extends javax.swing.JFrame {
         new ViewFeedbackComment().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_viewFeedbackCommentBtnActionPerformed
+
+    private void activityLogsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activityLogsBtnActionPerformed
+        new ActivityLogs(currentUserId).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_activityLogsBtnActionPerformed
 
 
     public static void main(String args[]) {
