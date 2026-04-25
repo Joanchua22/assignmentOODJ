@@ -4,11 +4,11 @@ import javax.swing.JOptionPane;
 
 public class AddNewStaffPage extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddNewStaffPage.class.getName());
+    private final String currentUserId;
 
-
-    public AddNewStaffPage() {
+    public AddNewStaffPage(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
     }
     
     private void clearFields() {
@@ -168,7 +168,7 @@ public class AddNewStaffPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ManageStaffPage().setVisible(true);
+        new ManageStaffPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -230,6 +230,7 @@ public class AddNewStaffPage extends javax.swing.JFrame {
             FileManager.addStaff(username, password, role, fullName, tp, phone, email, status);
 
             JOptionPane.showMessageDialog(this, "New staff added successfully.");
+            FileManager.addActivityLog(currentUserId, "Add New Staff", role + " " + username + " Added");
 
             clearFields();
             } catch (IOException ex) {

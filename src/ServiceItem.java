@@ -5,29 +5,11 @@ import javax.swing.table.DefaultTableModel;
 
 public class ServiceItem extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ServiceItem.class.getName());
     private final String currentUserId;
     
     public ServiceItem(String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
-        loadServiceItemTable(); 
-        
-        itemsTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    openSelectedItemProfile();
-                }
-            }
-        });
-    }
-    
-     // test
-    public ServiceItem() {
-        initComponents();
-        this.currentUserId = "USR001";
-        
         loadServiceItemTable(); 
         
         itemsTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -51,7 +33,7 @@ public class ServiceItem extends javax.swing.JFrame {
 
         String serviceItemId = itemsTable.getValueAt(selectedRow, 0).toString();
 
-        new UpdateServiceItem(serviceItemId).setVisible(true);
+        new UpdateServiceItem(serviceItemId, currentUserId).setVisible(true);
         dispose();
     }
     
@@ -172,12 +154,12 @@ public class ServiceItem extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        new AddServiceItem().setVisible(true);
+        new AddServiceItem(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new SetServicePrices().setVisible(true);
+        new SetServicePrices(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -205,6 +187,7 @@ public class ServiceItem extends javax.swing.JFrame {
 
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "Service item deleted successfully.");
+                    FileManager.addActivityLog(currentUserId, "Delete Service Item", serviceItemId + " Deleted");
                     loadServiceItemTable();
                 } else {
                     JOptionPane.showMessageDialog(this, "Delete failed.");
@@ -216,10 +199,6 @@ public class ServiceItem extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new ServiceItem().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;

@@ -25,25 +25,6 @@ public class ServiceCategory extends javax.swing.JFrame {
         });
     }
     
-    public ServiceCategory() {
-        initComponents();
-        this.currentUserId = "USR001";
-        loadServiceTypeTable();
-        
-        cateTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    try {
-                        openSelectedCateProfile();
-                    } catch (IOException ex) {
-                        System.getLogger(ServiceCategory.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                    }
-                }
-            }
-        });
-    }
-    
     private void openSelectedCateProfile() throws IOException {
         int selectedRow = cateTable.getSelectedRow();
 
@@ -54,7 +35,7 @@ public class ServiceCategory extends javax.swing.JFrame {
 
         String serviceTypeId = cateTable.getValueAt(selectedRow, 0).toString();
 
-        new UpdateServiceCate(serviceTypeId).setVisible(true);
+        new UpdateServiceCate(serviceTypeId, currentUserId).setVisible(true);
         dispose();
     }
 
@@ -175,7 +156,7 @@ public class ServiceCategory extends javax.swing.JFrame {
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new SetServicePrices().setVisible(true);
+        new SetServicePrices(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -203,6 +184,7 @@ public class ServiceCategory extends javax.swing.JFrame {
 
                 if (deleted) {
                     JOptionPane.showMessageDialog(this, "Category deleted successfully.");
+                    FileManager.addActivityLog(currentUserId, "Delete Service Category", serviceTypeId + " Added");
                     loadServiceTypeTable();
                 } else {
                     JOptionPane.showMessageDialog(this, "Delete failed.");

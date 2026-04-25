@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import javax.swing.JOptionPane;
 
 public class ManagerPage extends javax.swing.JFrame {
@@ -45,6 +46,7 @@ public class ManagerPage extends javax.swing.JFrame {
         viewFeedbackCommentBtn.addActionListener(this::viewFeedbackCommentBtnActionPerformed);
 
         viewReportsBtn.setText("View Reports");
+        viewReportsBtn.addActionListener(this::viewReportsBtnActionPerformed);
 
         myProfileBtn.setText("My Profile");
         myProfileBtn.addActionListener(this::myProfileBtnActionPerformed);
@@ -102,7 +104,7 @@ public class ManagerPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void manageStaffBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageStaffBtnActionPerformed
-        new ManageStaffPage().setVisible(true);
+        new ManageStaffPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_manageStaffBtnActionPerformed
 
@@ -132,13 +134,18 @@ public class ManagerPage extends javax.swing.JFrame {
         if (confirm == 1) { 
 
             JOptionPane.showMessageDialog(this, "Logout successful.");
+            try {
+                FileManager.addActivityLog(currentUserId, "LOGOUT", "Manager logged out");
+            } catch (IOException ex) {
+                System.getLogger(ManagerPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
             new HomePage().setVisible(true);
             this.dispose();
         }
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     private void viewFeedbackCommentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewFeedbackCommentBtnActionPerformed
-        new ViewFeedbackComment().setVisible(true);
+        new ViewFeedbackComment(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_viewFeedbackCommentBtnActionPerformed
 
@@ -146,6 +153,11 @@ public class ManagerPage extends javax.swing.JFrame {
         new ActivityLogs(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_activityLogsBtnActionPerformed
+
+    private void viewReportsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewReportsBtnActionPerformed
+        new ViewReport(currentUserId).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_viewReportsBtnActionPerformed
 
 
     public static void main(String args[]) {

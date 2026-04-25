@@ -15,13 +15,7 @@ public class UpdateServiceCate extends javax.swing.JFrame {
         this.currentUserId = currentUserId;
         loadServiceTypeData();
     }
-    
-    public UpdateServiceCate(String serviceTypeId) throws IOException {
-        initComponents();
-        this.serviceTypeId = serviceTypeId;
-        this.currentUserId = "USR001";
-        loadServiceTypeData();
-    }
+
     
     private void loadServiceTypeData() {
         try {
@@ -179,6 +173,7 @@ public class UpdateServiceCate extends javax.swing.JFrame {
 
             if (updated) {
                 JOptionPane.showMessageDialog(this, "Service category updated successfully.");
+                FileManager.addActivityLog(currentUserId, "Update Service Category", serviceTypeId + " Updated");
                 new ServiceCategory(currentUserId).setVisible(true);
                 dispose();
             } else {

@@ -6,11 +6,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class ManageStaffPage extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageStaffPage.class.getName());
     private DefaultTableModel tableModel;
+    private final String currentUserId;
     
-    public ManageStaffPage() {
+    public ManageStaffPage(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
         initializeTable();
         loadAllStaffToTable();
         
@@ -59,7 +60,7 @@ public class ManageStaffPage extends javax.swing.JFrame {
         
         String userId = tableModel.getValueAt(selectedRow, 0).toString();
         
-        new StaffProfilePage(userId).setVisible(true);
+        new StaffProfilePage(userId, currentUserId).setVisible(true);
         this.dispose();
     }
 
@@ -202,24 +203,19 @@ public class ManageStaffPage extends javax.swing.JFrame {
             }
         } catch (IOException e){
             JOptionPane.showMessageDialog(this, "Error searching staff records");
-            e.printStackTrace();
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        new AddNewStaffPage().setVisible(true);
+        new AddNewStaffPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ManagerPage().setVisible(true);
+        new ManagerPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new ManageStaffPage().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
