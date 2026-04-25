@@ -117,6 +117,7 @@ public class ViewFeedbackComment extends javax.swing.JFrame {
         jScrollPane2.setViewportView(commentTable);
 
         commentBtn.setText("View More");
+        commentBtn.addActionListener(this::commentBtnActionPerformed);
 
         jLabel3.setText("Latest Customer Comments:");
 
@@ -186,6 +187,10 @@ public class ViewFeedbackComment extends javax.swing.JFrame {
         new ManagerPage().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
+
+    private void commentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentBtnActionPerformed
+        
+    }//GEN-LAST:event_commentBtnActionPerformed
 
 
     public static void main(String args[]) {

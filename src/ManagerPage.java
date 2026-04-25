@@ -1,3 +1,6 @@
+
+import javax.swing.JOptionPane;
+
 public class ManagerPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerPage.class.getName());
@@ -12,7 +15,7 @@ public class ManagerPage extends javax.swing.JFrame {
 
     public ManagerPage() {
         initComponents();
-        this.currentUserId = "USR001"; // test user
+        this.currentUserId = "USR0001"; 
     }
     
     @SuppressWarnings("unchecked")
@@ -38,7 +41,8 @@ public class ManagerPage extends javax.swing.JFrame {
         setServicePriceBtn.setText("Set Service Prices");
         setServicePriceBtn.addActionListener(this::setServicePriceBtnActionPerformed);
 
-        viewFeedbackCommentBtn.setText("View Feedback & Comments");
+        viewFeedbackCommentBtn.setText("View Feedbacks & Comments");
+        viewFeedbackCommentBtn.addActionListener(this::viewFeedbackCommentBtnActionPerformed);
 
         viewReportsBtn.setText("View Reports");
 
@@ -46,6 +50,7 @@ public class ManagerPage extends javax.swing.JFrame {
         myProfileBtn.addActionListener(this::myProfileBtnActionPerformed);
 
         logoutBtn.setText("Logout");
+        logoutBtn.addActionListener(this::logoutBtnActionPerformed);
 
         activityLogsBtn.setText("Activity Logs");
 
@@ -68,7 +73,7 @@ public class ManagerPage extends javax.swing.JFrame {
                             .addComponent(myProfileBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(logoutBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(activityLogsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(117, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -83,13 +88,13 @@ public class ManagerPage extends javax.swing.JFrame {
                 .addComponent(viewFeedbackCommentBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(viewReportsBtn)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(activityLogsBtn)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(myProfileBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(logoutBtn)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
@@ -101,13 +106,40 @@ public class ManagerPage extends javax.swing.JFrame {
     }//GEN-LAST:event_manageStaffBtnActionPerformed
 
     private void setServicePriceBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setServicePriceBtnActionPerformed
-        new SetServicePrices().setVisible(true);
+        new SetServicePrices(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_setServicePriceBtnActionPerformed
 
     private void myProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myProfileBtnActionPerformed
-        
+        new MyProfile(currentUserId).setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_myProfileBtnActionPerformed
+
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        Object[] options = { "No", "Yes" };
+
+        int confirm = JOptionPane.showOptionDialog(
+                this,
+                "Are you sure you want to logout?",
+                "Logout",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0] 
+        );
+        if (confirm == 1) { 
+
+            JOptionPane.showMessageDialog(this, "Logout successful.");
+            new HomePage().setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_logoutBtnActionPerformed
+
+    private void viewFeedbackCommentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewFeedbackCommentBtnActionPerformed
+        new ViewFeedbackComment().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_viewFeedbackCommentBtnActionPerformed
 
 
     public static void main(String args[]) {

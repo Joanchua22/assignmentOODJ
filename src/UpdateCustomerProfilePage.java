@@ -2,10 +2,10 @@
 public class UpdateCustomerProfilePage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UpdateCustomerProfilePage.class.getName());
-    private String currentUsername;
+    private String currentUserId;
     
-    public UpdateCustomerProfilePage(String username) {
-        this.currentUsername = username;
+    public UpdateCustomerProfilePage(String currentUserId) {
+        this.currentUserId = currentUserId;
         initComponents();
     }
     
@@ -75,22 +75,22 @@ public class UpdateCustomerProfilePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEditDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDetailsActionPerformed
-        new EditCustomerProfilePage(currentUsername).setVisible(true);
+        new EditCustomerProfilePage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnEditDetailsActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new CustomerPage(currentUsername).setVisible(true);
+        new CustomerPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnChangePassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePassActionPerformed
-        new ChangePasswordPage(currentUsername).setVisible(true);
+        new ChangePasswordPage(currentUserId, "CustomerProfile").setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnChangePassActionPerformed
 
     private void btnManageVehiclesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageVehiclesActionPerformed
-        new ManageVehiclesPage(currentUsername).setVisible(true);
+        new ManageVehiclesPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnManageVehiclesActionPerformed
 

@@ -2,121 +2,118 @@
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
-public class TechnicianFeedbackDetails extends javax.swing.JFrame {
+
+public class CustomerCommentDetails extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TechnicianFeedbackDetails.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CustomerCommentDetails.class.getName());
 
-    private final String feedbackId;
 
-    public TechnicianFeedbackDetails(String feedbackId) {
+    private final String commentId;
+
+    public CustomerCommentDetails(String commentId) {
         initComponents();
-        this.feedbackId = feedbackId;
-        loadFeedbackDetails();
+        this.commentId = commentId;
+        loadCommentDetails();
+    }
+
+    // test constructor
+    public CustomerCommentDetails() {
+        initComponents();
+        this.commentId = "CMT0001";
+        loadCommentDetails();
     }
     
-    private void loadFeedbackDetails() {
-    try {
-        String[] details = FileManager.getTechnicianFeedbackDetailsById(feedbackId);
+    private void loadCommentDetails() {
+        try {
+            String[] details = FileManager.getCustomerCommentDetailsById(commentId);
 
-        if (details == null) {
-            JOptionPane.showMessageDialog(this, "Feedback details not found.");
-            return;
-        }
+            if (details == null) {
+                JOptionPane.showMessageDialog(this, "Comment details not found.");
+                return;
+            }
 
-            feedbackIdField.setText(details[0]);
+            commentIdField.setText(details[0]);
             appointmentIdField.setText(details[1]);
-            technicianField.setText(details[2]);
-            feedbackDateField.setText(details[3]);
-            technicianFeedbackField.setText(details[4]);
+            customerField.setText(details[2]);
+            commentDateField.setText(details[3]);
+            customerCommentField.setText(details[4]);
             vehicleIdField.setText(details[5]);
             serviceTypeField.setText(details[6]);
             serviceItemField.setText(details[7]);
 
-            feedbackIdField.setEditable(false);
+            commentIdField.setEditable(false);
             appointmentIdField.setEditable(false);
-            technicianField.setEditable(false);
-            feedbackDateField.setEditable(false);
+            customerField.setEditable(false);
+            commentDateField.setEditable(false);
             vehicleIdField.setEditable(false);
             serviceTypeField.setEditable(false);
             serviceItemField.setEditable(false);
-            technicianFeedbackField.setEditable(false);
+            customerCommentField.setEditable(false);
 
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error loading feedback details.");
+            JOptionPane.showMessageDialog(this, "Error loading comment details.");
         }
     }
-    
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSeparator1 = new javax.swing.JSeparator();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        feedbackIdField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
         appointmentIdField = new javax.swing.JTextField();
+        commentDateField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        technicianField = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        customerField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        customerCommentField = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
         vehicleIdField = new javax.swing.JTextField();
-        viewDetailsBtn = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        serviceTypeField = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        serviceItemField = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        feedbackDateField = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        technicianFeedbackField = new javax.swing.JTextArea();
         backBtn = new javax.swing.JButton();
+        viewDetailsBtn = new javax.swing.JButton();
         appoinmentBtn = new javax.swing.JButton();
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        jLabel8 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        serviceTypeField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        commentIdField = new javax.swing.JTextField();
+        serviceItemField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Technician Feedback");
+        jLabel11.setText("Comment Date:");
 
-        jLabel2.setText("Feedback ID:");
+        jLabel4.setText("Customer:");
 
-        jLabel3.setText("Appointmen ID:");
+        jLabel10.setText("Customer Comment:");
 
-        jLabel4.setText("Technician:");
+        customerCommentField.setColumns(20);
+        customerCommentField.setRows(5);
+        jScrollPane1.setViewportView(customerCommentField);
 
         jLabel7.setText("Vehicle ID:");
-
-        viewDetailsBtn.setText("View Details");
-        viewDetailsBtn.addActionListener(this::viewDetailsBtnActionPerformed);
-
-        jLabel8.setText("Service Type:");
-
-        jLabel9.setText("Service Item:");
-
-        jLabel11.setText("Feedback Date:");
-
-        jLabel10.setText("Techinician Feedback:");
-
-        technicianFeedbackField.setColumns(20);
-        technicianFeedbackField.setRows(5);
-        jScrollPane1.setViewportView(technicianFeedbackField);
 
         backBtn.setText("Back");
         backBtn.addActionListener(this::backBtnActionPerformed);
 
+        viewDetailsBtn.setText("View Details");
+        viewDetailsBtn.addActionListener(this::viewDetailsBtnActionPerformed);
+
         appoinmentBtn.setText("View Details");
         appoinmentBtn.addActionListener(this::appoinmentBtnActionPerformed);
+
+        jLabel8.setText("Service Type:");
+
+        jLabel1.setText("Customer Comment");
+
+        jLabel2.setText("Comment ID:");
+
+        jLabel9.setText("Service Item:");
+
+        jLabel3.setText("Appointmen ID:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -139,11 +136,11 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
                                     .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(36, 36, 36)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(feedbackDateField, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                                    .addComponent(technicianField, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                                    .addComponent(commentDateField, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                                    .addComponent(customerField, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
                                     .addComponent(appoinmentBtn)
                                     .addComponent(appointmentIdField)
-                                    .addComponent(feedbackIdField))
+                                    .addComponent(commentIdField))
                                 .addGap(79, 79, 79)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -163,13 +160,14 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
                                             .addComponent(serviceTypeField, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(serviceItemField, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                         .addGap(100, 100, 100))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(309, 309, 309))
             .addGroup(layout.createSequentialGroup()
-                .addGap(323, 323, 323)
-                .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(323, 323, 323)
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(314, 314, 314)
+                        .addComponent(jLabel1)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -182,7 +180,7 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(feedbackIdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(commentIdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
@@ -192,7 +190,7 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
                         .addGap(13, 13, 13)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(technicianField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(customerField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
@@ -210,21 +208,21 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(feedbackDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(commentDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
                 .addComponent(jLabel10)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(backBtn)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new TechnicianFeedback().setVisible(true);
+        new CustomerComment().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -245,15 +243,13 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
             }
 
             JOptionPane.showMessageDialog(
-                    this,
-                    "Customer ID: " + vehicle[1] +
-                    "\nCustomer Username: " + vehicle[2] +
-                    "\nVehicle Plate No: " + vehicle[3] +
-                    "\nVehicle Type: " + vehicle[4] +
-                    "\nVehicle Model: " + vehicle[5] +
-                    "\nYear of Manufacture: " + vehicle[6],
-                    "Vehicle Details",
-                    JOptionPane.INFORMATION_MESSAGE
+                this,
+                "Vehicle Plate No: " + vehicle[3] +
+                "\nVehicle Type: " + vehicle[4] +
+                "\nVehicle Model: " + vehicle[5] +
+                "\nYear of Manufacture: " + vehicle[6],
+                "Vehicle Details",
+                JOptionPane.INFORMATION_MESSAGE
             );
 
         } catch (IOException e) {
@@ -278,15 +274,14 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
             }
 
             JOptionPane.showMessageDialog(
-                    this,
-                    "\nCustomer ID: " + appt[5] +
-                    "\nCustomer Username: " + appt[6] +
-                    "\nDate: " + appt[0] +
-                    "\nTime: " + appt[1] + " - " + appt[2] +
-                    "\nStatus: " + appt[3] +
-                    "\nCounter Staff: " + appt[4],
-                    "Appointment Details",
-                    JOptionPane.INFORMATION_MESSAGE
+                this,
+                "\nDate: " + appt[0] +
+                "\nTime: " + appt[1] + " - " + appt[2] +
+                "\nStatus: " + appt[3] +
+                "\nCounter Staff: " + appt[4] +
+                "\nTechnician: " + appt[7],
+                "Appointment Details",
+                JOptionPane.INFORMATION_MESSAGE
             );
 
         } catch (IOException e) {
@@ -295,12 +290,18 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
     }//GEN-LAST:event_appoinmentBtnActionPerformed
 
 
+    public static void main(String args[]) {
+        java.awt.EventQueue.invokeLater(() -> new CustomerCommentDetails().setVisible(true));
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton appoinmentBtn;
     private javax.swing.JTextField appointmentIdField;
     private javax.swing.JButton backBtn;
-    private javax.swing.JTextField feedbackDateField;
-    private javax.swing.JTextField feedbackIdField;
+    private javax.swing.JTextField commentDateField;
+    private javax.swing.JTextField commentIdField;
+    private javax.swing.JTextArea customerCommentField;
+    private javax.swing.JTextField customerField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -310,13 +311,9 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField serviceItemField;
     private javax.swing.JTextField serviceTypeField;
-    private javax.swing.JTextArea technicianFeedbackField;
-    private javax.swing.JTextField technicianField;
     private javax.swing.JTextField vehicleIdField;
     private javax.swing.JButton viewDetailsBtn;
     // End of variables declaration//GEN-END:variables

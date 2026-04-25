@@ -7,13 +7,16 @@ public class ChangePasswordPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ChangePasswordPage.class.getName());
     
-    private String currentUsername;
+    private String currentUserId;
+    private String returnPage;
     
-    public ChangePasswordPage(String username) {
-        this.currentUsername = username;
+    public ChangePasswordPage(String currentUserId, String returnPage) {
+        this.currentUserId = currentUserId;
+        this.returnPage = returnPage;
         initComponents();
     }
 
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -109,7 +112,7 @@ public class ChangePasswordPage extends javax.swing.JFrame {
             }
 
             // Check current password from users.txt
-            boolean isCurrentPasswordCorrect = FileManager.checkCurrentPassword(currentUsername, currentPassword);
+            boolean isCurrentPasswordCorrect = FileManager.checkCurrentPasswordByUserId(currentUserId, currentPassword);
             if (!isCurrentPasswordCorrect) {
                 JOptionPane.showMessageDialog(this, "Current password is incorrect.");
                 return;
@@ -127,7 +130,7 @@ public class ChangePasswordPage extends javax.swing.JFrame {
                 return;
             }
 
-            boolean updated = FileManager.updatePassword(currentUsername, newPassword);
+            boolean updated = FileManager.updatePasswordByUserId(currentUserId, newPassword);
 
             if (updated) {
                 JOptionPane.showMessageDialog(this, "Password updated successfully.");
@@ -140,13 +143,16 @@ public class ChangePasswordPage extends javax.swing.JFrame {
             }
 
         } catch (IOException ex) {
-            ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "An error occurred while updating the password.");
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new UpdateCustomerProfilePage(currentUsername).setVisible(true);
+        if (returnPage.equalsIgnoreCase("ManagerProfile")) {
+            new MyProfile(currentUserId).setVisible(true);
+        } else {
+            new UpdateCustomerProfilePage(currentUserId).setVisible(true);
+        }
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
