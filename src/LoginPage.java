@@ -126,6 +126,11 @@ public class LoginPage extends javax.swing.JFrame {
         }
 
         JOptionPane.showMessageDialog(this, "Login successful! Welcome, " + username + "!");
+        try {
+            FileManager.addActivityLog(currentUserId, "LOGIN", "User logged in");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
         this.dispose();
 
         switch (role.toLowerCase()) {

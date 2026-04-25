@@ -2050,4 +2050,80 @@ public class FileManager {
         return null;
     }
     
+    public static final String ACTIVITY_LOG_FILE = "src/activity_logs.txt";
+
+    public static void addActivityLog(String userId, String action, String details) throws IOException {
+        String logId = generateNextId(ACTIVITY_LOG_FILE, "LOG");
+        String dateTime = getCurrentDateTime();
+
+        String line = String.join(",",
+                logId,
+                userId,
+                action,
+                details,
+                dateTime
+        );
+
+        appendLine(ACTIVITY_LOG_FILE, line);
+    }
+    
+    public static List<String[]> getAllActivityLogs() throws IOException {
+        List<String[]> logList = new ArrayList<>();
+        File file = new File(ACTIVITY_LOG_FILE);
+
+        if (!file.exists()) {
+            return logList;
+        }
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(",");
+            if (parts.length >= 5) {
+                logList.add(new String[] {
+                    parts[0].trim(),
+                    parts[1].trim(),
+                    parts[2].trim(),
+                    parts[3].trim(),
+                    parts[4].trim()
+                });
+            }
+        }
+
+        logList.sort((a, b) -> b[4].compareTo(a[4]));
+        return logList;
+    }
+    
+    public static boolean updateProfileByUserId(String userId, String phone, String email) throws IOException {
+        File file = new File(USER_FILE);
+
+        if (!file.exists()) return false;
+
+        List<String> lines = Files.readAllLines(file.toPath());
+        List<String> updatedLines = new ArrayList<>();
+        boolean updated = false;
+
+        for (String line : lines) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(",");
+
+            // 0=userId, 1=username, 2=password, 3=role, 4=name, 5=tp, 6=phone, 7=email, 8=status, 9=created_at
+            if (parts.length >= 10 && parts[0].trim().equalsIgnoreCase(userId)) {
+                parts[6] = phone;
+                parts[7] = email;
+                updatedLines.add(String.join(",", parts));
+                updated = true;
+            } else {
+                updatedLines.add(line);
+            }
+        }
+
+        if (updated) {
+            Files.write(file.toPath(), updatedLines, StandardOpenOption.TRUNCATE_EXISTING);
+        }
+
+        return updated;
+    }
+    
 }
