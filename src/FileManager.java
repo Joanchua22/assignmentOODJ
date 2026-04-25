@@ -197,24 +197,23 @@ public class FileManager {
                 .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
     
-    public static boolean checkCurrentPassword(String username, String currentPassword) throws IOException {
+    public static boolean checkCurrentPasswordByUserId(String userId, String currentPassword) throws IOException {
         File file = new File(USER_FILE);
         if (!file.exists()) return false;
 
-        List<String> lines = Files.readAllLines(file.toPath());
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
 
-        for (String line : lines) {
             String[] parts = line.split(",");
-            if (parts.length < 9) continue;
-
-            if (parts[1].equals(username) && parts[2].equals(currentPassword)) {
+            if (parts.length >= 9 && parts[0].trim().equalsIgnoreCase(userId)
+                    && parts[2].trim().equals(currentPassword)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean updatePassword(String username, String newPassword) throws IOException {
+    public static boolean updatePasswordByUserId(String userId, String newPassword) throws IOException {
         File file = new File(USER_FILE);
         if (!file.exists()) return false;
 
@@ -223,16 +222,12 @@ public class FileManager {
         boolean found = false;
 
         for (String line : lines) {
-            String[] parts = line.split(",");
-            if (parts.length < 9) {
-                updatedLines.add(line);
-                continue;
-            }
+            if (line.trim().isEmpty()) continue;
 
-            if (parts[1].equals(username)) {
-                parts[2] = newPassword; 
-                String updatedLine = String.join(",", parts);
-                updatedLines.add(updatedLine);
+            String[] parts = line.split(",");
+            if (parts.length >= 9 && parts[0].trim().equalsIgnoreCase(userId)) {
+                parts[2] = newPassword;
+                updatedLines.add(String.join(",", parts));
                 found = true;
             } else {
                 updatedLines.add(line);
@@ -1769,6 +1764,290 @@ public class FileManager {
         resultList.sort((a, b) -> b[3].compareTo(a[3]));
 
         return resultList;
+    }
+    
+    public static boolean isValidDateFormat(String date) {
+        return date != null && date.matches("\\d{4}-\\d{2}-\\d{2}");
+    }
+    
+    public static boolean isValidDateRange(String startDate, String endDate) {
+        if (startDate == null || endDate == null) return true;
+
+        if (startDate.isEmpty() || endDate.isEmpty()) return true;
+
+        return startDate.compareTo(endDate) <= 0;
+    }
+    
+    public static String[] getTechnicianFeedbackDetailsById(String feedbackId) throws IOException {
+        File feedbackFile = new File(FEEDBACK_FILE);
+        File appointmentFile = new File(APPOINTMENT_FILE);
+        File serviceItemFile = new File(SERVICE_ITEM_FILE);
+        File serviceTypeFile = new File(SERVICE_TYPE_FILE);
+
+        if (!feedbackFile.exists()) return null;
+
+        String appointmentId = "";
+        String feedbackText = "";
+        String feedbackDate = "";
+
+        for (String line : Files.readAllLines(feedbackFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] fb = line.split(",");
+            if (fb.length >= 4 && fb[0].trim().equalsIgnoreCase(feedbackId)) {
+                appointmentId = fb[1].trim();
+                feedbackText = fb[2].trim();
+                feedbackDate = fb[3].trim();
+                break;
+            }
+        }
+
+        if (appointmentId.isEmpty()) return null;
+
+        String vehicleId = "-";
+        String technicianUsername = "-";
+        String serviceItemId = "-";
+
+        if (appointmentFile.exists()) {
+            for (String line : Files.readAllLines(appointmentFile.toPath())) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] appt = line.split(",");
+                if (appt.length >= 6 && appt[0].trim().equalsIgnoreCase(appointmentId)) {
+                    vehicleId = appt[1].trim();
+                    String technicianId = appt[4].trim();
+                    serviceItemId = appt[5].trim();
+                    technicianUsername = getUsernameByUserId(technicianId);
+                    break;
+                }
+            }
+        }
+
+        String serviceItemName = "-";
+        String serviceTypeId = "-";
+
+        if (serviceItemFile.exists()) {
+            for (String line : Files.readAllLines(serviceItemFile.toPath())) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] item = line.split(",");
+                if (item.length >= 3 && item[0].trim().equalsIgnoreCase(serviceItemId)) {
+                    serviceTypeId = item[1].trim();
+                    serviceItemName = item[2].trim();
+                    break;
+                }
+            }
+        }
+
+        String serviceTypeName = "-";
+
+        if (serviceTypeFile.exists()) {
+            for (String line : Files.readAllLines(serviceTypeFile.toPath())) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] type = line.split(",");
+                if (type.length >= 2 && type[0].trim().equalsIgnoreCase(serviceTypeId)) {
+                    serviceTypeName = type[1].trim();
+                    break;
+                }
+            }
+        }
+
+        return new String[]{
+            feedbackId,          // 0
+            appointmentId,       // 1
+            technicianUsername,  // 2
+            feedbackDate,        // 3
+            feedbackText,        // 4
+            vehicleId,           // 5
+            serviceTypeName,     // 6
+            serviceItemName      // 7
+        };
+    }
+    
+    public static String[] getVehicleDetailsById(String vehicleId) throws IOException {
+        File vehicleFile = new File(VEHICLE_FILE);
+
+        if (!vehicleFile.exists()) return null;
+
+        for (String line : Files.readAllLines(vehicleFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] v = line.split(",");
+
+            // vehicle.txt:
+            // 0=vehicle_id, 1=customer_id, 2=plate_no, 3=vehicle_type, 4=model, 5=year
+            if (v.length >= 6 && v[0].trim().equalsIgnoreCase(vehicleId)) {
+                String customerId = v[1].trim();
+                String customerUserId = getUserIdByCustomerId(customerId);
+                String customerUsername = getUsernameByUserId(customerUserId);
+
+                return new String[]{
+                    v[0].trim(),          // vehicle id
+                    customerId,           // customer id
+                    customerUsername,     // username
+                    v[2].trim(),          // plate no
+                    v[3].trim(),          // type
+                    v[4].trim(),          // model
+                    v[5].trim()           // YOM
+                };
+            }
+        }
+
+        return null;
+    }
+    
+    public static String[] getAppointmentDetailsById(String appointmentId) throws IOException {
+        File file = new File(APPOINTMENT_FILE);
+
+        if (!file.exists()) {
+            return null;
+        }
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] appt = line.split(",");
+
+            if (appt.length >= 10 && appt[0].trim().equalsIgnoreCase(appointmentId)) {
+
+                String customerId = appt[2].trim(); // CUS0001
+                String counterStaffId = appt[3].trim();
+                String technicianId = appt[4].trim();
+
+                String counterStaffUsername = getUsernameByUserId(counterStaffId);
+                String technicianUsername = getUsernameByUserId(technicianId);
+
+                String customerUserId = getUserIdByCustomerId(customerId);
+                String customerUsername = getUsernameByUserId(customerUserId);
+
+                return new String[] {
+                    appt[6].trim(),          // 0 date
+                    appt[7].trim(),          // 1 start time
+                    appt[8].trim(),          // 2 end time
+                    appt[9].trim(),          // 3 status
+                    counterStaffUsername,    // 4 counter staff
+                    customerId,              // 5 CUS ID
+                    customerUsername,         // 6 username
+                    technicianUsername 
+                };
+            }
+        }
+
+        return null;
+    }
+    
+    public static String[] getCustomerCommentDetailsById(String commentId) throws IOException {
+        File commentFile = new File(CUSTOMER_COMMENT_FILE);
+        File appointmentFile = new File(APPOINTMENT_FILE);
+        File serviceItemFile = new File(SERVICE_ITEM_FILE);
+        File serviceTypeFile = new File(SERVICE_TYPE_FILE);
+
+        if (!commentFile.exists()) return null;
+
+        String appointmentId = "";
+        String commentText = "";
+        String commentDate = "";
+
+        for (String line : Files.readAllLines(commentFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] cmt = line.split(",");
+            if (cmt.length >= 4 && cmt[0].trim().equalsIgnoreCase(commentId)) {
+                appointmentId = cmt[1].trim();
+                commentText = cmt[2].trim();
+                commentDate = cmt[3].trim();
+                break;
+            }
+        }
+
+        if (appointmentId.isEmpty()) return null;
+
+        String customerUsername = "-";
+        String vehicleId = "-";
+        String serviceItemId = "-";
+
+        if (appointmentFile.exists()) {
+            for (String line : Files.readAllLines(appointmentFile.toPath())) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] appt = line.split(",");
+
+                if (appt.length >= 6 && appt[0].trim().equalsIgnoreCase(appointmentId)) {
+                    vehicleId = appt[1].trim();
+
+                    String customerId = appt[2].trim(); // CUS0001
+                    String customerUserId = getUserIdByCustomerId(customerId);
+                    customerUsername = getUsernameByUserId(customerUserId);
+
+                    serviceItemId = appt[5].trim();
+                    break;
+                }
+            }
+        }
+
+        String serviceItemName = "-";
+        String serviceTypeId = "-";
+
+        if (serviceItemFile.exists()) {
+            for (String line : Files.readAllLines(serviceItemFile.toPath())) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] item = line.split(",");
+                if (item.length >= 3 && item[0].trim().equalsIgnoreCase(serviceItemId)) {
+                    serviceTypeId = item[1].trim();
+                    serviceItemName = item[2].trim();
+                    break;
+                }
+            }
+        }
+
+        String serviceTypeName = "-";
+
+        if (serviceTypeFile.exists()) {
+            for (String line : Files.readAllLines(serviceTypeFile.toPath())) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] type = line.split(",");
+                if (type.length >= 2 && type[0].trim().equalsIgnoreCase(serviceTypeId)) {
+                    serviceTypeName = type[1].trim();
+                    break;
+                }
+            }
+        }
+
+        return new String[] {
+            commentId,          // 0
+            appointmentId,      // 1
+            customerUsername,   // 2
+            commentDate,        // 3
+            commentText,        // 4
+            vehicleId,          // 5
+            serviceTypeName,    // 6
+            serviceItemName     // 7
+        };
+    }
+    
+    public static String[] getUserById(String userId) throws IOException {
+        File file = new File(USER_FILE);
+
+        if (!file.exists()) {
+            return null;
+        }
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(",");
+
+            // 0=userId, 1=username, 2=password, 3=role, 4=name, 5=tp,
+            // 6=phone, 7=email, 8=status, 9=created_at
+            if (parts.length >= 10 && parts[0].trim().equalsIgnoreCase(userId)) {
+                return parts;
+            }
+        }
+
+        return null;
     }
     
 }
