@@ -5,7 +5,9 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileManager {
     
@@ -2125,5 +2127,302 @@ public class FileManager {
 
         return updated;
     }
+    
+    public static String getServiceItemNameById(String serviceItemId) throws IOException {
+        File file = new File(SERVICE_ITEM_FILE);
+
+        if (!file.exists()) return "-";
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(",");
+
+            // service_item.txt:
+            // 0=service_item_id, 1=service_cate_id, 2=service_name
+            if (parts.length >= 3 && parts[0].trim().equalsIgnoreCase(serviceItemId)) {
+                return parts[2].trim();
+            }
+        }
+
+        return "-";
+    }
+    
+    
+    public static List<String[]> getAppointmentReportList() throws IOException {
+        List<String[]> reportList = new ArrayList<>();
+
+        File appointmentFile = new File(APPOINTMENT_FILE);
+
+        if (!appointmentFile.exists()) {
+            return reportList;
+        }
+
+        for (String line : Files.readAllLines(appointmentFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] appt = line.split(",");
+
+            // 0=appointment_id, 1=vehicle_id, 2=customer_id, 3=counter_staff_id,
+            // 4=technician_id, 5=service_item_id, 6=appointment_date,
+            // 7=start_time, 8=end_time, 9=status
+            if (appt.length >= 10) {
+                String appointmentId = appt[0].trim();
+                String customerId = appt[2].trim();
+                String technicianId = appt[4].trim();
+                String serviceItemId = appt[5].trim();
+                String appointmentDate = appt[6].trim();
+                String status = appt[9].trim();
+
+                String customerUserId = getUserIdByCustomerId(customerId);
+                String customerUsername = getUsernameByUserId(customerUserId);
+                String technicianUsername = getUsernameByUserId(technicianId);
+                String serviceItemName = getServiceItemNameById(serviceItemId);
+
+                reportList.add(new String[]{
+                    appointmentId,
+                    appointmentDate,
+                    status,
+                    customerUsername,
+                    technicianUsername,
+                    serviceItemName
+                });
+            }
+        }
+
+        reportList.sort((a, b) -> b[1].compareTo(a[1])); // latest date first
+
+        return reportList;
+    }
+    
+    public static String getServiceCategoryNameByServiceItemId(String serviceItemId) throws IOException {
+        File itemFile = new File(SERVICE_ITEM_FILE);
+
+        if (!itemFile.exists()) return "-";
+
+        String serviceCateId = "";
+
+        for (String line : Files.readAllLines(itemFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] item = line.split(",");
+
+            // 0=service_item_id, 1=service_cate_id
+            if (item.length >= 2 && item[0].trim().equalsIgnoreCase(serviceItemId)) {
+                serviceCateId = item[1].trim();
+                break;
+            }
+        }
+
+        if (serviceCateId.isEmpty()) return "-";
+
+        File typeFile = new File(SERVICE_TYPE_FILE);
+
+        if (!typeFile.exists()) return "-";
+
+        for (String line : Files.readAllLines(typeFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] type = line.split(",");
+
+            // 0=service_type_id, 1=name
+            if (type.length >= 2 && type[0].trim().equalsIgnoreCase(serviceCateId)) {
+                return type[1].trim();
+            }
+        }
+
+        return "-";
+    }
+    
+    public static List<String[]> getServiceItemReportList(String startDate, String endDate) throws IOException {
+        List<String[]> reportList = new ArrayList<>();
+        Map<String, Integer> countMap = new HashMap<>();
+
+        File appointmentFile = new File(APPOINTMENT_FILE);
+
+        if (!appointmentFile.exists()) {
+            return reportList;
+        }
+
+        for (String line : Files.readAllLines(appointmentFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] appt = line.split(",");
+
+            if (appt.length >= 10) {
+                String serviceItemId = appt[5].trim();
+                String date = appt[6].trim();
+
+                boolean withinRange = true;
+
+                if (!startDate.isEmpty() && date.compareTo(startDate) < 0) {
+                    withinRange = false;
+                }
+
+                if (!endDate.isEmpty() && date.compareTo(endDate) > 0) {
+                    withinRange = false;
+                }
+
+                if (withinRange) {
+                    countMap.put(serviceItemId, countMap.getOrDefault(serviceItemId, 0) + 1);
+                }
+            }
+        }
+
+        for (String serviceItemId : countMap.keySet()) {
+            String serviceName = getServiceItemNameById(serviceItemId);
+            String serviceCategory = getServiceCategoryNameByServiceItemId(serviceItemId);
+            String count = String.valueOf(countMap.get(serviceItemId));
+
+            reportList.add(new String[]{
+                serviceItemId,
+                serviceName,
+                serviceCategory,
+                count
+            });
+        }
+
+        reportList.sort((a, b) -> Integer.parseInt(b[3]) - Integer.parseInt(a[3]));
+
+        return reportList;
+    }
+    
+    public static List<String[]> getTechnicianWorkloadReportList(String startDate, String endDate) throws IOException {
+        List<String[]> reportList = new ArrayList<>();
+        Map<String, int[]> workloadMap = new HashMap<>();
+
+        File file = new File(APPOINTMENT_FILE);
+
+        if (!file.exists()) {
+            return reportList;
+        }
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] appt = line.split(",");
+
+            // 4=technician_id, 6=appointment_date, 9=status
+            if (appt.length >= 10) {
+                String technicianId = appt[4].trim();
+                String date = appt[6].trim();
+                String status = appt[9].trim();
+
+                boolean withinRange = true;
+
+                if (!startDate.isEmpty() && date.compareTo(startDate) < 0) {
+                    withinRange = false;
+                }
+
+                if (!endDate.isEmpty() && date.compareTo(endDate) > 0) {
+                    withinRange = false;
+                }
+
+                if (withinRange) {
+                    workloadMap.putIfAbsent(technicianId, new int[]{0, 0});
+
+                    if (status.equalsIgnoreCase("Assigned")) {
+                        workloadMap.get(technicianId)[0]++;
+                    } else if (status.equalsIgnoreCase("Completed")) {
+                        workloadMap.get(technicianId)[1]++;
+                    }
+                }
+            }
+        }
+
+        for (String technicianId : workloadMap.keySet()) {
+            int assigned = workloadMap.get(technicianId)[0];
+            int completed = workloadMap.get(technicianId)[1];
+            int total = assigned + completed;
+
+            reportList.add(new String[]{
+                technicianId,
+                getUsernameByUserId(technicianId),
+                String.valueOf(assigned),
+                String.valueOf(completed),
+                String.valueOf(total)
+            });
+        }
+
+        reportList.sort((a, b) -> Integer.parseInt(b[4]) - Integer.parseInt(a[4]));
+
+        return reportList;
+    }
+    
+    public static String getServiceItemNameByAppointmentId(String appointmentId) throws IOException {
+        File appointmentFile = new File(APPOINTMENT_FILE);
+
+        if (!appointmentFile.exists()) return "-";
+
+        for (String line : Files.readAllLines(appointmentFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] appt = line.split(",");
+
+            // 0=appointment_id, 5=service_item_id
+            if (appt.length >= 6 && appt[0].trim().equalsIgnoreCase(appointmentId)) {
+                String serviceItemId = appt[5].trim();
+                return getServiceItemNameById(serviceItemId);
+            }
+        }
+
+        return "-";
+    }
+    
+    public static List<String[]> getRevenueReportList(String startDate, String endDate) throws IOException {
+        List<String[]> reportList = new ArrayList<>();
+
+        File paymentFile = new File(PAYMENT_FILE);
+
+        if (!paymentFile.exists()) {
+            return reportList;
+        }
+
+        for (String line : Files.readAllLines(paymentFile.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] pay = line.split(",");
+
+            // 0=payment_id, 1=appointment_id, 2=amount, 3=method,
+            // 4=payment_date, 5=collected_by, 6=status
+            if (pay.length >= 7) {
+                String paymentId = pay[0].trim();
+                String appointmentId = pay[1].trim();
+                String amount = pay[2].trim();
+                String method = pay[3].trim();
+                String paymentDate = pay[4].trim();
+                String status = pay[6].trim();
+
+                boolean withinRange = true;
+
+                if (!startDate.isEmpty() && paymentDate.compareTo(startDate) < 0) {
+                    withinRange = false;
+                }
+
+                if (!endDate.isEmpty() && paymentDate.compareTo(endDate) > 0) {
+                    withinRange = false;
+                }
+
+                if (withinRange) {
+                    String serviceItemName = getServiceItemNameByAppointmentId(appointmentId);
+
+                    reportList.add(new String[]{
+                        paymentId,
+                        appointmentId,
+                        serviceItemName,
+                        amount,
+                        method,
+                        paymentDate,
+                        status
+                    });
+                }
+            }
+        }
+
+        reportList.sort((a, b) -> b[5].compareTo(a[5]));
+        return reportList;
+    }
+    
+    
     
 }
