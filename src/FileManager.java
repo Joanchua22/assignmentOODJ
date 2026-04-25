@@ -475,7 +475,7 @@ public class FileManager {
             }
 
             String[] parts = line.split(",");
-            if (parts.length < 9) {
+            if (parts.length < 10) {
                 continue;
             }
 
@@ -536,29 +536,10 @@ public class FileManager {
         return false;
     }
     
-    public static List<String[]> getCustomerHistory(String currentUsername) throws IOException {
+    public static List<String[]> getCustomerHistory(String currentUserId) throws IOException {
         List<String[]> historyList = new ArrayList<>();
 
-        String userId = "";
         String customerId = "";
-
-        File userFile = new File(USER_FILE);
-        if (userFile.exists()) {
-            List<String> userLines = Files.readAllLines(userFile.toPath());
-            for (String line : userLines) {
-                if (line.trim().isEmpty()) continue;
-
-                String[] parts = line.split(",");
-                if (parts.length >= 9 && parts[1].trim().equalsIgnoreCase(currentUsername)) {
-                    userId = parts[0].trim();
-                    break;
-                }
-            }
-        }
-
-        if (userId.isEmpty()) {
-            return historyList;
-        }
 
         File customerFile = new File(CUSTOMER_FILE);
         if (customerFile.exists()) {
@@ -567,7 +548,7 @@ public class FileManager {
                 if (line.trim().isEmpty()) continue;
 
                 String[] parts = line.split(",");
-                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(userId)) {
+                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(currentUserId)) {
                     customerId = parts[0].trim();
                     break;
                 }
@@ -711,32 +692,11 @@ public class FileManager {
         return null;
     }
     
-    public static List<String[]> getCustomerVehicles(String currentUsername) throws IOException {
+    public static List<String[]> getCustomerVehicles(String currentUserId) throws IOException {
         List<String[]> vehicleList = new ArrayList<>();
 
-        String userId = "";
         String customerId = "";
-
-        // find userId from users.txt
-        File userFile = new File(USER_FILE);
-        if (userFile.exists()) {
-            List<String> userLines = Files.readAllLines(userFile.toPath());
-            for (String line : userLines) {
-                if (line.trim().isEmpty()) continue;
-
-                String[] parts = line.split(",");
-                if (parts.length >= 9 && parts[1].trim().equalsIgnoreCase(currentUsername)) {
-                    userId = parts[0].trim();
-                    break;
-                }
-            }
-        }
-
-        if (userId.isEmpty()) {
-            return vehicleList;
-        }
-
-        // find customerId from customers.txt
+        
         File customerFile = new File(CUSTOMER_FILE);
         if (customerFile.exists()) {
             List<String> customerLines = Files.readAllLines(customerFile.toPath());
@@ -744,7 +704,7 @@ public class FileManager {
                 if (line.trim().isEmpty()) continue;
 
                 String[] parts = line.split(",");
-                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(userId)) {
+                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(currentUserId)) {
                     customerId = parts[0].trim();
                     break;
                 }
@@ -808,27 +768,9 @@ public class FileManager {
         return deleted;
     }
     
-    public static boolean addVehicle(String currentUsername, String plateNo, String type, String model, String year) throws IOException {
-        String userId = "";
+    public static boolean addVehicle(String currentUserId, String plateNo, String type, String model, String year) throws IOException {
+
         String customerId = "";
-
-        File userFile = new File(USER_FILE);
-        if (userFile.exists()) {
-            List<String> userLines = Files.readAllLines(userFile.toPath());
-            for (String line : userLines) {
-                if (line.trim().isEmpty()) continue;
-
-                String[] parts = line.split(",");
-                if (parts.length >= 9 && parts[1].trim().equalsIgnoreCase(currentUsername)) {
-                    userId = parts[0].trim();
-                    break;
-                }
-            }
-        }
-
-        if (userId.isEmpty()) {
-            return false;
-        }
 
         File customerFile = new File(CUSTOMER_FILE);
         if (customerFile.exists()) {
@@ -837,7 +779,7 @@ public class FileManager {
                 if (line.trim().isEmpty()) continue;
 
                 String[] parts = line.split(",");
-                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(userId)) {
+                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(currentUserId)) {
                     customerId = parts[0].trim();
                     break;
                 }
@@ -912,32 +854,11 @@ public class FileManager {
         return found;
     }
     
-    public static List<String[]> getCustomerFeedbackHistory(String currentUsername) throws IOException {
+    public static List<String[]> getCustomerFeedbackHistory(String currentUserId) throws IOException {
         List<String[]> feedbackList = new ArrayList<>();
 
-        String userId = "";
         String customerId = "";
 
-        // 1. Find userId from users.txt
-        File userFile = new File(USER_FILE);
-        if (userFile.exists()) {
-            List<String> userLines = Files.readAllLines(userFile.toPath());
-            for (String line : userLines) {
-                if (line.trim().isEmpty()) continue;
-
-                String[] parts = line.split(",");
-                if (parts.length >= 9 && parts[1].trim().equalsIgnoreCase(currentUsername)) {
-                    userId = parts[0].trim();
-                    break;
-                }
-            }
-        }
-
-        if (userId.isEmpty()) {
-            return feedbackList;
-        }
-
-        // 2. Find customerId from customers.txt
         File customerFile = new File(CUSTOMER_FILE);
         if (customerFile.exists()) {
             List<String> customerLines = Files.readAllLines(customerFile.toPath());
@@ -945,7 +866,7 @@ public class FileManager {
                 if (line.trim().isEmpty()) continue;
 
                 String[] parts = line.split(",");
-                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(userId)) {
+                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(currentUserId)) {
                     customerId = parts[0].trim();
                     break;
                 }
@@ -956,7 +877,6 @@ public class FileManager {
             return feedbackList;
         }
 
-        // 3. Load vehicles into map
         java.util.Map<String, String> vehicleMap = new java.util.HashMap<>();
         File vehicleFile = new File(VEHICLE_FILE);
         if (vehicleFile.exists()) {
@@ -971,7 +891,6 @@ public class FileManager {
             }
         }
 
-        // 4. Load service types into map
         java.util.Map<String, String> serviceTypeMap = new java.util.HashMap<>();
         File serviceTypeFile = new File(SERVICE_TYPE_FILE);
         if (serviceTypeFile.exists()) {
@@ -986,7 +905,6 @@ public class FileManager {
             }
         }
 
-        // 5. Load technician feedback into map
         java.util.Map<String, String[]> feedbackMap = new java.util.HashMap<>();
         File feedbackFile = new File(FEEDBACK_FILE);
         if (feedbackFile.exists()) {
@@ -1005,7 +923,6 @@ public class FileManager {
             }
         }
 
-        // 6. Load appointments for this customer
         File appointmentFile = new File(APPOINTMENT_FILE);
         if (appointmentFile.exists()) {
             List<String> appointmentLines = Files.readAllLines(appointmentFile.toPath());
@@ -1051,32 +968,11 @@ public class FileManager {
         return feedbackList;
     }
     
-    public static List<String[]> getCustomerAppointmentsForComment(String currentUsername) throws IOException {
+    public static List<String[]> getCustomerAppointmentsForComment(String currentUserId) throws IOException {
         List<String[]> appointmentList = new ArrayList<>();
 
-        String userId = "";
         String customerId = "";
 
-        // 1. Get userId from users.txt
-        File userFile = new File(USER_FILE);
-        if (userFile.exists()) {
-            List<String> userLines = Files.readAllLines(userFile.toPath());
-            for (String line : userLines) {
-                if (line.trim().isEmpty()) continue;
-
-                String[] parts = line.split(",");
-                if (parts.length >= 9 && parts[1].trim().equalsIgnoreCase(currentUsername)) {
-                    userId = parts[0].trim();
-                    break;
-                }
-            }
-        }
-
-        if (userId.isEmpty()) {
-            return appointmentList;
-        }
-
-        // 2. Get customerId from customers.txt
         File customerFile = new File(CUSTOMER_FILE);
         if (customerFile.exists()) {
             List<String> customerLines = Files.readAllLines(customerFile.toPath());
@@ -1084,7 +980,7 @@ public class FileManager {
                 if (line.trim().isEmpty()) continue;
 
                 String[] parts = line.split(",");
-                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(userId)) {
+                if (parts.length >= 2 && parts[1].trim().equalsIgnoreCase(currentUserId)) {
                     customerId = parts[0].trim();
                     break;
                 }
@@ -1095,7 +991,6 @@ public class FileManager {
             return appointmentList;
         }
 
-        // 3. Build vehicle map: vehicleId -> plate no
         java.util.Map<String, String> vehicleMap = new java.util.HashMap<>();
         File vehicleFile = new File(VEHICLE_FILE);
         if (vehicleFile.exists()) {
@@ -1110,7 +1005,6 @@ public class FileManager {
             }
         }
 
-        // 4. Build comment map: appointmentId -> Submitted
         java.util.Set<String> commentedAppointments = new java.util.HashSet<>();
         File commentFile = new File(CUSTOMER_COMMENT_FILE);
         if (commentFile.exists()) {
@@ -1125,7 +1019,6 @@ public class FileManager {
             }
         }
 
-        // 5. Load completed appointments only
         File appointmentFile = new File(APPOINTMENT_FILE);
         if (appointmentFile.exists()) {
             List<String> appointmentLines = Files.readAllLines(appointmentFile.toPath());

@@ -10,12 +10,12 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewServiceNPaymentPage.class.getName());
 
-    private String currentUsername;
+    private String currentUserId;
     
     private List<String[]> historyDetails = new ArrayList<>();
     
-    public ViewServiceNPaymentPage(String username) {
-        this.currentUsername = username;
+    public ViewServiceNPaymentPage(String currentUserId) {
+        this.currentUserId = currentUserId;
         initComponents();
         loadHistory();
         addTableDoubleClickEvent();
@@ -146,13 +146,13 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new CustomerPage(currentUsername).setVisible(true);
+        new CustomerPage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
         try {
-                List<String[]> allHistory = FileManager.getCustomerHistory(currentUsername);
+                List<String[]> allHistory = FileManager.getCustomerHistory(currentUserId);
 
                 String fromText = fromDateField.getText().trim();
                 String toText = toDateField.getText().trim();
@@ -249,7 +249,7 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
  
     private void loadHistory() {
         try {
-            historyDetails = FileManager.getCustomerHistory(currentUsername);
+            historyDetails = FileManager.getCustomerHistory(currentUserId);
 
             DefaultTableModel model = (DefaultTableModel) HistoryTable.getModel();
             model.setRowCount(0);

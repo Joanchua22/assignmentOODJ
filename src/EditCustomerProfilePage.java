@@ -8,11 +8,11 @@ import javax.swing.JOptionPane;
 public class EditCustomerProfilePage extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EditCustomerProfilePage.class.getName());
-    private String currentUsername;
+    private String currentUserId;
 
-    public EditCustomerProfilePage(String username) {
+    public EditCustomerProfilePage(String currentUserId) {
         initComponents();
-        this.currentUsername = username;
+        this.currentUserId = currentUserId;
     }
 
     @SuppressWarnings("unchecked")
@@ -137,30 +137,27 @@ public class EditCustomerProfilePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new UpdateCustomerProfilePage(currentUsername).setVisible(true);
+        new UpdateCustomerProfilePage(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             File userFile = new File(FileManager.USER_FILE);
-
             List<String> userLines = Files.readAllLines(userFile.toPath());
-
             List<String> updatedUserLines = new ArrayList<>();
 
             boolean userFound = false;
 
-            String newUsername = currentUsername;
-
             for (String line : userLines) {
                 String[] parts = line.split(",");
-                if (parts.length < 9) {
+                if (parts.length < 10) {
                     updatedUserLines.add(line);
                     continue;
                 }
 
-                if (parts[1].equals(currentUsername)) {
+                if (parts[0].equals(currentUserId)) {
+                    String userId = parts[0];
                     String oldUsername = parts[1];
                     String password = parts[2];
                     String role = parts[3];
@@ -169,8 +166,9 @@ public class EditCustomerProfilePage extends javax.swing.JFrame {
                     String oldPhone = parts[6];
                     String oldEmail = parts[7];
                     String status = parts[8];
+                    String createdAt = parts[9];
 
-                    newUsername = !usernameField.getText().trim().isEmpty() ? usernameField.getText().trim() : oldUsername;
+                    String newUsername = !usernameField.getText().trim().isEmpty() ? usernameField.getText().trim() : oldUsername;
                     String newName = !nameField.getText().trim().isEmpty() ? nameField.getText().trim() : oldName;
                     String newTP = !tpNumField.getText().trim().isEmpty() ? tpNumField.getText().trim() : oldTP;
                     String newPhone = !phoneNumField.getText().trim().isEmpty() ? phoneNumField.getText().trim() : oldPhone;
@@ -210,6 +208,7 @@ public class EditCustomerProfilePage extends javax.swing.JFrame {
                     }
 
                     String updatedUser = String.join(",",
+                            userId,
                             newUsername,
                             password,
                             role,
@@ -217,7 +216,8 @@ public class EditCustomerProfilePage extends javax.swing.JFrame {
                             newTP,
                             newPhone,
                             newEmail,
-                            status
+                            status,
+                            createdAt
                     );
 
                     updatedUserLines.add(updatedUser);
@@ -234,8 +234,6 @@ public class EditCustomerProfilePage extends javax.swing.JFrame {
             
             Files.write(userFile.toPath(), updatedUserLines);
             JOptionPane.showMessageDialog(this, "Profile updated successfully!");
-
-            currentUsername = newUsername;
 
             usernameField.setText("");
             tpNumField.setText("");
