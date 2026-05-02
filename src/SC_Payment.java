@@ -17,7 +17,7 @@ public class SC_Payment {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
-        JLabel l1 = new JLabel("PAYMENT LIST", SwingConstants.CENTER);
+        JLabel l1 = new JLabel("Payment List", SwingConstants.CENTER);
         l1.setFont(new Font("Arial", Font.BOLD, 30));
         l1.setBounds(0, 30, 800, 50);
         frame.add(l1);
@@ -135,13 +135,13 @@ public class SC_Payment {
                 if(data.length < 7) continue;
 
                 model.addRow(new Object[]{
-                        data[0], // paymentID
-                        data[1], // appointmentID
-                        data[2], // amount
-                        data[3], // paymentMethod
-                        data[4], // date
-                        data[5], // customerID
-                        data[6]  // status
+                        data[0], //paymentID
+                        data[1], //appointmentID
+                        data[2], //amount
+                        data[3], //paymentMethod
+                        data[4], //date
+                        data[5], //customerID
+                        data[6]  //status
                 });
             }
 

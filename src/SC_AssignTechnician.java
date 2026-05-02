@@ -19,7 +19,7 @@ public class SC_AssignTechnician {
         frame.setLayout(null);
         
         //title
-        JLabel title = new JLabel("ASSIGN TECHNICIAN", SwingConstants.CENTER);
+        JLabel title = new JLabel("Assign Technician", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 30));
         title.setBounds(0, 20, 800, 50);
         frame.add(title);

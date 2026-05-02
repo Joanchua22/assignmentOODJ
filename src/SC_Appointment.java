@@ -17,6 +17,7 @@ public class SC_Appointment {
         l1.setBounds(0, 30, 800, 50);
         frame.add(l1);
         
+        //make app
         JButton b1 = new JButton("MAKE APPOINTMENT");
         b1.setBounds(300,120,200,40);
         frame.add(b1);
@@ -25,6 +26,7 @@ public class SC_Appointment {
             frame.dispose();
         });
         
+        //view app
         JButton b2 = new JButton("VIEW APPOINTMENT");
         b2.setBounds(300,180,200,40);
         frame.add(b2);
@@ -33,6 +35,7 @@ public class SC_Appointment {
             frame.dispose();
         });
         
+        //assign tech
         JButton b3 = new JButton("ASSIGN TECHNICIAN");
         b3.setBounds(300,240,200,40);
         frame.add(b3);

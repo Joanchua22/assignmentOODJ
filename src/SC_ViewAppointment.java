@@ -21,7 +21,7 @@ public class SC_ViewAppointment {
         frame.setLayout(null);
         
         //title
-        JLabel title = new JLabel("APPOINTMENT LIST", SwingConstants.CENTER);
+        JLabel title = new JLabel("Appointment List", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 30));
         title.setBounds(0, 20, 800, 50);
         frame.add(title);
@@ -99,7 +99,7 @@ public class SC_ViewAppointment {
         scrollPane.setBounds(100, 80, 600, 250);
         frame.add(scrollPane);
         
-        //no. column
+        //no column
         try{
             BufferedReader br = new BufferedReader(
                 new FileReader("src/CounterStaff/appointment.txt")); //app file name //change
@@ -113,7 +113,7 @@ public class SC_ViewAppointment {
 
                 Object[] rowData = new Object[11];
 
-                rowData[0] = rowNumber; //No.
+                rowData[0] = rowNumber; //no
 
                 for (int i = 0; i < data.length && i + 1 < rowData.length; i++){
                     rowData[i + 1] = data[i];

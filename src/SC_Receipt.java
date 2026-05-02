@@ -16,7 +16,7 @@ public class SC_Receipt implements Printable {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(null);
 
-        // ================= RECEIPT CONTENT =================
+        //receipt content
         StringBuilder sb = new StringBuilder();
 
         sb.append("      APU ASC SERVICE\n");
@@ -56,7 +56,6 @@ public class SC_Receipt implements Printable {
         
         area.setText(this.content);
         
-        // ================= FIX 1: MANUAL POSITION =================
         JScrollPane scroll = new JScrollPane(area);
         scroll.setBounds(100, 80, 600, 300);
         frame.add(scroll);
@@ -94,7 +93,7 @@ public class SC_Receipt implements Printable {
         frame.setVisible(true);
     }
 
-    // PRINT FUNCTION
+    //print function
     @Override
     public int print(Graphics g, PageFormat pf, int page)
             throws PrinterException {

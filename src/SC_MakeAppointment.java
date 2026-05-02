@@ -228,7 +228,7 @@ public class SC_MakeAppointment {
                 String[] data = line.split(",");
 
                 if (data.length > 0){
-                    String id = data[0]; // APT0001
+                    String id = data[0]; 
 
                     int num = Integer.parseInt(id.replace("APT", ""));
 
