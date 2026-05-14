@@ -1,4 +1,4 @@
-USR0001,manager1,123,Manager,Manager One,TP075315,0123456789,manager@email.com,Active,2026-04-01 17:37:52
+USR0001,manager1,joan1190,Manager,Manager One,TP075315,0123456789,manager@email.com,Active,2026-04-01 17:37:52
 USR0002,tech1,123,Technician,Tech One,TP076623,0121111111,tech1@email.com,Active,2026-04-01 17:37:52
 USR0003,tech2,123,Technician,Tech Two,TP050001,0122222222,tech2@email.com,Active,2026-04-01 17:37:52
 USR0004,staff1,123,Counter Staff,Staff One,TP050002,0123333333,staff@email.com,Active,2026-04-01 17:37:52

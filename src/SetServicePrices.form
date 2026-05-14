@@ -30,15 +30,15 @@
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="124" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="serviceCategoryBtn" max="32767" attributes="0"/>
-                          <Component id="serviceItemBtn" max="32767" attributes="0"/>
-                          <Component id="backBtn" min="-2" pref="119" max="-2" attributes="0"/>
+                          <Component id="serviceItemBtn" alignment="0" max="32767" attributes="0"/>
+                          <Component id="backBtn" alignment="0" min="-2" pref="137" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="157" max="32767" attributes="0"/>
+              <EmptySpace pref="149" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

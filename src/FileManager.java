@@ -1989,7 +1989,7 @@ public class FileManager {
         return logList;
     }
     
-    public static boolean updateProfileByUserId(String userId, String phone, String email) throws IOException {
+    public static boolean updateProfileByUserId(String userId, String name, String phone, String email) throws IOException {
         File file = new File(USER_FILE);
 
         if (!file.exists()) return false;
@@ -2005,6 +2005,7 @@ public class FileManager {
 
             // 0=userId, 1=username, 2=password, 3=role, 4=name, 5=tp, 6=phone, 7=email, 8=status, 9=created_at
             if (parts.length >= 10 && parts[0].trim().equalsIgnoreCase(userId)) {
+                parts[4] = name;
                 parts[6] = phone;
                 parts[7] = email;
                 updatedLines.add(String.join(",", parts));
@@ -2316,6 +2317,28 @@ public class FileManager {
         return reportList;
     }
     
-    
+    public static String getUserIdByEmailAndTP(String email, String tp) throws IOException {
+        File file = new File(USER_FILE);
+
+        if (!file.exists()) return null;
+
+        for (String line : Files.readAllLines(file.toPath())) {
+            if (line.trim().isEmpty()) continue;
+
+            String[] parts = line.split(",");
+
+            // 0=userId, 5=tp, 7=email
+            if (parts.length >= 10) {
+                String fileTP = parts[5].trim();
+                String fileEmail = parts[7].trim();
+
+                if (fileEmail.equalsIgnoreCase(email) && fileTP.equalsIgnoreCase(tp)) {
+                    return parts[0].trim();
+                }
+            }
+        }
+
+        return null;
+    }
     
 }

@@ -25,7 +25,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="txtUsername" max="32767" attributes="0"/>
@@ -41,12 +41,13 @@
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="usernameField" pref="118" max="32767" attributes="0"/>
                                   <Component id="passwordField" max="32767" attributes="0"/>
+                                  <Component id="forgotPasswordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
                       <Component id="btnBack" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
                       <Component id="btnLogin" min="-2" max="-2" attributes="0"/>
@@ -61,29 +62,24 @@
           <Group type="102" attributes="0">
               <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
               <Component id="txtLogin" min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtUsername" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="usernameField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtPassword" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="passwordField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace pref="141" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="btnBack" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnLogin" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
-                  </Group>
+              <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtUsername" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="usernameField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="txtPassword" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="passwordField" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="forgotPasswordLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnBack" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnLogin" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="66" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -123,6 +119,11 @@
     <Component class="javax.swing.JTextField" name="usernameField">
     </Component>
     <Component class="javax.swing.JPasswordField" name="passwordField">
+    </Component>
+    <Component class="javax.swing.JLabel" name="forgotPasswordLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Forget Password?"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

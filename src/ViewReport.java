@@ -36,6 +36,7 @@ public class ViewReport extends javax.swing.JFrame {
         revenueReportBtn.addActionListener(this::revenueReportBtnActionPerformed);
 
         backBtn.setText("Back");
+        backBtn.addActionListener(this::backBtnActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -95,6 +96,11 @@ public class ViewReport extends javax.swing.JFrame {
         new TechnicianWorkloadReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_technicianWorkloadReportBtnActionPerformed
+
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        new ManagerPage(currentUserId).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_backBtnActionPerformed
 
 
 

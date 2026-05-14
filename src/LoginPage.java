@@ -7,7 +7,18 @@ public class LoginPage extends javax.swing.JFrame {
 
     public LoginPage() {
         initComponents();
+        forgotPasswordLabel.setText("<html><u>Forget Password?</u></html>");
+        forgotPasswordLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        forgotPasswordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            new ForgetPassword().setVisible(true);
+            dispose();
+        }
+    });
     }
+      
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -20,6 +31,7 @@ public class LoginPage extends javax.swing.JFrame {
         btnLogin = new javax.swing.JButton();
         usernameField = new javax.swing.JTextField();
         passwordField = new javax.swing.JPasswordField();
+        forgotPasswordLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -34,6 +46,8 @@ public class LoginPage extends javax.swing.JFrame {
 
         btnLogin.setText("Login");
         btnLogin.addActionListener(this::btnLoginActionPerformed);
+
+        forgotPasswordLabel.setText("Forget Password?");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -54,9 +68,10 @@ public class LoginPage extends javax.swing.JFrame {
                                 .addGap(51, 51, 51)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(usernameField, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                                    .addComponent(passwordField)))))
+                                    .addComponent(passwordField)
+                                    .addComponent(forgotPasswordLabel)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(93, 93, 93)
+                        .addGap(94, 94, 94)
                         .addComponent(btnBack)
                         .addGap(48, 48, 48)
                         .addComponent(btnLogin)))
@@ -67,23 +82,21 @@ public class LoginPage extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addComponent(txtLogin)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtUsername)
-                            .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtPassword)
-                            .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(141, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnBack)
-                            .addComponent(btnLogin))
-                        .addGap(81, 81, 81))))
+                .addGap(44, 44, 44)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtUsername)
+                    .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPassword)
+                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(forgotPasswordLabel)
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBack)
+                    .addComponent(btnLogin))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         pack();
@@ -137,8 +150,7 @@ public class LoginPage extends javax.swing.JFrame {
             case "manager" -> new ManagerPage(currentUserId).setVisible(true);
             case "counter staff" -> {
             }
-            case "technician" -> {
-            }
+            case "technician" -> new TechnicianPage(currentUserId).setVisible(true);
             case "customer" -> new CustomerPage(currentUserId).setVisible(true);
             default -> JOptionPane.showMessageDialog(this, "Role not recognized. Please contact staff.");
         }                                         
@@ -148,6 +160,7 @@ public class LoginPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnLogin;
+    private javax.swing.JLabel forgotPasswordLabel;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel txtLogin;
     private javax.swing.JLabel txtPassword;

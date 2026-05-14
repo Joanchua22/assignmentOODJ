@@ -26,7 +26,7 @@ private void loadAppointments() {
 
         while ((line = br.readLine()) != null) {
             String[] d = line.split(",");
-            if (d.length < 11) continue;
+            if (d.length <= 11) continue;
             if (!d[4].trim().equalsIgnoreCase(currentUserId.trim())) continue;
             model.addRow(new Object[]{
                 d[0], d[1], d[2], d[5],

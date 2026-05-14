@@ -49,10 +49,8 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         String[] most = list.get(0);
         String[] least = list.get(list.size() - 1);
 
-        mostBusyField.setText(most[1] + " (" + most[4] + " jobs)");
-        leastBusyField.setText(least[1] + " (" + least[4] + " jobs)");
-        mostBusyField.setVisible(false);
-        leastBusyField.setVisible(false);
+        mostBusyField.setText(most[1] + " (" + most[4] + " Tasks)");
+        leastBusyField.setText(least[1] + " (" + least[4] + " Tasks)");
     }
 
     @SuppressWarnings("unchecked")
@@ -120,12 +118,14 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
 
         jLabel4.setText("Summary:");
 
-        jLabel5.setText("Most Busy Technician:");
+        jLabel5.setText("Highest Capacity Technician:");
 
-        jLabel6.setText("Least Busy Technician:");
+        jLabel6.setText("Lowest Capacity Technician:");
 
         backBtn.setText("Back");
         backBtn.addActionListener(this::backBtnActionPerformed);
+
+        mostBusyField.addActionListener(this::mostBusyFieldActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,16 +142,13 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
                                 .addGroup(layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE))
-                                    .addGap(18, 18, 18)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(leastBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(backBtn))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(mostBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(0, 0, Short.MAX_VALUE))))))
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(45, 45, 45)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(mostBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(leastBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(backBtn))))
                         .addGap(0, 68, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -270,6 +267,10 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         new ViewReport(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
+
+    private void mostBusyFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostBusyFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mostBusyFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
