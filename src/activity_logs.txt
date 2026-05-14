@@ -9,3 +9,7 @@ LOG0008,USR0002,Login,User logged in,2026-05-13 12:37:13
 LOG0009,USR0005,Login,User logged in,2026-05-13 12:38:26
 LOG0010,USR0001,LOGOUT,Manager logged out,2026-05-13 12:49:21
 LOG0011,USR0001,Login,User logged in,2026-05-14 18:01:43
+LOG0012,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 19:46:54
+LOG0013,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 19:46:54
+LOG0014,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 20:22:35
+LOG0015,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 20:22:37

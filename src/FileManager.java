@@ -1989,7 +1989,7 @@ public class FileManager {
         return logList;
     }
     
-    public static boolean updateProfileByUserId(String userId, String name, String phone, String email) throws IOException {
+    public static boolean updateProfileByUserId(String userId, String username, String name, String phone, String email) throws IOException {
         File file = new File(USER_FILE);
 
         if (!file.exists()) return false;
@@ -2005,6 +2005,7 @@ public class FileManager {
 
             // 0=userId, 1=username, 2=password, 3=role, 4=name, 5=tp, 6=phone, 7=email, 8=status, 9=created_at
             if (parts.length >= 10 && parts[0].trim().equalsIgnoreCase(userId)) {
+                parts[1] = username;
                 parts[4] = name;
                 parts[6] = phone;
                 parts[7] = email;

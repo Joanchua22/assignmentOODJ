@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
@@ -9,6 +8,7 @@ public class MyProfile extends javax.swing.JFrame {
     private String originalPhone = "";
     private String originalEmail = "";
     private String originalName = "";
+    private String originalUsername = "";
         
     public MyProfile(String currentUserId) {
         initComponents();
@@ -36,9 +36,9 @@ public class MyProfile extends javax.swing.JFrame {
 
             userIdField.setEditable(false);
             passwordField.setEditable(false);
-            usernameField.setEditable(false);
             tpNumField.setEditable(false);
             
+            originalUsername = user[1];
             originalName = user[4];
             originalPhone = user[6];
             originalEmail = user[7];
@@ -51,7 +51,8 @@ public class MyProfile extends javax.swing.JFrame {
     private boolean hasChanges() {
         return !phoneField.getText().trim().equals(originalPhone)
                 || !emailField.getText().trim().equals(originalEmail)
-                || !fullNameField.getText().trim().equals(originalName);
+                || !fullNameField.getText().trim().equals(originalName)
+                || !usernameField.getText().trim().equals(originalUsername);
     }
 
 
@@ -62,7 +63,6 @@ public class MyProfile extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        userIdField = new javax.swing.JTextField();
         usernameField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         fullNameField = new javax.swing.JTextField();
@@ -75,8 +75,9 @@ public class MyProfile extends javax.swing.JFrame {
         saveBtn = new javax.swing.JButton();
         backBtn = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
-        passwordField = new javax.swing.JPasswordField();
         changePasswordBtn = new javax.swing.JButton();
+        passwordField = new javax.swing.JPasswordField();
+        userIdField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,8 +103,6 @@ public class MyProfile extends javax.swing.JFrame {
 
         jLabel10.setText("Password:");
 
-        passwordField.setText("jPasswordField1");
-
         changePasswordBtn.setText("Change Password");
         changePasswordBtn.addActionListener(this::changePasswordBtnActionPerformed);
 
@@ -112,64 +111,54 @@ public class MyProfile extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(215, 215, 215)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(84, 84, 84)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(63, 63, 63))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGap(54, 54, 54)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(userIdField, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(passwordField, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(changePasswordBtn)
-                                        .addGap(19, 19, 19))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(54, 54, 54)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(fullNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tpNumField, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(23, 23, 23))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(54, 54, 54)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(usernameField)
+                    .addComponent(fullNameField)
+                    .addComponent(tpNumField)
+                    .addComponent(phoneField)
+                    .addComponent(emailField, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                    .addComponent(passwordField)
+                    .addComponent(userIdField))
+                .addGap(18, 18, 18)
+                .addComponent(changePasswordBtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(174, 174, 174)
                 .addComponent(saveBtn)
                 .addGap(53, 53, 53)
                 .addComponent(backBtn)
-                .addGap(155, 155, 155))
+                .addContainerGap(181, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(240, 240, 240)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
+                .addGap(40, 40, 40)
                 .addComponent(jLabel1)
-                .addGap(36, 36, 36)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(userIdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(changePasswordBtn))
+                    .addComponent(changePasswordBtn)
+                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,11 +179,11 @@ public class MyProfile extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addGap(62, 62, 62)
+                .addGap(55, 55, 55)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveBtn)
                     .addComponent(backBtn))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addContainerGap(61, Short.MAX_VALUE))
         );
 
         pack();
@@ -230,31 +219,39 @@ public class MyProfile extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        String phone = phoneField.getText().trim();
-        String email = emailField.getText().trim();
-        String name = fullNameField.getText().trim();
+        try {     
+            String phone = phoneField.getText().trim();
+            String email = emailField.getText().trim();
+            String name = fullNameField.getText().trim();
+            String username = usernameField.getText().trim();
 
-        if (phone.isEmpty() || email.isEmpty()|| name.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Phone and email cannot be empty.");
-            return;
-        }
+            if (phone.isEmpty() || email.isEmpty()|| name.isEmpty() || username.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Field cannot be empty.");
+                return;
+            }
 
-        if (!FileManager.isValidPhone(phone)) {
-            JOptionPane.showMessageDialog(this, "Phone number must be 10 to 11 digits.");
-            return;
-        }
+            if (FileManager.usernameExistsExcept(username, currentUserId)) {
+                JOptionPane.showMessageDialog(this, "Username already exists.");
+                return;
+            }
+            
 
-        if (!FileManager.isValidEmail(email)) {
-            JOptionPane.showMessageDialog(this, "Invalid email format.");
-            return;
-        }
+            if (!FileManager.isValidPhone(phone)) {
+                JOptionPane.showMessageDialog(this, "Phone number must be 10 to 11 digits.");
+                return;
+            }
 
-        try {
-            boolean updated = FileManager.updateProfileByUserId(currentUserId, name, phone, email);
+            if (!FileManager.isValidEmail(email)) {
+                JOptionPane.showMessageDialog(this, "Invalid email format.");
+                return;
+            }
+
+            boolean updated = FileManager.updateProfileByUserId(currentUserId, username, name, phone, email);
 
             if (updated) {
                 JOptionPane.showMessageDialog(this, "Profile updated successfully.");
 
+                originalUsername = username;
                 originalName = name;
                 originalPhone = phone;
                 originalEmail = email;
