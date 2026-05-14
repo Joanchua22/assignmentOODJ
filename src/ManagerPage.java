@@ -135,7 +135,7 @@ public class ManagerPage extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Logout successful.");
             try {
-                FileManager.addActivityLog(currentUserId, "LOGOUT", "Manager logged out");
+                FileManager.addActivityLog(currentUserId, "Logout", "Manager logged out");
             } catch (IOException ex) {
                 System.getLogger(ManagerPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }

@@ -3,7 +3,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JOptionPane;
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class RevenueReport extends javax.swing.JFrame {
@@ -14,6 +15,80 @@ public class RevenueReport extends javax.swing.JFrame {
         initComponents();
         this.currentUserId = currentUserId;
         loadRevenueReport();
+        
+        revenueTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int selectedRow = revenueTable.getSelectedRow();
+
+                    if (selectedRow == -1) {
+                        return;
+                    }
+
+                    String paymentId = revenueTable.getValueAt(selectedRow, 0).toString();
+                    showPaymentDetailsPopup(paymentId);
+                }
+            }
+        });
+    }
+    
+    private void showPaymentDetailsPopup(String paymentId) {
+        try {
+            String[] details = FileManager.getPaymentDetailsById(paymentId);
+
+            if (details == null) {
+                JOptionPane.showMessageDialog(this, "Payment details not found.");
+                return;
+            }
+
+            JDialog dialog = new JDialog(this, "Payment Details", true);
+            dialog.setSize(480, 430);
+            dialog.setLocationRelativeTo(this);
+            dialog.setLayout(new BorderLayout(10, 10));
+
+            JPanel panel = new JPanel(new GridLayout(0, 2, 15, 12));
+            panel.setBorder(BorderFactory.createEmptyBorder(20, 25, 15, 25));
+
+            panel.add(new JLabel("Payment ID:"));
+            panel.add(new JLabel(details[0]));
+
+            panel.add(new JLabel("Appointment ID:"));
+            panel.add(new JLabel(details[1]));
+
+            panel.add(new JLabel("Service Item:"));
+            panel.add(new JLabel(details[2]));
+
+            panel.add(new JLabel("Amount:"));
+            panel.add(new JLabel("RM " + details[3]));
+
+            panel.add(new JLabel("Payment Method:"));
+            panel.add(new JLabel(details[4]));
+
+            panel.add(new JLabel("Payment Date:"));
+            panel.add(new JLabel(details[5]));
+
+            panel.add(new JLabel("Collected By:"));
+            panel.add(new JLabel(details[6]));
+
+            panel.add(new JLabel("Status:"));
+            panel.add(new JLabel(details[7]));
+
+            JButton closeBtn = new JButton("Close");
+            closeBtn.addActionListener(e -> dialog.dispose());
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
+            buttonPanel.add(closeBtn);
+
+            dialog.add(panel, BorderLayout.CENTER);
+            dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+            dialog.setVisible(true);
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error loading payment details.");
+        }
     }
     
     private void loadRevenueReport() {
@@ -42,6 +117,114 @@ public class RevenueReport extends javax.swing.JFrame {
                 row[5], // Date
                 row[6]  // Status
             });
+        }
+    }
+    
+    private String generateRevenueReportText() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("APU Automotive Service Centre\n");
+        sb.append("Revenue Report\n");
+        sb.append("Generated At: ").append(FileManager.getCurrentDateTime()).append("\n");
+        sb.append("==============================================================\n\n");
+
+        sb.append(String.format("%-15s %-18s %-22s %-12s %-18s %-12s %-10s\n",
+                "Payment ID", "Appointment ID", "Service Item", "Amount", "Method", "Date", "Status"));
+
+        sb.append("------------------------------------------------------------------------------------------------\n");
+
+        DefaultTableModel model = (DefaultTableModel) revenueTable.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            sb.append(String.format("%-15s %-18s %-22s %-12s %-18s %-12s %-10s\n",
+                    model.getValueAt(i, 0),
+                    model.getValueAt(i, 1),
+                    model.getValueAt(i, 2),
+                    model.getValueAt(i, 3),
+                    model.getValueAt(i, 4),
+                    model.getValueAt(i, 5),
+                    model.getValueAt(i, 6)
+            ));
+        }
+
+        sb.append("\n==============================================================\n");
+        sb.append("Revenue Summary\n\n");
+        sb.append("Total Revenue             : RM ").append(totalRevenueField.getText()).append("\n");
+        sb.append("Total Paid Transactions   : ").append(totalPaidField.getText()).append("\n");
+        sb.append("Total Unpaid Transactions : ").append(totalUnpaidField.getText()).append("\n");
+
+        sb.append("\n==============================================================\n");
+        sb.append("Service Item Revenue Breakdown\n\n");
+
+        sb.append(String.format("%-25s %-18s %-10s\n",
+                "Service Item", "Total Revenue", "Count"));
+
+        sb.append("------------------------------------------------------------\n");
+
+        DefaultTableModel breakdownModel = (DefaultTableModel) serviceItemTable.getModel();
+
+        for (int i = 0; i < breakdownModel.getRowCount(); i++) {
+            sb.append(String.format("%-25s %-18s %-10s\n",
+                    breakdownModel.getValueAt(i, 0),
+                    breakdownModel.getValueAt(i, 1),
+                    breakdownModel.getValueAt(i, 2)
+            ));
+        }
+
+        return sb.toString();
+    }
+    
+    private void showReportPreviewPopup() {
+        String reportText = generateRevenueReportText();
+
+        JDialog dialog = new JDialog(this, "Revenue Report Preview", true);
+        dialog.setSize(900, 600);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout(10, 10));
+
+        JTextArea previewArea = new JTextArea(reportText);
+        previewArea.setEditable(false);
+        previewArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+
+        JScrollPane scrollPane = new JScrollPane(previewArea);
+
+        JButton closeBtn = new JButton("Close");
+        closeBtn.addActionListener(e -> dialog.dispose());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(closeBtn);
+
+        dialog.add(scrollPane, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+    
+    private void exportRevenueReport() {
+        String reportText = generateRevenueReportText();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Export Revenue Report");
+        fileChooser.setSelectedFile(new java.io.File("Revenue_Report.txt"));
+
+        int result = fileChooser.showSaveDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                java.io.File file = fileChooser.getSelectedFile();
+
+                java.nio.file.Files.write(
+                        file.toPath(),
+                        reportText.getBytes(),
+                        java.nio.file.StandardOpenOption.CREATE,
+                        java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+                );
+
+                JOptionPane.showMessageDialog(this, "Revenue report exported successfully.");
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error exporting revenue report.");
+            }
         }
     }
     
@@ -147,6 +330,8 @@ public class RevenueReport extends javax.swing.JFrame {
         paymentMethodField = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         serviceItemField = new javax.swing.JTextField();
+        previewBtn = new javax.swing.JButton();
+        exportBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -223,6 +408,12 @@ public class RevenueReport extends javax.swing.JFrame {
 
         jLabel9.setText("Service Item: ");
 
+        previewBtn.setText("Preview");
+        previewBtn.addActionListener(this::previewBtnActionPerformed);
+
+        exportBtn.setText("Export");
+        exportBtn.addActionListener(this::exportBtnActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -258,10 +449,8 @@ public class RevenueReport extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel3))
+                                        .addGap(24, 24, 24)
+                                        .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
@@ -270,12 +459,20 @@ public class RevenueReport extends javax.swing.JFrame {
                                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(paymentMethodField)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(126, 126, 126)
-                                .addComponent(clearBtn)
                                 .addGap(18, 18, 18)
-                                .addComponent(searchBtn)))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(103, 103, 103)
+                                        .addComponent(previewBtn)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(exportBtn))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(clearBtn)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(searchBtn)))))))
                 .addContainerGap(60, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -287,12 +484,13 @@ public class RevenueReport extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(searchBtn)
-                        .addComponent(clearBtn))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
                         .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(previewBtn)
+                            .addComponent(exportBtn))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -300,8 +498,11 @@ public class RevenueReport extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(serviceItemField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
+                    .addComponent(serviceItemField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(searchBtn)
+                        .addComponent(clearBtn)))
+                .addGap(31, 31, 31)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -399,12 +600,21 @@ public class RevenueReport extends javax.swing.JFrame {
         loadRevenueReport();
     }//GEN-LAST:event_clearBtnActionPerformed
 
+    private void previewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewBtnActionPerformed
+        showReportPreviewPopup();
+    }//GEN-LAST:event_previewBtnActionPerformed
+
+    private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
+        exportRevenueReport();
+    }//GEN-LAST:event_exportBtnActionPerformed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JButton clearBtn;
     private javax.swing.JTextField endDateField;
+    private javax.swing.JButton exportBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -417,6 +627,7 @@ public class RevenueReport extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField paymentMethodField;
+    private javax.swing.JButton previewBtn;
     private javax.swing.JTable revenueTable;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField serviceItemField;

@@ -1,7 +1,8 @@
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class TechnicianWorkloadReport extends javax.swing.JFrame {
@@ -18,7 +19,7 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         try {
             List<String[]> list = FileManager.getTechnicianWorkloadReportList("", "");
             loadTechnicianWorkloadTable(list);
-            updateMostLeastBusy(list);
+            updatehighestLowestCapacity(list);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error loading technician workload report.");
         }
@@ -39,18 +40,110 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         }
     }
     
-    private void updateMostLeastBusy(List<String[]> list) {
+    private String generateTechnicianWorkloadReportText() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("APU Automotive Service Centre\n");
+        sb.append("Technician Workload Report\n");
+        sb.append("Generated At: ").append(FileManager.getCurrentDateTime()).append("\n");
+        sb.append("==============================================================\n\n");
+
+        sb.append(String.format("%-18s %-18s %-18s %-18s %-10s\n",
+                "Technician ID", "Username", "Assigned Count", "Completed Count", "Total"));
+
+        sb.append("--------------------------------------------------------------------------------\n");
+
+        DefaultTableModel model = (DefaultTableModel) technicianTable.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            sb.append(String.format("%-18s %-18s %-18s %-18s %-10s\n",
+                    model.getValueAt(i, 0),
+                    model.getValueAt(i, 1),
+                    model.getValueAt(i, 2),
+                    model.getValueAt(i, 3),
+                    model.getValueAt(i, 4)
+            ));
+        }
+
+        sb.append("\n==============================================================\n");
+        sb.append("Technician Workload Summary\n\n");
+        sb.append("Highest Capacity Technician : ")
+          .append(highestCapacityField.getText())
+          .append("\n");
+
+        sb.append("Lowest Capacity Technician  : ")
+          .append(lowestCapacityField.getText())
+          .append("\n");
+
+        return sb.toString();
+    }
+    
+    private void updatehighestLowestCapacity(List<String[]> list) {
         if (list.isEmpty()) {
-            mostBusyField.setText("");
-            leastBusyField.setText("");
+            highestCapacityField.setText("");
+            lowestCapacityField.setText("");
             return;
         }
 
         String[] most = list.get(0);
         String[] least = list.get(list.size() - 1);
 
-        mostBusyField.setText(most[1] + " (" + most[4] + " Tasks)");
-        leastBusyField.setText(least[1] + " (" + least[4] + " Tasks)");
+        highestCapacityField.setText(most[1] + " (" + most[4] + " Tasks)");
+        lowestCapacityField.setText(least[1] + " (" + least[4] + " Tasks)");
+    }
+    
+    private void showReportPreviewPopup() {
+        String reportText = generateTechnicianWorkloadReportText();
+
+        JDialog dialog = new JDialog(this, "Technician Workload Report Preview", true);
+        dialog.setSize(850, 600);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout(10, 10));
+
+        JTextArea previewArea = new JTextArea(reportText);
+        previewArea.setEditable(false);
+        previewArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+
+        JScrollPane scrollPane = new JScrollPane(previewArea);
+
+        JButton closeBtn = new JButton("Close");
+        closeBtn.addActionListener(e -> dialog.dispose());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(closeBtn);
+
+        dialog.add(scrollPane, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+    
+    private void exportTechnicianWorkloadReport() {
+        String reportText = generateTechnicianWorkloadReportText();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Export Technician Workload Report");
+        fileChooser.setSelectedFile(new java.io.File("Technician_Workload_Report.txt"));
+
+        int result = fileChooser.showSaveDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                java.io.File file = fileChooser.getSelectedFile();
+
+                java.nio.file.Files.write(
+                        file.toPath(),
+                        reportText.getBytes(),
+                        java.nio.file.StandardOpenOption.CREATE,
+                        java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+                );
+
+                JOptionPane.showMessageDialog(this, "Technician workload report exported successfully.");
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error exporting technician workload report.");
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -71,9 +164,11 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         backBtn = new javax.swing.JButton();
-        mostBusyField = new javax.swing.JTextField();
-        leastBusyField = new javax.swing.JTextField();
+        highestCapacityField = new javax.swing.JTextField();
+        lowestCapacityField = new javax.swing.JTextField();
         technicianField = new javax.swing.JTextField();
+        previewBtn = new javax.swing.JButton();
+        exportBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -125,7 +220,13 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         backBtn.setText("Back");
         backBtn.addActionListener(this::backBtnActionPerformed);
 
-        mostBusyField.addActionListener(this::mostBusyFieldActionPerformed);
+        highestCapacityField.addActionListener(this::highestCapacityFieldActionPerformed);
+
+        previewBtn.setText("Preview");
+        previewBtn.addActionListener(this::previewBtnActionPerformed);
+
+        exportBtn.setText("Export");
+        exportBtn.addActionListener(this::exportBtnActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -134,43 +235,46 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(70, 70, 70)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(startDateField, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                                .addComponent(technicianField))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel1)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGap(45, 45, 45)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(mostBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(leastBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(backBtn))))
-                        .addGap(0, 68, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(startDateField, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                            .addComponent(technicianField))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(clearBtn)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(searchBtn))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(previewBtn)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(exportBtn))))))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(clearBtn)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(searchBtn))
-                                    .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(45, 45, 45)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(highestCapacityField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lowestCapacityField, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(backBtn)))))
+                .addGap(0, 68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,8 +286,10 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
                     .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(31, 31, 31)
+                    .addComponent(jLabel2)
+                    .addComponent(previewBtn)
+                    .addComponent(exportBtn))
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(clearBtn)
@@ -196,12 +302,12 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(mostBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(highestCapacityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(backBtn)
-                    .addComponent(leastBusyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lowestCapacityField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
@@ -252,7 +358,7 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
             }
 
             loadTechnicianWorkloadTable(filteredList);
-            updateMostLeastBusy(filteredList);
+            updatehighestLowestCapacity(filteredList);
 
             if (filteredList.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No matching technician workload found.");
@@ -268,15 +374,25 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
-    private void mostBusyFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mostBusyFieldActionPerformed
+    private void highestCapacityFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highestCapacityFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_mostBusyFieldActionPerformed
+    }//GEN-LAST:event_highestCapacityFieldActionPerformed
+
+    private void previewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewBtnActionPerformed
+        showReportPreviewPopup();
+    }//GEN-LAST:event_previewBtnActionPerformed
+
+    private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
+        exportTechnicianWorkloadReport();
+    }//GEN-LAST:event_exportBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JButton clearBtn;
     private javax.swing.JTextField endDateField;
+    private javax.swing.JButton exportBtn;
+    private javax.swing.JTextField highestCapacityField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -285,8 +401,8 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField leastBusyField;
-    private javax.swing.JTextField mostBusyField;
+    private javax.swing.JTextField lowestCapacityField;
+    private javax.swing.JButton previewBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField startDateField;
     private javax.swing.JTextField technicianField;

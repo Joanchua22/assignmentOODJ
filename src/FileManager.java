@@ -1806,7 +1806,7 @@ public class FileManager {
 
             if (appt.length >= 10 && appt[0].trim().equalsIgnoreCase(appointmentId)) {
 
-                String customerId = appt[2].trim(); // CUS0001
+                String customerId = appt[2].trim();
                 String counterStaffId = appt[3].trim();
                 String technicianId = appt[4].trim();
 
@@ -2336,6 +2336,50 @@ public class FileManager {
                 if (fileEmail.equalsIgnoreCase(email) && fileTP.equalsIgnoreCase(tp)) {
                     return parts[0].trim();
                 }
+            }
+        }
+
+        return null;
+    }
+    
+    public static String[] getPaymentDetailsById(String paymentId) throws IOException {
+        File paymentFile = new File(PAYMENT_FILE);
+
+        if (!paymentFile.exists()) {
+            return null;
+        }
+
+        for (String line : Files.readAllLines(paymentFile.toPath())) {
+            if (line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] pay = line.split(",");
+
+            // payments.txt:
+            // 0=payment_id, 1=appointment_id, 2=amount, 3=method,
+            // 4=payment_date, 5=collected_by, 6=status
+            if (pay.length >= 7 && pay[0].trim().equalsIgnoreCase(paymentId)) {
+                String appointmentId = pay[1].trim();
+                String amount = pay[2].trim();
+                String method = pay[3].trim();
+                String paymentDate = pay[4].trim();
+                String collectedById = pay[5].trim();
+                String status = pay[6].trim();
+
+                String serviceItemName = getServiceItemNameByAppointmentId(appointmentId);
+                String collectedByUsername = getUsernameByUserId(collectedById);
+
+                return new String[] {
+                    paymentId,
+                    appointmentId,
+                    serviceItemName,
+                    amount,
+                    method,
+                    paymentDate,
+                    collectedByUsername,
+                    status
+                };
             }
         }
 

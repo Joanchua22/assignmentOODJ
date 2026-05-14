@@ -1,7 +1,8 @@
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -13,6 +14,167 @@ public class ServiceItemReport extends javax.swing.JFrame {
         initComponents();
         this.currentUserId = currentUserId;
         loadServiceItemReportTable();
+
+        serviceItemTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int selectedRow = serviceItemTable.getSelectedRow();
+
+                    if (selectedRow == -1) {
+                        return;
+                    }
+
+                    String serviceItemId = serviceItemTable.getValueAt(selectedRow, 0).toString();
+                    showServiceItemDetailsPopup(serviceItemId);
+                }
+            }
+        });
+    }
+    
+    private String generateServiceItemReportText() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("APU Automotive Service Centre\n");
+        sb.append("Service Item Report\n");
+        sb.append("Generated At: ").append(FileManager.getCurrentDateTime()).append("\n");
+        sb.append("==============================================================\n\n");
+
+        sb.append(String.format("%-18s %-25s %-25s %-15s\n",
+                "Service Item ID", "Service Name", "Service Category", "Booked Count"));
+
+        sb.append("--------------------------------------------------------------------------\n");
+
+        DefaultTableModel model = (DefaultTableModel) serviceItemTable.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            sb.append(String.format("%-18s %-25s %-25s %-15s\n",
+                    model.getValueAt(i, 0),
+                    model.getValueAt(i, 1),
+                    model.getValueAt(i, 2),
+                    model.getValueAt(i, 3)
+            ));
+        }
+
+        sb.append("\n==============================================================\n");
+        sb.append("Service Item Summary\n\n");
+        sb.append("Most Booked  : ").append(mostBookedField.getText()).append("\n");
+        sb.append("Least Booked : ").append(leastBookedField.getText()).append("\n");
+
+        return sb.toString();
+    }
+    
+    private void showReportPreviewPopup() {
+        String reportText = generateServiceItemReportText();
+
+        JDialog dialog = new JDialog(this, "Service Item Report Preview", true);
+        dialog.setSize(850, 600);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout(10, 10));
+
+        JTextArea previewArea = new JTextArea(reportText);
+        previewArea.setEditable(false);
+        previewArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+
+        JScrollPane scrollPane = new JScrollPane(previewArea);
+
+        JButton closeBtn = new JButton("Close");
+        closeBtn.addActionListener(e -> dialog.dispose());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(closeBtn);
+
+        dialog.add(scrollPane, BorderLayout.CENTER);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+    
+    private void exportServiceItemReport() {
+        String reportText = generateServiceItemReportText();
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Export Service Item Report");
+        fileChooser.setSelectedFile(new java.io.File("Service_Item_Report.txt"));
+
+        int result = fileChooser.showSaveDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            try {
+                java.io.File file = fileChooser.getSelectedFile();
+
+                java.nio.file.Files.write(
+                        file.toPath(),
+                        reportText.getBytes(),
+                        java.nio.file.StandardOpenOption.CREATE,
+                        java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+                );
+
+                JOptionPane.showMessageDialog(this, "Service item report exported successfully.");
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error exporting service item report.");
+            }
+        }
+    }
+    
+    private void showServiceItemDetailsPopup(String serviceItemId) {
+        try {
+            String[] details = FileManager.getServiceItemById(serviceItemId);
+
+            if (details == null) {
+                JOptionPane.showMessageDialog(this, "Service item details not found.");
+                return;
+            }
+
+            JDialog dialog = new JDialog(this, "Service Item Details", true);
+            dialog.setSize(480, 400);
+            dialog.setLocationRelativeTo(this);
+            dialog.setLayout(new BorderLayout(10, 10));
+
+            JPanel panel = new JPanel(new GridLayout(0, 2, 15, 12));
+            panel.setBorder(BorderFactory.createEmptyBorder(20, 25, 15, 25));
+
+            panel.add(new JLabel("Service Item ID:"));
+            panel.add(new JLabel(details[0]));
+
+            panel.add(new JLabel("Service Category ID:"));
+            panel.add(new JLabel(details[1]));
+
+            panel.add(new JLabel("Service Name:"));
+            panel.add(new JLabel(details[2]));
+
+            panel.add(new JLabel("Description:"));
+            panel.add(new JLabel(details[3]));
+
+            panel.add(new JLabel("Price:"));
+            panel.add(new JLabel("RM " + details[4]));
+
+            if (details.length >= 6) {
+                panel.add(new JLabel("Updated By:"));
+                panel.add(new JLabel(details[5]));
+            }
+
+            if (details.length >= 7) {
+                panel.add(new JLabel("Updated At:"));
+                panel.add(new JLabel(details[6]));
+            }
+
+            JButton closeBtn = new JButton("Close");
+            closeBtn.addActionListener(e -> dialog.dispose());
+
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
+            buttonPanel.add(closeBtn);
+
+            dialog.add(panel, BorderLayout.CENTER);
+            dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+            dialog.setVisible(true);
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error loading service item details.");
+        }
     }
     
     private void loadServiceItemReportTable() {
@@ -81,6 +243,8 @@ public class ServiceItemReport extends javax.swing.JFrame {
         mostBookedField = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         leastBookedField = new javax.swing.JTextField();
+        previewBtn = new javax.swing.JButton();
+        exportBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -136,6 +300,12 @@ public class ServiceItemReport extends javax.swing.JFrame {
 
         jLabel9.setText("Least Booked:");
 
+        previewBtn.setText("Preview");
+        previewBtn.addActionListener(this::previewBtnActionPerformed);
+
+        exportBtn.setText("Export");
+        exportBtn.addActionListener(this::exportBtnActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -147,7 +317,7 @@ public class ServiceItemReport extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(60, 60, 60)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -171,21 +341,28 @@ public class ServiceItemReport extends javax.swing.JFrame {
                                 .addGap(38, 38, 38)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(startDateField, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
-                                    .addComponent(serviceItemIdField)
-                                    .addComponent(serviceNameField))
+                                    .addComponent(serviceNameField)
+                                    .addComponent(serviceItemIdField))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(endDateField, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(serviceCategoryField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(clearBtn)
                                         .addGap(18, 18, 18)
-                                        .addComponent(searchBtn)))))))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(clearBtn)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(searchBtn))
+                                            .addComponent(serviceCategoryField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(previewBtn)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(exportBtn)))))))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -194,11 +371,15 @@ public class ServiceItemReport extends javax.swing.JFrame {
                 .addGap(52, 52, 52)
                 .addComponent(jLabel1)
                 .addGap(43, 43, 43)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(previewBtn)
+                        .addComponent(exportBtn))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)
+                        .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -309,11 +490,20 @@ public class ServiceItemReport extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_searchBtnActionPerformed
 
+    private void previewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewBtnActionPerformed
+        showReportPreviewPopup();
+    }//GEN-LAST:event_previewBtnActionPerformed
+
+    private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
+        exportServiceItemReport();
+    }//GEN-LAST:event_exportBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JButton clearBtn;
     private javax.swing.JTextField endDateField;
+    private javax.swing.JButton exportBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -326,6 +516,7 @@ public class ServiceItemReport extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField leastBookedField;
     private javax.swing.JTextField mostBookedField;
+    private javax.swing.JButton previewBtn;
     private javax.swing.JButton searchBtn;
     private javax.swing.JTextField serviceCategoryField;
     private javax.swing.JTextField serviceItemIdField;
