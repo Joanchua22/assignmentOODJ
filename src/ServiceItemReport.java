@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 
-public class ServiceItemReport extends javax.swing.JFrame {
+public class ServiceItemReport extends BaseReport {
 
     private String currentUserId;
     
@@ -32,7 +32,9 @@ public class ServiceItemReport extends javax.swing.JFrame {
         });
     }
     
-    private String generateServiceItemReportText() {
+    @Override
+    public String generateReportText() {
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("APU Automotive Service Centre\n");
@@ -64,59 +66,6 @@ public class ServiceItemReport extends javax.swing.JFrame {
         return sb.toString();
     }
     
-    private void showReportPreviewPopup() {
-        String reportText = generateServiceItemReportText();
-
-        JDialog dialog = new JDialog(this, "Service Item Report Preview", true);
-        dialog.setSize(850, 600);
-        dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new BorderLayout(10, 10));
-
-        JTextArea previewArea = new JTextArea(reportText);
-        previewArea.setEditable(false);
-        previewArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-
-        JScrollPane scrollPane = new JScrollPane(previewArea);
-
-        JButton closeBtn = new JButton("Close");
-        closeBtn.addActionListener(e -> dialog.dispose());
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(closeBtn);
-
-        dialog.add(scrollPane, BorderLayout.CENTER);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
-
-        dialog.setVisible(true);
-    }
-    
-    private void exportServiceItemReport() {
-        String reportText = generateServiceItemReportText();
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Export Service Item Report");
-        fileChooser.setSelectedFile(new java.io.File("Service_Item_Report.txt"));
-
-        int result = fileChooser.showSaveDialog(this);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                java.io.File file = fileChooser.getSelectedFile();
-
-                java.nio.file.Files.write(
-                        file.toPath(),
-                        reportText.getBytes(),
-                        java.nio.file.StandardOpenOption.CREATE,
-                        java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
-                );
-
-                JOptionPane.showMessageDialog(this, "Service item report exported successfully.");
-
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error exporting service item report.");
-            }
-        }
-    }
     
     private void showServiceItemDetailsPopup(String serviceItemId) {
         try {
@@ -423,7 +372,6 @@ public class ServiceItemReport extends javax.swing.JFrame {
         serviceItemIdField.setText("");
         serviceNameField.setText("");
         serviceCategoryField.setText("");
-
         loadServiceItemReportTable();
     }//GEN-LAST:event_clearBtnActionPerformed
 
@@ -491,11 +439,11 @@ public class ServiceItemReport extends javax.swing.JFrame {
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void previewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewBtnActionPerformed
-        showReportPreviewPopup();
+        showReportPreviewPopup("Service Items Report Preview");
     }//GEN-LAST:event_previewBtnActionPerformed
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
-        exportServiceItemReport();
+       exportReport("Service_Items_Report.txt");
     }//GEN-LAST:event_exportBtnActionPerformed
 
 

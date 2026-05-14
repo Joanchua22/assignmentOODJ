@@ -7,7 +7,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class RevenueReport extends javax.swing.JFrame {
+public class RevenueReport extends BaseReport {
     
     private String currentUserId;
 
@@ -120,7 +120,9 @@ public class RevenueReport extends javax.swing.JFrame {
         }
     }
     
-    private String generateRevenueReportText() {
+    @Override
+    public String generateReportText() {
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("APU Automotive Service Centre\n");
@@ -174,59 +176,6 @@ public class RevenueReport extends javax.swing.JFrame {
         return sb.toString();
     }
     
-    private void showReportPreviewPopup() {
-        String reportText = generateRevenueReportText();
-
-        JDialog dialog = new JDialog(this, "Revenue Report Preview", true);
-        dialog.setSize(900, 600);
-        dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new BorderLayout(10, 10));
-
-        JTextArea previewArea = new JTextArea(reportText);
-        previewArea.setEditable(false);
-        previewArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-
-        JScrollPane scrollPane = new JScrollPane(previewArea);
-
-        JButton closeBtn = new JButton("Close");
-        closeBtn.addActionListener(e -> dialog.dispose());
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(closeBtn);
-
-        dialog.add(scrollPane, BorderLayout.CENTER);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
-
-        dialog.setVisible(true);
-    }
-    
-    private void exportRevenueReport() {
-        String reportText = generateRevenueReportText();
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Export Revenue Report");
-        fileChooser.setSelectedFile(new java.io.File("Revenue_Report.txt"));
-
-        int result = fileChooser.showSaveDialog(this);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                java.io.File file = fileChooser.getSelectedFile();
-
-                java.nio.file.Files.write(
-                        file.toPath(),
-                        reportText.getBytes(),
-                        java.nio.file.StandardOpenOption.CREATE,
-                        java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
-                );
-
-                JOptionPane.showMessageDialog(this, "Revenue report exported successfully.");
-
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error exporting revenue report.");
-            }
-        }
-    }
     
     private void updateRevenueSummary(List<String[]> list) {
         double totalRevenue = 0;
@@ -300,8 +249,6 @@ public class RevenueReport extends javax.swing.JFrame {
         }
     }
     
-    
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -487,21 +434,21 @@ public class RevenueReport extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addComponent(endDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(previewBtn)
-                            .addComponent(exportBtn))))
+                        .addComponent(previewBtn)
+                        .addComponent(exportBtn))
+                    .addComponent(startDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(paymentMethodField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(serviceItemField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(searchBtn)
-                        .addComponent(clearBtn)))
+                        .addComponent(clearBtn))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel9)
+                        .addComponent(serviceItemField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(31, 31, 31)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
@@ -601,11 +548,11 @@ public class RevenueReport extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void previewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewBtnActionPerformed
-        showReportPreviewPopup();
+        showReportPreviewPopup("Revenue Report Preview");
     }//GEN-LAST:event_previewBtnActionPerformed
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
-        exportRevenueReport();
+        exportReport("Revenue_Report.txt");
     }//GEN-LAST:event_exportBtnActionPerformed
 
 

@@ -5,7 +5,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class TechnicianWorkloadReport extends javax.swing.JFrame {
+public class TechnicianWorkloadReport extends BaseReport {
     
     private String currentUserId;
     
@@ -40,7 +40,9 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         }
     }
     
-    private String generateTechnicianWorkloadReportText() {
+    @Override
+    public String generateReportText() {
+
         StringBuilder sb = new StringBuilder();
 
         sb.append("APU Automotive Service Centre\n");
@@ -75,8 +77,11 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
           .append(lowestCapacityField.getText())
           .append("\n");
 
+
         return sb.toString();
     }
+    
+
     
     private void updatehighestLowestCapacity(List<String[]> list) {
         if (list.isEmpty()) {
@@ -92,59 +97,6 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
         lowestCapacityField.setText(least[1] + " (" + least[4] + " Tasks)");
     }
     
-    private void showReportPreviewPopup() {
-        String reportText = generateTechnicianWorkloadReportText();
-
-        JDialog dialog = new JDialog(this, "Technician Workload Report Preview", true);
-        dialog.setSize(850, 600);
-        dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new BorderLayout(10, 10));
-
-        JTextArea previewArea = new JTextArea(reportText);
-        previewArea.setEditable(false);
-        previewArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-
-        JScrollPane scrollPane = new JScrollPane(previewArea);
-
-        JButton closeBtn = new JButton("Close");
-        closeBtn.addActionListener(e -> dialog.dispose());
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(closeBtn);
-
-        dialog.add(scrollPane, BorderLayout.CENTER);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
-
-        dialog.setVisible(true);
-    }
-    
-    private void exportTechnicianWorkloadReport() {
-        String reportText = generateTechnicianWorkloadReportText();
-
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Export Technician Workload Report");
-        fileChooser.setSelectedFile(new java.io.File("Technician_Workload_Report.txt"));
-
-        int result = fileChooser.showSaveDialog(this);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            try {
-                java.io.File file = fileChooser.getSelectedFile();
-
-                java.nio.file.Files.write(
-                        file.toPath(),
-                        reportText.getBytes(),
-                        java.nio.file.StandardOpenOption.CREATE,
-                        java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
-                );
-
-                JOptionPane.showMessageDialog(this, "Technician workload report exported successfully.");
-
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error exporting technician workload report.");
-            }
-        }
-    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -375,15 +327,15 @@ public class TechnicianWorkloadReport extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void highestCapacityFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highestCapacityFieldActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_highestCapacityFieldActionPerformed
 
     private void previewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewBtnActionPerformed
-        showReportPreviewPopup();
+        showReportPreviewPopup("Technician Workload Report Preview");
     }//GEN-LAST:event_previewBtnActionPerformed
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
-        exportTechnicianWorkloadReport();
+        exportReport("Technician_Workload_Report.txt");
     }//GEN-LAST:event_exportBtnActionPerformed
 
 

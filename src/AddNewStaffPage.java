@@ -11,6 +11,8 @@ public class AddNewStaffPage extends javax.swing.JFrame {
         this.currentUserId = currentUserId;
     }
     
+    
+    
     private void clearFields() {
         usernameField.setText("");
         passwordField.setText("");
@@ -20,6 +22,87 @@ public class AddNewStaffPage extends javax.swing.JFrame {
         emailField.setText("");
         roleComboBox.setSelectedIndex(0);
         statusComboBox.setSelectedIndex(0);
+    }
+    
+    private void addStaff(){
+        try{
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+            String role = (String) roleComboBox.getSelectedItem();
+            String fullName = fullnameField.getText().trim();
+            String tp = tpField.getText().trim();
+            String phone = phoneField.getText().trim();
+            String email = emailField.getText().trim();
+            String status = (String) statusComboBox.getSelectedItem();
+            
+        if (FileManager.isEmpty(username) || FileManager.isEmpty(password) ||
+            FileManager.isEmpty(role) || FileManager.isEmpty(fullName) ||
+            FileManager.isEmpty(tp) || FileManager.isEmpty(phone) ||
+            FileManager.isEmpty(email) || FileManager.isEmpty(status)) {
+
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            return;
+            }
+
+            if (!FileManager.isValidTP(tp)) {
+                JOptionPane.showMessageDialog(this, "TP Number must start with TP followed by 6 digits.");
+                return;
+            }
+
+            if (!FileManager.isValidPhone(phone)) {
+                JOptionPane.showMessageDialog(this, "Phone number must be 10-11 digits.");
+                return;
+            }
+
+            if (!FileManager.isValidEmail(email)) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
+                return;
+            }
+
+            if (FileManager.usernameExists(username)) {
+                JOptionPane.showMessageDialog(this, "Username already exists.");
+                return;
+            }
+
+            if (FileManager.tpExists(tp)) {
+                JOptionPane.showMessageDialog(this, "TP Number already exists.");
+                return;
+            }
+
+            if (FileManager.phoneExists(phone)) {
+                JOptionPane.showMessageDialog(this, "Phone number already exists.");
+                return;
+            }
+
+            if (FileManager.emailExists(email)) {
+                JOptionPane.showMessageDialog(this, "Email already exists.");
+                return;
+            }
+
+            FileManager.addStaff(username, password, role, fullName, tp, phone, email, status);
+                String subject = "APU ASC - Staff Account Created";
+
+            String message =
+                    "Dear " + fullName + ",\n\n" +
+                    "Your staff account has been created successfully.\n\n" +
+                    "Role: " + role + "\n" +
+                    "Username: " + username + "\n" +
+                    "Password: " + password + "\n\n" +
+                    "Please login and change your password after your first login.\n\n" +
+                    "Thank you.\n" +
+                    "APU Automotive Service Centre";
+
+            EmailSender.sendEmail(email, subject, message);
+
+            JOptionPane.showMessageDialog(this, "Staff added successfully. Email notification sent.");
+    
+            JOptionPane.showMessageDialog(this, "New staff added successfully.");
+            FileManager.addActivityLog(currentUserId, "Add New Staff", role + " " + username + " Added");
+
+            clearFields();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error adding staff.");
+        }
     }
 
 
@@ -173,69 +256,7 @@ public class AddNewStaffPage extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        try{
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword()).trim();
-            String role = (String) roleComboBox.getSelectedItem();
-            String fullName = fullnameField.getText().trim();
-            String tp = tpField.getText().trim();
-            String phone = phoneField.getText().trim();
-            String email = emailField.getText().trim();
-            String status = (String) statusComboBox.getSelectedItem();
-            
-        if (FileManager.isEmpty(username) || FileManager.isEmpty(password) ||
-            FileManager.isEmpty(role) || FileManager.isEmpty(fullName) ||
-            FileManager.isEmpty(tp) || FileManager.isEmpty(phone) ||
-            FileManager.isEmpty(email) || FileManager.isEmpty(status)) {
-
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-            }
-
-            if (!FileManager.isValidTP(tp)) {
-                JOptionPane.showMessageDialog(this, "TP Number must start with TP followed by 6 digits.");
-                return;
-            }
-
-            if (!FileManager.isValidPhone(phone)) {
-                JOptionPane.showMessageDialog(this, "Phone number must be 10-11 digits.");
-                return;
-            }
-
-            if (!FileManager.isValidEmail(email)) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
-                return;
-            }
-
-            if (FileManager.usernameExists(username)) {
-                JOptionPane.showMessageDialog(this, "Username already exists.");
-                return;
-            }
-
-            if (FileManager.tpExists(tp)) {
-                JOptionPane.showMessageDialog(this, "TP Number already exists.");
-                return;
-            }
-
-            if (FileManager.phoneExists(phone)) {
-                JOptionPane.showMessageDialog(this, "Phone number already exists.");
-                return;
-            }
-
-            if (FileManager.emailExists(email)) {
-                JOptionPane.showMessageDialog(this, "Email already exists.");
-                return;
-            }
-
-            FileManager.addStaff(username, password, role, fullName, tp, phone, email, status);
-
-            JOptionPane.showMessageDialog(this, "New staff added successfully.");
-            FileManager.addActivityLog(currentUserId, "Add New Staff", role + " " + username + " Added");
-
-            clearFields();
-            } catch (IOException ex) {
-            System.getLogger(AddNewStaffPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
+        addStaff();
     }//GEN-LAST:event_addBtnActionPerformed
 
 
