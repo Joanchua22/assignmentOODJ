@@ -7,63 +7,127 @@ public class ForgetPassword extends javax.swing.JFrame {
         initComponents();
     }
     
-    private void resetPassword(){
-        String email = emailField.getText().trim();
-        String tp = tpField.getText().trim();
-        String newPassword = new String(newPasswordField.getPassword()).trim();
-        String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
+    private String validateResetPasswordInput(
+            String email,
+            String tp,
+            String newPassword,
+            String confirmPassword
+    ) {
 
-        if (email.isEmpty() || tp.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
+        if (email.isEmpty() || tp.isEmpty()
+                || newPassword.isEmpty()
+                || confirmPassword.isEmpty()) {
+
+            return "Please fill in all fields.";
         }
 
         if (!FileManager.isValidEmail(email)) {
-            JOptionPane.showMessageDialog(this, "Invalid email format.");
-            return;
+            return "Invalid email format.";
         }
 
         if (!FileManager.isValidTP(tp)) {
-            JOptionPane.showMessageDialog(this, "TP Number must start with TP followed by 6 digits.");
-            return;
+            return "TP Number must start with TP followed by 6 digits.";
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            JOptionPane.showMessageDialog(this, "New password and confirm password do not match.");
+            return "New password and confirm password do not match.";
+        }
+
+        return "VALID";
+    }
+    
+    private void sendResetPasswordEmail(String email) {
+
+        String subject =
+                "APU ASC - Password Reset Successful";
+
+        String message =
+                "Dear User,\n\n" +
+                "Your password has been reset successfully.\n\n" +
+                "If this action was not performed by you, " +
+                "please contact support immediately.\n\n" +
+                "Thank you.\n" +
+                "APU Automotive Service Centre";
+
+        EmailSender.sendEmail(email, subject, message);
+    }
+    
+    private void resetPassword() {
+
+        String email = emailField.getText().trim();
+        String tp = tpField.getText().trim();
+
+        String newPassword =
+                new String(newPasswordField.getPassword()).trim();
+
+        String confirmPassword =
+                new String(confirmPasswordField.getPassword()).trim();
+
+        String validationResult =
+                validateResetPasswordInput(
+                        email,
+                        tp,
+                        newPassword,
+                        confirmPassword
+                );
+
+        if (!validationResult.equals("VALID")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    validationResult
+            );
+
             return;
         }
 
         try {
-            String userId = FileManager.getUserIdByEmailAndTP(email, tp);
+
+            String userId =
+                    FileManager.getUserIdByEmailAndTP(email, tp);
 
             if (userId == null) {
-                JOptionPane.showMessageDialog(this, "Email and TP Number do not match any account.");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Email and TP Number do not match any account."
+                );
+
                 return;
             }
 
-            boolean updated = FileManager.updatePasswordByUserId(userId, newPassword);
+            boolean updated =
+                    FileManager.updatePasswordByUserId(
+                            userId,
+                            newPassword
+                    );
 
             if (updated) {
-                String subject = "APU ASC - Password Reset Successful";
 
-                String message =
-                        "Dear User,\n\n" +
-                        "Your password has been reset successfully.\n\n" +
-                        "If this action was not performed by you, please contact support immediately.\n\n" +
-                        "Thank you.\n" +
-                        "APU Automotive Service Centre";
+                sendResetPasswordEmail(email);
 
-                EmailSender.sendEmail(email, subject, message);
-                
-                JOptionPane.showMessageDialog(this, "Password reset successfully. Please login again.");
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Password reset successfully. Please login again."
+                );
+
                 new LoginPage().setVisible(true);
                 dispose();
+
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to reset password.");
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to reset password."
+                );
             }
 
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error resetting password.");
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error resetting password."
+            );
         }
     }
 

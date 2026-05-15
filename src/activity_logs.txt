@@ -13,3 +13,4 @@ LOG0012,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 19:46:
 LOG0013,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 19:46:54
 LOG0014,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 20:22:35
 LOG0015,USR0001,Update Profile,Updated phone/email in profile.,2026-05-14 20:22:37
+LOG0016,USR0001,Add New Staff,Counter Staff bryan Added,2026-05-14 23:55:59

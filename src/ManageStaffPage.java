@@ -191,11 +191,11 @@ public class ManageStaffPage extends javax.swing.JFrame {
             
             for (String[] staff : resultList) {
                 tableModel.addRow(new Object[]{
-                    staff[0], // user_id
-                    staff[1], // username
-                    staff[5], // tp number
-                    staff[3], // role
-                    staff[8]  // status
+                    staff[0],
+                    staff[1],
+                    staff[5],
+                    staff[3],
+                    staff[8]  
                 });
             }
             if (resultList.isEmpty()){

@@ -11,6 +11,88 @@ public class AddServiceCate extends javax.swing.JFrame {
         initComponents();
         this.currentUserId = currentUserId;
     }
+    
+    private String validateServiceCategoryInput(String name, String duration) throws IOException {
+
+        if (name.isEmpty() || duration.isEmpty()) {
+            return "Please fill in all fields.";
+        }
+
+        if (!FileManager.isValidDuration(duration)) {
+            return "Duration must be a valid number greater than 0 (e.g., 1 or 1.5).";
+        }
+
+        if (FileManager.serviceTypeNameExists(name)) {
+            return "Category name already exists.";
+        }
+
+        return "VALID";
+    }
+    
+    private void recordAddCateActivity(String name) {
+        try {
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Add New Service Category",
+                    name + " Added"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
+    }
+    
+    private void addServiceCategory() {
+
+        String name = nameField.getText().trim();
+        String duration = durationField.getText().trim();
+
+        try {
+
+            String validationResult =
+                    validateServiceCategoryInput(name, duration);
+
+            if (!validationResult.equals("VALID")) {
+
+                JOptionPane.showMessageDialog(this, validationResult);
+                return;
+            }
+
+            boolean added =
+                    FileManager.addServiceType(
+                            name,
+                            duration,
+                            currentUserId
+                    );
+
+            if (added) {
+
+                recordAddCateActivity(name);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Service category added successfully."
+                );
+
+                new ServiceCategory(currentUserId).setVisible(true);
+                dispose();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to add category."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error adding category."
+            );
+        }
+    }
+    
 
 
     @SuppressWarnings("unchecked")
@@ -96,39 +178,7 @@ public class AddServiceCate extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        String name = nameField.getText().trim();
-        String duration = durationField.getText().trim();
-
-        if (name.isEmpty() || duration.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
-
-        if (!FileManager.isValidDuration(duration)) {
-            JOptionPane.showMessageDialog(this, "Duration must be a valid number greater than 0 (e.g., 1 or 1.5).");
-            return;
-        }
-
-        try {
-            if (FileManager.serviceTypeNameExists(name)) {
-                JOptionPane.showMessageDialog(this, "Category name already exists.");
-                return;
-            }
-
-            boolean added = FileManager.addServiceType(name, duration, currentUserId);
-
-            if (added) {
-                JOptionPane.showMessageDialog(this, "Service category added successfully.");
-                FileManager.addActivityLog(currentUserId, "Add New Service Category", name + " Added");
-                new ServiceCategory(currentUserId).setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to add category.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error adding category.");
-        }
+        addServiceCategory();
     }//GEN-LAST:event_addBtnActionPerformed
 
 

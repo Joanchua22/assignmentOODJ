@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +102,116 @@ public class ActivityLogs extends BaseReport {
             });
         }
     }
+    
+    private void clearFilters() {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Clear all filters?",
+                "Confirm",
+                JOptionPane.YES_NO_OPTION
+        );
 
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        startDateField.setText("");
+        endDateField.setText("");
+        userIdField.setText("");
+        actionField.setText("");
+
+        try {
+            loadActivityLogTable(FileManager.getAllActivityLogs());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error loading activity logs.");
+        }
+    }
+    
+    private String validateSearchInput(String startDate, String endDate) {
+        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
+            return "Start date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
+            return "End date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!FileManager.isValidDateRange(startDate, endDate)) {
+            return "Start date cannot be after end date.";
+        }
+
+        return "VALID";
+    }
+    
+    private List<String[]> filterActivityLogs(
+            List<String[]> allLogs,
+            String startDate,
+            String endDate,
+            String userId,
+            String action
+    ) {
+        List<String[]> filteredList = new ArrayList<>();
+
+        for (String[] row : allLogs) {
+            String rowUserId = row[1].toLowerCase();
+            String rowAction = row[2].toLowerCase();
+            String rowDate = row[4].substring(0, 10);
+
+            boolean matches = true;
+
+            if (!startDate.isEmpty() && rowDate.compareTo(startDate) < 0) {
+                matches = false;
+            }
+
+            if (!endDate.isEmpty() && rowDate.compareTo(endDate) > 0) {
+                matches = false;
+            }
+
+            if (!userId.isEmpty() && !rowUserId.contains(userId)) {
+                matches = false;
+            }
+
+            if (!action.isEmpty() && !rowAction.contains(action)) {
+                matches = false;
+            }
+
+            if (matches) {
+                filteredList.add(row);
+            }
+        }
+
+        return filteredList;
+    }
+    
+    private void searchActivityLogs() {
+        String startDate = startDateField.getText().trim();
+        String endDate = endDateField.getText().trim();
+        String userId = userIdField.getText().trim().toLowerCase();
+        String action = actionField.getText().trim().toLowerCase();
+
+        String validationResult = validateSearchInput(startDate, endDate);
+
+        if (!validationResult.equals("VALID")) {
+            JOptionPane.showMessageDialog(this, validationResult);
+            return;
+        }
+
+        try {
+            List<String[]> allLogs = FileManager.getAllActivityLogs();
+
+            List<String[]> filteredList =
+                    filterActivityLogs(allLogs, startDate, endDate, userId, action);
+
+            loadActivityLogTable(filteredList);
+
+            if (filteredList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No matching activity logs found.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error searching activity logs.");
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -262,76 +370,11 @@ public class ActivityLogs extends BaseReport {
     }// </editor-fold>//GEN-END:initComponents
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Clear all filters?",
-            "Confirm",
-            JOptionPane.YES_NO_OPTION
-        );
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            startDateField.setText("YYYY-MM-DD");
-            endDateField.setText("YYYY-MM-DD");
-            userIdField.setText("");
-            actionField.setText("");
-
-            try {
-                loadActivityLogTable(FileManager.getAllActivityLogs());
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error loading feedback data.");
-            }
-        }
+        clearFilters();
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String startDate = startDateField.getText().trim();
-        String endDate = endDateField.getText().trim();
-        String userId = userIdField.getText().trim().toLowerCase();
-        String action = actionField.getText().trim().toLowerCase();
-
-        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
-            JOptionPane.showMessageDialog(this, "Start date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
-            JOptionPane.showMessageDialog(this, "End date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!FileManager.isValidDateRange(startDate, endDate)) {
-            JOptionPane.showMessageDialog(this, "Start date cannot be after end date.");
-            return;
-        }
-
-        try {
-            List<String[]> allLogs = FileManager.getAllActivityLogs();
-            List<String[]> filteredList = new ArrayList<>();
-
-            for (String[] row : allLogs) {
-                String rowUserId = row[1].toLowerCase();
-                String rowAction = row[2].toLowerCase();
-                String rowDate = row[4].substring(0, 10);
-
-                boolean matches = true;
-
-                if (!startDate.isEmpty() && rowDate.compareTo(startDate) < 0) matches = false;
-                if (!endDate.isEmpty() && rowDate.compareTo(endDate) > 0) matches = false;
-                if (!userId.isEmpty() && !rowUserId.contains(userId)) matches = false;
-                if (!action.isEmpty() && !rowAction.contains(action)) matches = false;
-
-                if (matches) filteredList.add(row);
-            }
-
-            loadActivityLogTable(filteredList);
-
-            if (filteredList.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No matching activity logs found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error searching activity logs.");
-        }
+        searchActivityLogs();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed

@@ -36,6 +36,149 @@ public class AddServiceItem extends javax.swing.JFrame {
                 || !descriptionTextArea.getText().trim().isEmpty()
                 || !priceField.getText().trim().isEmpty();
     }
+    
+    private String validateServiceItemInput(
+            String cateId,
+            String serviceName,
+            String description,
+            String price
+    ) throws IOException {
+
+        if (cateId == null || cateId.isEmpty()) {
+            return "Please select a category.";
+        }
+
+        if (serviceName.isEmpty() ||
+            description.isEmpty() ||
+            price.isEmpty()) {
+
+            return "Please fill in all fields.";
+        }
+
+        if (!FileManager.isValidPrice(price)) {
+            return "Price must be a valid number greater than 0.";
+        }
+
+        if (FileManager.serviceItemExists(cateId, serviceName)) {
+            return "This service item already exists under the selected category.";
+        }
+
+        return "VALID";
+    }
+    
+    private void recordAddItemActivity(String serviceName) {
+        try {
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Add New Service Item",
+                    serviceName + " Added"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
+    }
+    
+    private void addServiceItem() {
+
+        Object selectedObj = cateComboBox.getSelectedItem();
+
+        if (selectedObj == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Please select a category.");
+            return;
+        }
+
+        String selectedCategory = selectedObj.toString();
+        String cateId = selectedCategory.split(" - ")[0];
+
+        String serviceName = itemField.getText().trim();
+        String description = descriptionTextArea.getText().trim();
+        String price = priceField.getText().trim();
+
+        try {
+
+            String validationResult =
+                    validateServiceItemInput(
+                            cateId,
+                            serviceName,
+                            description,
+                            price
+                    );
+
+            if (!validationResult.equals("VALID")) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        validationResult
+                );
+
+                return;
+            }
+
+            boolean added =
+                    FileManager.addServiceItem(
+                            cateId,
+                            serviceName,
+                            description,
+                            price,
+                            currentUserId
+                    );
+
+            if (added) {
+
+                recordAddItemActivity(serviceName);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Service item added successfully."
+                );
+
+                new ServiceItem(currentUserId).setVisible(true);
+                dispose();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to add service item."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error adding service item."
+            );
+        }
+    }
+    
+    private void back() {
+
+        if (!hasInput()) {
+            new ServiceItem(currentUserId).setVisible(true);
+            dispose();
+            return;
+        }
+
+        Object[] options = {"No", "Yes"};
+
+        int confirm = JOptionPane.showOptionDialog(
+                this,
+                "You have unsaved input. Are you sure you want to go back?",
+                "Unsaved Input",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (confirm == 1) {
+            new ServiceItem(currentUserId).setVisible(true);
+            dispose();
+        }
+    }
 
 
     @SuppressWarnings("unchecked")
@@ -150,81 +293,11 @@ public class AddServiceItem extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        Object selectedObj = cateComboBox.getSelectedItem();
-
-        if (selectedObj == null) {
-            JOptionPane.showMessageDialog(this, "Please select a category.");
-            return;
-        }
-
-        String selectedCategory = selectedObj.toString();
-        String cateId = selectedCategory.split(" - ")[0];
-
-        String serviceName = itemField.getText().trim();
-        String description = descriptionTextArea.getText().trim();
-        String price = priceField.getText().trim();
-
-        if (serviceName.isEmpty() || description.isEmpty() || price.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
-
-        if (!FileManager.isValidPrice(price)) {
-            JOptionPane.showMessageDialog(this, "Price must be a valid number greater than 0.");
-            return;
-        }
-
-        try {
-            if (FileManager.serviceItemExists(cateId, serviceName)) {
-                JOptionPane.showMessageDialog(this, "This service item already exists under the selected category.");
-                return;
-            }
-
-            boolean added = FileManager.addServiceItem(
-                    cateId,
-                    serviceName,
-                    description,
-                    price,
-                    currentUserId
-            );
-
-            if (added) {
-                JOptionPane.showMessageDialog(this, "Service item added successfully.");
-                FileManager.addActivityLog(currentUserId, "Add New Service Item", serviceName + " Added");
-                new ServiceItem(currentUserId).setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to add service item.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error adding service item.");
-        }
+        addServiceItem();
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        if (hasInput()) {
-            Object[] options = {"No", "Yes"};
-
-            int confirm = JOptionPane.showOptionDialog(
-                    this,
-                    "You have unsaved input. Are you sure you want to go back?",
-                    "Unsaved Input",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE,
-                    null,
-                    options,
-                    options[0]
-            );
-
-            if (confirm == 1) {
-                new ServiceItem(currentUserId).setVisible(true);
-                dispose();
-            }
-        } else {
-            new ServiceItem(currentUserId).setVisible(true);
-            dispose();
-        }
+        back();
     }//GEN-LAST:event_backBtnActionPerformed
 
 

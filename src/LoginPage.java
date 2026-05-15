@@ -19,23 +19,52 @@ public class LoginPage extends javax.swing.JFrame {
     });
     }
     
-    public void UserLogin(){
+    private boolean validateLoginInput(String username, String password) {
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both username and password.");
+            return false;
+        }
+        return true;
+    }
+    
+    private String[] verifyLogin(String username, String password) {
+        try {
+            return FileManager.verifyUser(username, password);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error reading user file.", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+    
+    private void recordLoginActivity(String currentUserId) {
+        try {
+            FileManager.addActivityLog(currentUserId, "Login", "User logged in");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
+    }
+    
+    private void openPageByRole(String role, String currentUserId) {
+        this.dispose();
+
+        switch (role.toLowerCase()) {
+            case "manager" -> new ManagerPage(currentUserId).setVisible(true);
+            // case "counter staff" -> new CounterStaffPage(currentUserId).setVisible(true);
+            case "technician" -> new TechnicianPage(currentUserId).setVisible(true);
+            case "customer" -> new CustomerPage(currentUserId).setVisible(true);
+            default -> JOptionPane.showMessageDialog(this, "Role not recognized. Please contact staff.");
+        }
+    }
+    
+    public void userLogin() {
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter both username and password.");
+        if (!validateLoginInput(username, password)) {
             return;
         }
 
-        String[] userData = null;
-
-        try {
-            userData = FileManager.verifyUser(username, password);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error reading user file.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        String[] userData = verifyLogin(username, password);
 
         if (userData == null) {
             JOptionPane.showMessageDialog(this, "Invalid username or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
@@ -51,21 +80,9 @@ public class LoginPage extends javax.swing.JFrame {
         }
 
         JOptionPane.showMessageDialog(this, "Login successful! Welcome, " + username + "!");
-        try {
-            FileManager.addActivityLog(currentUserId, "Login", "User logged in");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
-        }
-        this.dispose();
 
-        switch (role.toLowerCase()) {
-            case "manager" -> new ManagerPage(currentUserId).setVisible(true);
-            case "counter staff" -> {
-            }
-            case "technician" -> new TechnicianPage(currentUserId).setVisible(true);
-            case "customer" -> new CustomerPage(currentUserId).setVisible(true);
-            default -> JOptionPane.showMessageDialog(this, "Role not recognized. Please contact staff.");
-        }      
+        recordLoginActivity(currentUserId);
+        openPageByRole(role, currentUserId);
     }
       
 
@@ -157,7 +174,7 @@ public class LoginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        UserLogin();
+        userLogin();
     }//GEN-LAST:event_btnLoginActionPerformed
 
 

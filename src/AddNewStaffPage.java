@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
@@ -11,6 +10,83 @@ public class AddNewStaffPage extends javax.swing.JFrame {
         this.currentUserId = currentUserId;
     }
     
+    private String validateStaffInput(
+        String username,
+        String password,
+        String role,
+        String fullName,
+        String tp,
+        String phone,
+        String email,
+        String status
+            
+    ) throws IOException {
+
+        if (FileManager.isEmpty(username) ||
+            FileManager.isEmpty(password) ||
+            FileManager.isEmpty(role) ||
+            FileManager.isEmpty(fullName) ||
+            FileManager.isEmpty(tp) ||
+            FileManager.isEmpty(phone) ||
+            FileManager.isEmpty(email) ||
+            FileManager.isEmpty(status)) {
+
+            return "Please fill in all fields.";
+        }
+
+        if (!FileManager.isValidTP(tp)) {
+            return "TP Number must start with TP followed by 6 digits.";
+        }
+
+        if (!FileManager.isValidPhone(phone)) {
+            return "Phone number must be 10-11 digits.";
+        }
+
+        if (!FileManager.isValidEmail(email)) {
+            return "Please enter a valid email address.";
+        }
+
+        if (FileManager.usernameExists(username)) {
+            return "Username already exists.";
+        }
+
+        if (FileManager.tpExists(tp)) {
+            return "TP Number already exists.";
+        }
+
+        if (FileManager.phoneExists(phone)) {
+            return "Phone number already exists.";
+        }
+
+        if (FileManager.emailExists(email)) {
+            return "Email already exists.";
+        }
+
+        return "VALID";
+    } 
+    
+    private void sendStaffAccountEmail(
+        String fullName,
+        String role,
+        String username,
+        String password,
+        String email
+    ) {
+
+        String subject = "APU ASC - Staff Account Created";
+
+        String message =
+                "Dear " + fullName + ",\n\n" +
+                "Your staff account has been created successfully.\n\n" +
+                "Role: " + role + "\n" +
+                "Username: " + username + "\n" +
+                "Password: " + password + "\n\n" +
+                "Please login and change your password after your first login.\n\n" +
+                "Thank you.\n" +
+                "APU Automotive Service Centre";
+
+        EmailSender.sendEmail(email, subject, message);
+    }
     
     
     private void clearFields() {
@@ -24,8 +100,22 @@ public class AddNewStaffPage extends javax.swing.JFrame {
         statusComboBox.setSelectedIndex(0);
     }
     
-    private void addStaff(){
-        try{
+    private void recordAddStaffActivity(String role, String username) {
+        try {
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Add New Staff",
+                    role + " " + username + " Added"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
+    }
+    
+    private void addStaff() {
+
+        try {
+
             String username = usernameField.getText().trim();
             String password = new String(passwordField.getPassword()).trim();
             String role = (String) roleComboBox.getSelectedItem();
@@ -34,74 +124,59 @@ public class AddNewStaffPage extends javax.swing.JFrame {
             String phone = phoneField.getText().trim();
             String email = emailField.getText().trim();
             String status = (String) statusComboBox.getSelectedItem();
-            
-        if (FileManager.isEmpty(username) || FileManager.isEmpty(password) ||
-            FileManager.isEmpty(role) || FileManager.isEmpty(fullName) ||
-            FileManager.isEmpty(tp) || FileManager.isEmpty(phone) ||
-            FileManager.isEmpty(email) || FileManager.isEmpty(status)) {
 
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-            }
+            String validationResult =
+                    validateStaffInput(
+                            username,
+                            password,
+                            role,
+                            fullName,
+                            tp,
+                            phone,
+                            email,
+                            status
+                    );
 
-            if (!FileManager.isValidTP(tp)) {
-                JOptionPane.showMessageDialog(this, "TP Number must start with TP followed by 6 digits.");
+            if (!validationResult.equals("VALID")) {
+
+                JOptionPane.showMessageDialog(this, validationResult);
                 return;
             }
 
-            if (!FileManager.isValidPhone(phone)) {
-                JOptionPane.showMessageDialog(this, "Phone number must be 10-11 digits.");
-                return;
-            }
+            FileManager.addStaff(
+                    username,
+                    password,
+                    role,
+                    fullName,
+                    tp,
+                    phone,
+                    email,
+                    status
+            );
 
-            if (!FileManager.isValidEmail(email)) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
-                return;
-            }
+            sendStaffAccountEmail(
+                    fullName,
+                    role,
+                    username,
+                    password,
+                    email
+            );
 
-            if (FileManager.usernameExists(username)) {
-                JOptionPane.showMessageDialog(this, "Username already exists.");
-                return;
-            }
+            recordAddStaffActivity(role, username);
 
-            if (FileManager.tpExists(tp)) {
-                JOptionPane.showMessageDialog(this, "TP Number already exists.");
-                return;
-            }
-
-            if (FileManager.phoneExists(phone)) {
-                JOptionPane.showMessageDialog(this, "Phone number already exists.");
-                return;
-            }
-
-            if (FileManager.emailExists(email)) {
-                JOptionPane.showMessageDialog(this, "Email already exists.");
-                return;
-            }
-
-            FileManager.addStaff(username, password, role, fullName, tp, phone, email, status);
-                String subject = "APU ASC - Staff Account Created";
-
-            String message =
-                    "Dear " + fullName + ",\n\n" +
-                    "Your staff account has been created successfully.\n\n" +
-                    "Role: " + role + "\n" +
-                    "Username: " + username + "\n" +
-                    "Password: " + password + "\n\n" +
-                    "Please login and change your password after your first login.\n\n" +
-                    "Thank you.\n" +
-                    "APU Automotive Service Centre";
-
-            EmailSender.sendEmail(email, subject, message);
-
-            JOptionPane.showMessageDialog(this, "Staff added successfully. Email notification sent.");
-    
-            JOptionPane.showMessageDialog(this, "New staff added successfully.");
-            FileManager.addActivityLog(currentUserId, "Add New Staff", role + " " + username + " Added");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Staff added successfully."
+            );
 
             clearFields();
+
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error adding staff.");
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error adding staff."
+            );
         }
     }
 
@@ -169,18 +244,22 @@ public class AddNewStaffPage extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(75, 75, 75)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel3))
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5))
-                                .addGap(36, 36, 36)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jLabel3))
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel5))
+                                        .addGap(36, 36, 36))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(32, 32, 32)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(usernameField)
                                     .addComponent(roleComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

@@ -58,7 +58,61 @@ public class ServiceCategory extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error loading service categories.");
         }
     }
-   
+    
+    private void deleteSelectedCategory() {
+        int selectedRow = cateTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a category to delete.");
+            return;
+        }
+
+        String serviceTypeId = cateTable.getValueAt(selectedRow, 0).toString();
+        String serviceName = cateTable.getValueAt(selectedRow, 1).toString();
+
+        if (!confirmDeleteCategory(serviceName)) {
+            return;
+        }
+
+        try {
+            boolean deleted = FileManager.deleteServiceType(serviceTypeId);
+
+            if (deleted) {
+                JOptionPane.showMessageDialog(this, "Category deleted successfully.");
+                recordDeleteCategoryActivity(serviceTypeId, serviceName);
+                loadServiceTypeTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Delete failed.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error deleting category.");
+        }
+    }
+    
+    private boolean confirmDeleteCategory(String serviceName) {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete category \"" + serviceName + "\"?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        return confirm == JOptionPane.YES_OPTION;
+    }
+    
+    private void recordDeleteCategoryActivity(String serviceTypeId, String serviceName) {
+        try {
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Delete Service Category",
+                    serviceTypeId + " " + serviceName + " Deleted"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -161,39 +215,7 @@ public class ServiceCategory extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        int selectedRow = cateTable.getSelectedRow();
-
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a category to delete.");
-            return;
-        }
-
-        String serviceTypeId = cateTable.getValueAt(selectedRow, 0).toString();
-        String serviceName = cateTable.getValueAt(selectedRow, 1).toString();
-
-        int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "Are you sure you want to delete category \"" + serviceName + "\"?",
-                "Confirm Delete",
-                JOptionPane.YES_NO_OPTION
-        );
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                boolean deleted = FileManager.deleteServiceType(serviceTypeId);
-
-                if (deleted) {
-                    JOptionPane.showMessageDialog(this, "Category deleted successfully.");
-                    FileManager.addActivityLog(currentUserId, "Delete Service Category", serviceTypeId + " Added");
-                    loadServiceTypeTable();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Delete failed.");
-                }
-
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error deleting category.");
-            }
-        }
+        deleteSelectedCategory();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
 
