@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -167,23 +166,32 @@ public class TechComment extends javax.swing.JFrame {
         }
     });
 }
+    
+    private void searchComment() {
+
+    String text = txtSearch.getText().trim();
+
+    if (text.isEmpty()) {
+
+        sorter.setRowFilter(null);
+
+    } else {
+
+        sorter.setRowFilter(
+                RowFilter.regexFilter(
+                        "(?i)" + java.util.regex.Pattern.quote(text)
+                )
+        );
+    }
+}
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
     txtSearch.setText("");     
     sorter.setRowFilter(null);
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-    String text = txtSearch.getText().trim();
-
-    if (text.isEmpty()) {
-        sorter.setRowFilter(null);
-
-    } else {
-        sorter.setRowFilter(
-            RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(text))
-        );
-    }
-    }//GEN-LAST:event_btnSearchActionPerformed
+    searchComment();
+    } //GEN-LAST:event_btnSearchActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
     new Technician(currentUserId).setVisible(true);
