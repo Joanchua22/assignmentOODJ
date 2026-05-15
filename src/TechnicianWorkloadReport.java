@@ -97,6 +97,110 @@ public class TechnicianWorkloadReport extends BaseReport {
         lowestCapacityField.setText(least[1] + " (" + least[4] + " Tasks)");
     }
     
+    private String validateSearchInput(
+            String startDate,
+            String endDate
+    ) {
+
+        if (!startDate.isEmpty()
+                && !FileManager.isValidDate(startDate)) {
+
+            return "Start date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!endDate.isEmpty()
+                && !FileManager.isValidDate(endDate)) {
+
+            return "End date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!FileManager.isValidDateRange(startDate, endDate)) {
+            return "Start date cannot be after end date.";
+        }
+
+        return "VALID";
+    }
+    
+    private List<String[]> filterTechnicianWorkload(
+            List<String[]> fullList,
+            String technician
+    ) {
+
+        List<String[]> filteredList = new ArrayList<>();
+
+        for (String[] row : fullList) {
+
+            String technicianId = row[0].toLowerCase();
+            String username = row[1].toLowerCase();
+
+            if (technician.isEmpty()
+                    || technicianId.contains(technician)
+                    || username.contains(technician)) {
+
+                filteredList.add(row);
+            }
+        }
+
+        return filteredList;
+    }
+    
+    private void searchTechnicianWorkloadReport() {
+
+        String startDate = startDateField.getText().trim();
+        String endDate = endDateField.getText().trim();
+
+        String technician =
+                technicianField.getText().trim().toLowerCase();
+
+        String validationResult =
+                validateSearchInput(startDate, endDate);
+
+        if (!validationResult.equals("VALID")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    validationResult
+            );
+
+            return;
+        }
+
+        try {
+
+            List<String[]> fullList =
+                    FileManager.getTechnicianWorkloadReportList(
+                            startDate,
+                            endDate
+                    );
+
+            List<String[]> filteredList =
+                    filterTechnicianWorkload(
+                            fullList,
+                            technician
+                    );
+
+            loadTechnicianWorkloadTable(filteredList);
+
+            updatehighestLowestCapacity(filteredList);
+
+            if (filteredList.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No matching technician workload found."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error searching technician workload report."
+            );
+        }
+    }
+
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -275,50 +379,7 @@ public class TechnicianWorkloadReport extends BaseReport {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String startDate = startDateField.getText().trim();
-        String endDate = endDateField.getText().trim();
-        String technician = technicianField.getText().trim().toLowerCase();
-
-        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
-            JOptionPane.showMessageDialog(this, "Start date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
-            JOptionPane.showMessageDialog(this, "End date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!FileManager.isValidDateRange(startDate, endDate)) {
-            JOptionPane.showMessageDialog(this, "Start date cannot be after end date.");
-            return;
-        }
-
-        try {
-            List<String[]> fullList = FileManager.getTechnicianWorkloadReportList(startDate, endDate);
-            List<String[]> filteredList = new ArrayList<>();
-
-            for (String[] row : fullList) {
-                String technicianId = row[0].toLowerCase();
-                String username = row[1].toLowerCase();
-
-                if (technician.isEmpty()
-                        || technicianId.contains(technician)
-                        || username.contains(technician)) {
-                    filteredList.add(row);
-                }
-            }
-
-            loadTechnicianWorkloadTable(filteredList);
-            updatehighestLowestCapacity(filteredList);
-
-            if (filteredList.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No matching technician workload found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error searching technician workload report.");
-        }
+        searchTechnicianWorkloadReport();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed

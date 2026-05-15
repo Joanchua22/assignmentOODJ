@@ -15,6 +15,135 @@ public class ChangePasswordPage extends javax.swing.JFrame {
         this.returnPage = returnPage;
         initComponents();
     }
+    
+    private String validatePasswordInput(
+            String currentPassword,
+            String newPassword,
+            String confirmPassword
+    ) {
+
+        if (currentPassword.isEmpty()
+                || newPassword.isEmpty()
+                || confirmPassword.isEmpty()) {
+
+            return "Please fill in all password fields.";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            return "New password and confirm password do not match.";
+        }
+
+        if (newPassword.equals(currentPassword)) {
+            return "New password cannot be the same as current password.";
+        }
+
+        return "VALID";
+    }
+    
+    private void clearPasswordFields() {
+        CurrentPasswordField.setText("");
+        NewPasswordField.setText("");
+        ConfirmPasswordField.setText("");
+    }
+    
+    private void recordPasswordUpdateActivity() {
+
+        try {
+
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Update Password",
+                    "Password Updated"
+            );
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to record activity log."
+            );
+        }
+    }
+    
+    private void updatePassword() {
+
+        try {
+
+            String currentPassword =
+                    new String(CurrentPasswordField.getPassword()).trim();
+
+            String newPassword =
+                    new String(NewPasswordField.getPassword()).trim();
+
+            String confirmPassword =
+                    new String(ConfirmPasswordField.getPassword()).trim();
+
+            String validationResult =
+                    validatePasswordInput(
+                            currentPassword,
+                            newPassword,
+                            confirmPassword
+                    );
+
+            if (!validationResult.equals("VALID")) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        validationResult
+                );
+
+                return;
+            }
+
+            boolean isCurrentPasswordCorrect =
+                    FileManager.checkCurrentPasswordByUserId(
+                            currentUserId,
+                            currentPassword
+                    );
+
+            if (!isCurrentPasswordCorrect) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Current password is incorrect."
+                );
+
+                return;
+            }
+
+            boolean updated =
+                    FileManager.updatePasswordByUserId(
+                            currentUserId,
+                            newPassword
+                    );
+
+            if (updated) {
+
+                recordPasswordUpdateActivity();
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Password updated successfully."
+                );
+
+                clearPasswordFields();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "User not found."
+                );
+            }
+
+        } catch (IOException ex) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "An error occurred while updating the password."
+            );
+        }
+    }
 
     
     @SuppressWarnings("unchecked")
@@ -101,50 +230,7 @@ public class ChangePasswordPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        try {
-            String currentPassword = new String(CurrentPasswordField.getPassword()).trim();
-            String newPassword = new String(NewPasswordField.getPassword()).trim();
-            String confirmPassword = new String(ConfirmPasswordField.getPassword()).trim();
-
-            if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill in all password fields.");
-                return;
-            }
-
-            // Check current password from users.txt
-            boolean isCurrentPasswordCorrect = FileManager.checkCurrentPasswordByUserId(currentUserId, currentPassword);
-            if (!isCurrentPasswordCorrect) {
-                JOptionPane.showMessageDialog(this, "Current password is incorrect.");
-                return;
-            }
-
-            // Check new password matches confirm password
-            if (!newPassword.equals(confirmPassword)) {
-                JOptionPane.showMessageDialog(this, "New password and confirm password do not match.");
-                return;
-            }
-
-            // Optional: prevent same old and new password
-            if (newPassword.equals(currentPassword)) {
-                JOptionPane.showMessageDialog(this, "New password cannot be the same as current password.");
-                return;
-            }
-
-            boolean updated = FileManager.updatePasswordByUserId(currentUserId, newPassword);
-
-            if (updated) {
-                JOptionPane.showMessageDialog(this, "Password updated successfully.");
-
-                CurrentPasswordField.setText("");
-                NewPasswordField.setText("");
-                ConfirmPasswordField.setText("");
-            } else {
-                JOptionPane.showMessageDialog(this, "User not found.");
-            }
-
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "An error occurred while updating the password.");
-        }
+        updatePassword();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed

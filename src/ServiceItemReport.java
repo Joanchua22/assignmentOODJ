@@ -165,6 +165,137 @@ public class ServiceItemReport extends BaseReport {
         mostBookedField.setEditable(false);
         leastBookedField.setEditable(false);
     }
+    
+    private String validateSearchInput(
+            String startDate,
+            String endDate
+    ) {
+
+        if (!startDate.isEmpty()
+                && !FileManager.isValidDate(startDate)) {
+
+            return "Start date must be YYYY-MM-DD.";
+        }
+
+        if (!endDate.isEmpty()
+                && !FileManager.isValidDate(endDate)) {
+
+            return "End date must be YYYY-MM-DD.";
+        }
+
+        if (!FileManager.isValidDateRange(startDate, endDate)) {
+            return "Start date cannot be after end date.";
+        }
+
+        return "VALID";
+    }
+    
+    private List<String[]> filterServiceItemReport(
+            List<String[]> fullList,
+            String itemId,
+            String serviceName,
+            String category
+    ) {
+
+        List<String[]> filteredList = new ArrayList<>();
+
+        for (String[] row : fullList) {
+
+            String rowId = row[0].toLowerCase();
+            String rowName = row[1].toLowerCase();
+            String rowCategory = row[2].toLowerCase();
+
+            boolean matches = true;
+
+            if (!itemId.isEmpty()
+                    && !rowId.contains(itemId)) {
+
+                matches = false;
+            }
+
+            if (!serviceName.isEmpty()
+                    && !rowName.contains(serviceName)) {
+
+                matches = false;
+            }
+
+            if (!category.isEmpty()
+                    && !rowCategory.contains(category)) {
+
+                matches = false;
+            }
+
+            if (matches) {
+                filteredList.add(row);
+            }
+        }
+
+        return filteredList;
+    }
+    
+    private void searchServiceItemReport() {
+
+        String startDate = startDateField.getText().trim();
+        String endDate = endDateField.getText().trim();
+
+        String itemId =
+                serviceItemIdField.getText().trim().toLowerCase();
+
+        String serviceName =
+                serviceNameField.getText().trim().toLowerCase();
+
+        String category =
+                serviceCategoryField.getText().trim().toLowerCase();
+
+        String validationResult =
+                validateSearchInput(startDate, endDate);
+
+        if (!validationResult.equals("VALID")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    validationResult
+            );
+
+            return;
+        }
+
+        try {
+
+            List<String[]> fullList =
+                    FileManager.getServiceItemReportList(
+                            startDate,
+                            endDate
+                    );
+
+            List<String[]> filteredList =
+                    filterServiceItemReport(
+                            fullList,
+                            itemId,
+                            serviceName,
+                            category
+                    );
+
+            loadServiceItemReportTable(filteredList);
+
+            updateMostLeastBooked(filteredList);
+
+            if (filteredList.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No matching service items found."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error searching service item report."
+            );
+        }
+    }
 
 
     @SuppressWarnings("unchecked")
@@ -376,66 +507,7 @@ public class ServiceItemReport extends BaseReport {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String startDate = startDateField.getText().trim();
-        String endDate = endDateField.getText().trim();
-        String itemId = serviceItemIdField.getText().trim().toLowerCase();
-        String serviceName = serviceNameField.getText().trim().toLowerCase();
-        String category = serviceCategoryField.getText().trim().toLowerCase();
-
-        // date validation
-        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
-            JOptionPane.showMessageDialog(this, "Start date must be YYYY-MM-DD.");
-            return;
-        }
-
-        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
-            JOptionPane.showMessageDialog(this, "End date must be YYYY-MM-DD.");
-            return;
-        }
-
-        if (!FileManager.isValidDateRange(startDate, endDate)) {
-            JOptionPane.showMessageDialog(this, "Start date cannot be after end date.");
-            return;
-        }
-
-        try {
-            List<String[]> fullList = FileManager.getServiceItemReportList(startDate, endDate);
-            List<String[]> filteredList = new ArrayList<>();
-
-            for (String[] row : fullList) {
-                String rowId = row[0].toLowerCase();
-                String rowName = row[1].toLowerCase();
-                String rowCategory = row[2].toLowerCase();
-
-                boolean matches = true;
-
-                if (!itemId.isEmpty() && !rowId.contains(itemId)) {
-                    matches = false;
-                }
-
-                if (!serviceName.isEmpty() && !rowName.contains(serviceName)) {
-                    matches = false;
-                }
-
-                if (!category.isEmpty() && !rowCategory.contains(category)) {
-                    matches = false;
-                }
-
-                if (matches) {
-                    filteredList.add(row);
-                }
-            }
-
-            loadServiceItemReportTable(filteredList);
-            updateMostLeastBooked(filteredList);
-
-            if (filteredList.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No matching service items found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error searching service item report.");
-        }
+        searchServiceItemReport();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void previewBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewBtnActionPerformed

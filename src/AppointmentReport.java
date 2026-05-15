@@ -189,7 +189,138 @@ public class AppointmentReport extends BaseReport {
         }
     }
     
+    private String validateSearchInput(
+            String startDate,
+            String endDate
+    ) {
+
+        if (!startDate.isEmpty()
+                && !FileManager.isValidDate(startDate)) {
+
+            return "Start date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!endDate.isEmpty()
+                && !FileManager.isValidDate(endDate)) {
+
+            return "End date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!FileManager.isValidDateRange(startDate, endDate)) {
+            return "Start date cannot be after end date.";
+        }
+
+        return "VALID";
+    }
     
+    private List<String[]> filterAppointmentReport(
+            List<String[]> allList,
+            String startDate,
+            String endDate,
+            String selectedStatus,
+            String technician
+    ) {
+
+        List<String[]> filteredList = new ArrayList<>();
+
+        for (String[] row : allList) {
+
+            String rowDate = row[1];
+            String rowStatus = row[2];
+            String rowTechnician = row[4].toLowerCase();
+
+            boolean matches = true;
+
+            if (!startDate.isEmpty()
+                    && rowDate.compareTo(startDate) < 0) {
+
+                matches = false;
+            }
+
+            if (!endDate.isEmpty()
+                    && rowDate.compareTo(endDate) > 0) {
+
+                matches = false;
+            }
+
+            if (!selectedStatus.equalsIgnoreCase("All")
+                    && !rowStatus.equalsIgnoreCase(selectedStatus)) {
+
+                matches = false;
+            }
+
+            if (!technician.isEmpty()
+                    && !rowTechnician.contains(technician)) {
+
+                matches = false;
+            }
+
+            if (matches) {
+                filteredList.add(row);
+            }
+        }
+
+        return filteredList;
+    }
+    
+    private void searchAppointmentReport() {
+
+        String startDate = startDateField.getText().trim();
+        String endDate = endDateField.getText().trim();
+
+        String selectedStatus =
+                statusComboBox.getSelectedItem().toString();
+
+        String technician =
+                technicianField.getText().trim().toLowerCase();
+
+        String validationResult =
+                validateSearchInput(startDate, endDate);
+
+        if (!validationResult.equals("VALID")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    validationResult
+            );
+
+            return;
+        }
+
+        try {
+
+            List<String[]> allList =
+                    FileManager.getAppointmentReportList();
+
+            List<String[]> filteredList =
+                    filterAppointmentReport(
+                            allList,
+                            startDate,
+                            endDate,
+                            selectedStatus,
+                            technician
+                    );
+
+            loadAppointmentTable(filteredList);
+
+            updateSummary(filteredList);
+
+            if (filteredList.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No matching appointments found."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error searching appointment report."
+            );
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -415,69 +546,7 @@ public class AppointmentReport extends BaseReport {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String startDate = startDateField.getText().trim();
-        String endDate = endDateField.getText().trim();
-        String selectedStatus = statusComboBox.getSelectedItem().toString();
-        String technician = technicianField.getText().trim().toLowerCase();
-
-        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
-            JOptionPane.showMessageDialog(this, "Start date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
-            JOptionPane.showMessageDialog(this, "End date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!FileManager.isValidDateRange(startDate, endDate)) {
-            JOptionPane.showMessageDialog(this, "Start date cannot be after end date.");
-            return;
-        }
-
-        try {
-            List<String[]> allList = FileManager.getAppointmentReportList();
-            List<String[]> filteredList = new ArrayList<>();
-
-            for (String[] row : allList) {
-                String rowDate = row[1];
-                String rowStatus = row[2];
-                String rowTechnician = row[4].toLowerCase();
-
-                boolean matches = true;
-
-                if (!startDate.isEmpty() && rowDate.compareTo(startDate) < 0) {
-                    matches = false;
-                }
-
-                if (!endDate.isEmpty() && rowDate.compareTo(endDate) > 0) {
-                    matches = false;
-                }
-
-                if (!selectedStatus.equalsIgnoreCase("All")
-                        && !rowStatus.equalsIgnoreCase(selectedStatus)) {
-                    matches = false;
-                }
-
-                if (!technician.isEmpty() && !rowTechnician.contains(technician)) {
-                    matches = false;
-                }
-
-                if (matches) {
-                    filteredList.add(row);
-                }
-            }
-
-            loadAppointmentTable(filteredList);
-            updateSummary(filteredList);
-
-            if (filteredList.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No matching appointments found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error searching appointment report.");
-        }
+        searchAppointmentReport();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed

@@ -249,6 +249,129 @@ public class RevenueReport extends BaseReport {
         }
     }
     
+    private String validateSearchInput(
+            String startDate,
+            String endDate
+    ) {
+
+        if (!startDate.isEmpty()
+                && !FileManager.isValidDate(startDate)) {
+
+            return "Start date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!endDate.isEmpty()
+                && !FileManager.isValidDate(endDate)) {
+
+            return "End date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!FileManager.isValidDateRange(startDate, endDate)) {
+            return "Start date cannot be after end date.";
+        }
+
+        return "VALID";
+    }
+    
+    private List<String[]> filterRevenueRecords(
+            List<String[]> fullList,
+            String paymentMethod,
+            String serviceItem
+    ) {
+
+        List<String[]> filteredList = new ArrayList<>();
+
+        for (String[] row : fullList) {
+
+            String rowServiceItem = row[2].toLowerCase();
+            String rowMethod = row[4].toLowerCase();
+
+            boolean matches = true;
+
+            if (!paymentMethod.isEmpty()
+                    && !rowMethod.contains(paymentMethod)) {
+
+                matches = false;
+            }
+
+            if (!serviceItem.isEmpty()
+                    && !rowServiceItem.contains(serviceItem)) {
+
+                matches = false;
+            }
+
+            if (matches) {
+                filteredList.add(row);
+            }
+        }
+
+        return filteredList;
+    }
+    
+    private void searchRevenueReport() {
+
+        String startDate = startDateField.getText().trim();
+        String endDate = endDateField.getText().trim();
+
+        String paymentMethod =
+                paymentMethodField.getText().trim().toLowerCase();
+
+        String serviceItem =
+                serviceItemField.getText().trim().toLowerCase();
+
+        String validationResult =
+                validateSearchInput(startDate, endDate);
+
+        if (!validationResult.equals("VALID")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    validationResult
+            );
+
+            return;
+        }
+
+        try {
+
+            List<String[]> fullList =
+                    FileManager.getRevenueReportList(
+                            startDate,
+                            endDate
+                    );
+
+            List<String[]> filteredList =
+                    filterRevenueRecords(
+                            fullList,
+                            paymentMethod,
+                            serviceItem
+                    );
+
+            loadRevenueTable(filteredList);
+
+            updateRevenueSummary(filteredList);
+
+            loadServiceBreakdownTable(filteredList);
+
+            if (filteredList.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No matching revenue records found."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error searching revenue report."
+            );
+        }
+    }
+    
+    
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -482,60 +605,7 @@ public class RevenueReport extends BaseReport {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String startDate = startDateField.getText().trim();
-        String endDate = endDateField.getText().trim();
-        String paymentMethod = paymentMethodField.getText().trim().toLowerCase();
-        String serviceItem = serviceItemField.getText().trim().toLowerCase();
-
-        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
-            JOptionPane.showMessageDialog(this, "Start date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
-            JOptionPane.showMessageDialog(this, "End date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!FileManager.isValidDateRange(startDate, endDate)) {
-            JOptionPane.showMessageDialog(this, "Start date cannot be after end date.");
-            return;
-        }
-
-        try {
-            List<String[]> fullList = FileManager.getRevenueReportList(startDate, endDate);
-            List<String[]> filteredList = new ArrayList<>();
-
-            for (String[] row : fullList) {
-                String rowServiceItem = row[2].toLowerCase();
-                String rowMethod = row[4].toLowerCase();
-
-                boolean matches = true;
-
-                if (!paymentMethod.isEmpty() && !rowMethod.contains(paymentMethod)) {
-                    matches = false;
-                }
-
-                if (!serviceItem.isEmpty() && !rowServiceItem.contains(serviceItem)) {
-                    matches = false;
-                }
-
-                if (matches) {
-                    filteredList.add(row);
-                }
-            }
-
-            loadRevenueTable(filteredList);
-            updateRevenueSummary(filteredList);
-            loadServiceBreakdownTable(filteredList);
-
-            if (filteredList.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No matching revenue records found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error searching revenue report.");
-        }
+        searchRevenueReport();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed

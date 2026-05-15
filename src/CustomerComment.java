@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +71,107 @@ public class CustomerComment extends javax.swing.JFrame {
                 row[3], // Date
                 row[4]  // Customer Username
             });
+        }
+    }
+    
+    private String validateSearchInput(String startDate, String endDate) {
+        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
+            return "Start date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
+            return "End date must be valid in YYYY-MM-DD format.";
+        }
+
+        if (!FileManager.isValidDateRange(startDate, endDate)) {
+            return "Start date cannot be after end date.";
+        }
+
+        return "VALID";
+    }
+    
+    private List<String[]> filterCustomerComments(
+            List<String[]> allComments,
+            String startDate,
+            String endDate,
+            String commentId,
+            String appointmentId,
+            String customerUsername
+    ) {
+        List<String[]> filteredList = new ArrayList<>();
+
+        for (String[] row : allComments) {
+            String rowCommentId = row[0].toLowerCase();
+            String rowAppointmentId = row[1].toLowerCase();
+            String rowDate = row[3];
+            String rowCustomerUsername = row[4].toLowerCase();
+
+            boolean matches = true;
+
+            if (!startDate.isEmpty() && rowDate.compareTo(startDate) < 0) {
+                matches = false;
+            }
+
+            if (!endDate.isEmpty() && rowDate.compareTo(endDate) > 0) {
+                matches = false;
+            }
+
+            if (!commentId.isEmpty() && !rowCommentId.contains(commentId)) {
+                matches = false;
+            }
+
+            if (!appointmentId.isEmpty() && !rowAppointmentId.contains(appointmentId)) {
+                matches = false;
+            }
+
+            if (!customerUsername.isEmpty()
+                    && !rowCustomerUsername.contains(customerUsername)) {
+                matches = false;
+            }
+
+            if (matches) {
+                filteredList.add(row);
+            }
+        }
+
+        return filteredList;
+    }
+    
+    private void searchCustomerComments() {
+        String startDate = startDateField.getText().trim();
+        String endDate = endDateField.getText().trim();
+        String commentId = commentIdField.getText().trim().toLowerCase();
+        String appointmentId = appointmentIdField.getText().trim().toLowerCase();
+        String customerUsername = customerField.getText().trim().toLowerCase();
+
+        String validationResult = validateSearchInput(startDate, endDate);
+
+        if (!validationResult.equals("VALID")) {
+            JOptionPane.showMessageDialog(this, validationResult);
+            return;
+        }
+
+        try {
+            List<String[]> allComments = FileManager.getAllCustomerComments();
+
+            List<String[]> filteredList =
+                    filterCustomerComments(
+                            allComments,
+                            startDate,
+                            endDate,
+                            commentId,
+                            appointmentId,
+                            customerUsername
+                    );
+
+            loadCommentTable(filteredList);
+
+            if (filteredList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No matching customer comment found.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error searching customer comments.");
         }
     }
 
@@ -222,73 +322,7 @@ public class CustomerComment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String startDate = startDateField.getText().trim();
-        String endDate = endDateField.getText().trim();
-        String commentId = commentIdField.getText().trim().toLowerCase();
-        String appointmentId = appointmentIdField.getText().trim().toLowerCase();
-        String customerUsername = customerField.getText().trim().toLowerCase();
-
-        if (!startDate.isEmpty() && !FileManager.isValidDate(startDate)) {
-            JOptionPane.showMessageDialog(this, "Start date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!endDate.isEmpty() && !FileManager.isValidDate(endDate)) {
-            JOptionPane.showMessageDialog(this, "End date must be valid in YYYY-MM-DD format.");
-            return;
-        }
-
-        if (!FileManager.isValidDateRange(startDate, endDate)) {
-            JOptionPane.showMessageDialog(this, "Start date cannot be after end date.");
-            return;
-        }
-
-        try {
-            List<String[]> allComments = FileManager.getAllCustomerComments();
-            List<String[]> filteredList = new ArrayList<>();
-
-            for (String[] row : allComments) {
-                String rowCommentId = row[0].toLowerCase();
-                String rowAppointmentId = row[1].toLowerCase();
-                String rowDate = row[3];
-                String rowCustomerUsername = row[4].toLowerCase();
-
-                boolean matches = true;
-
-                if (!startDate.isEmpty() && rowDate.compareTo(startDate) < 0) {
-                    matches = false;
-                }
-
-                if (!endDate.isEmpty() && rowDate.compareTo(endDate) > 0) {
-                    matches = false;
-                }
-
-                if (!commentId.isEmpty() && !rowCommentId.contains(commentId)) {
-                    matches = false;
-                }
-
-                if (!appointmentId.isEmpty() && !rowAppointmentId.contains(appointmentId)) {
-                    matches = false;
-                }
-
-                if (!customerUsername.isEmpty() && !rowCustomerUsername.contains(customerUsername)) {
-                    matches = false;
-                }
-
-                if (matches) {
-                    filteredList.add(row);
-                }
-            }
-
-            loadCommentTable(filteredList);
-
-            if (filteredList.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No matching customer comment found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error searching customer comments.");
-        }
+        searchCustomerComments();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed

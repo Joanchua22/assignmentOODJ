@@ -2,16 +2,16 @@
 import javax.swing.JOptionPane;
 
 
-public class CustomerPage extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CustomerPage.class.getName());
+    public class CustomerPage extends javax.swing.JFrame {
 
-    private String currentUserId;
-    
-    public CustomerPage(String currentUserId) {
-        this.currentUserId = currentUserId;
-        initComponents();
-    }
+        private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CustomerPage.class.getName());
+
+        private String currentUserId;
+
+        public CustomerPage(String currentUserId) {
+            this.currentUserId = currentUserId;
+            initComponents();
+        }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

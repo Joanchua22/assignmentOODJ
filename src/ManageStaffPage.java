@@ -63,6 +63,54 @@ public class ManageStaffPage extends javax.swing.JFrame {
         new StaffProfilePage(userId, currentUserId).setVisible(true);
         this.dispose();
     }
+    
+    private void searchStaff() {
+        String keyword = searchBarField.getText().trim();
+
+        if (keyword.isEmpty()) {
+            loadAllStaffToTable();
+            return;
+        }
+
+        try {
+
+            List<String[]> resultList =
+                    FileManager.searchStaff(keyword);
+
+            loadSearchResultTable(resultList);
+
+            if (resultList.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No matching staff found."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error searching staff records"
+            );
+        }
+    }
+    
+    private void loadSearchResultTable(List<String[]> resultList) {
+
+        tableModel.setRowCount(0);
+
+        for (String[] staff : resultList) {
+
+            tableModel.addRow(new Object[]{
+                staff[0],
+                staff[1],
+                staff[5],
+                staff[3],
+                staff[8]
+            });
+        }
+    }
+
 
 
     @SuppressWarnings("unchecked")
@@ -177,33 +225,7 @@ public class ManageStaffPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String keyword = searchBarField.getText().trim();
-        
-        if(keyword.isEmpty()){
-            loadAllStaffToTable();
-            return;
-        }
-        
-        try{
-            tableModel.setRowCount(0);
-            
-            List<String[]> resultList = FileManager.searchStaff(keyword);
-            
-            for (String[] staff : resultList) {
-                tableModel.addRow(new Object[]{
-                    staff[0],
-                    staff[1],
-                    staff[5],
-                    staff[3],
-                    staff[8]  
-                });
-            }
-            if (resultList.isEmpty()){
-                JOptionPane.showMessageDialog(this, "No matching staff found.");
-            }
-        } catch (IOException e){
-            JOptionPane.showMessageDialog(this, "Error searching staff records");
-        }
+        searchStaff();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed

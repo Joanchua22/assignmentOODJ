@@ -87,6 +87,145 @@ public class UpdateServiceItem extends javax.swing.JFrame {
                 || !currentDescription.equals(originalDescription)
                 || !currentPrice.equals(originalPrice);
     }
+    
+    private String validateServiceItemUpdate(
+            String cateId,
+            String serviceName,
+            String description,
+            String price
+    ) throws IOException {
+
+        if (cateId == null || cateId.isEmpty()) {
+            return "Please select a category.";
+        }
+
+        if (serviceName.isEmpty()
+                || description.isEmpty()
+                || price.isEmpty()) {
+
+            return "Please fill in all fields.";
+        }
+
+        if (!FileManager.isValidPrice(price)) {
+            return "Price must be a valid number greater than 0.";
+        }
+
+        if (FileManager.serviceItemExistsExcept(
+                cateId,
+                serviceName,
+                serviceItemId
+        )) {
+
+            return "This service item already exists under the selected category.";
+        }
+
+        return "VALID";
+    }
+    
+    private void recordUpdateServiceItemActivity() {
+
+        try {
+
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Update Service Item",
+                    serviceItemId + " Updated"
+            );
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to record activity log."
+            );
+        }
+    }
+    
+    private void updateServiceItem() {
+
+        Object selectedObj = cateComboBox.getSelectedItem();
+
+        if (selectedObj == null) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please select a category."
+            );
+
+            return;
+        }
+
+        String cateId =
+                selectedObj.toString().split(" - ")[0];
+
+        String serviceName =
+                itemField.getText().trim();
+
+        String description =
+                descriptionTextArea.getText().trim();
+
+        String price =
+                priceField.getText().trim();
+
+        try {
+
+            String validationResult =
+                    validateServiceItemUpdate(
+                            cateId,
+                            serviceName,
+                            description,
+                            price
+                    );
+
+            if (!validationResult.equals("VALID")) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        validationResult
+                );
+
+                return;
+            }
+
+            boolean updated =
+                    FileManager.updateServiceItem(
+                            serviceItemId,
+                            cateId,
+                            serviceName,
+                            description,
+                            price,
+                            currentUserId
+                    );
+
+            if (updated) {
+
+                recordUpdateServiceItemActivity();
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Service item updated successfully."
+                );
+
+                new ServiceItem(currentUserId).setVisible(true);
+
+                dispose();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Update failed."
+                );
+            }
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error updating service item."
+            );
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -200,55 +339,7 @@ public class UpdateServiceItem extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-       Object selectedObj = cateComboBox.getSelectedItem();
-
-        if (selectedObj == null) {
-            JOptionPane.showMessageDialog(this, "Please select a category.");
-            return;
-        }
-
-        String cateId = selectedObj.toString().split(" - ")[0];
-        String serviceName = itemField.getText().trim();
-        String description = descriptionTextArea.getText().trim();
-        String price = priceField.getText().trim();
-
-        if (serviceName.isEmpty() || description.isEmpty() || price.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
-
-        if (!FileManager.isValidPrice(price)) {
-            JOptionPane.showMessageDialog(this, "Price must be a valid number greater than 0.");
-            return;
-        }
-
-        try {
-            if (FileManager.serviceItemExistsExcept(cateId, serviceName,serviceItemId)) {
-                JOptionPane.showMessageDialog(this, "This service item already exists under the selected category.");
-                return;
-            }
-
-            boolean updated = FileManager.updateServiceItem(
-                    serviceItemId,
-                    cateId,
-                    serviceName,
-                    description,
-                    price,
-                    currentUserId
-            );
-
-            if (updated) {
-                JOptionPane.showMessageDialog(this, "Service item updated successfully.");
-                FileManager.addActivityLog(currentUserId, "Update Service Item", serviceItemId + " Updated");
-                new ServiceItem(currentUserId).setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Update failed.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error updating service item.");
-        }
+       updateServiceItem();
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed

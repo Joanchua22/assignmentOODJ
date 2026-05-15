@@ -44,6 +44,79 @@ public class UpdateServiceCate extends javax.swing.JFrame {
 
         return !currentName.equals(originalName) || !currentDuration.equals(originalDuration);
     }
+    
+    private String validateServiceCategoryUpdate(
+            String name,
+            String duration
+    ) throws IOException {
+
+        if (name.isEmpty() || duration.isEmpty()) {
+            return "Please fill in all fields.";
+        }
+
+        if (!FileManager.isValidDuration(duration)) {
+            return "Duration must be a valid number greater than 0 (e.g., 1 or 1.5).";
+        }
+
+        if (FileManager.serviceTypeNameExistsExcept(name, serviceTypeId)) {
+            return "Category name already exists.";
+        }
+
+        return "VALID";
+    }
+    
+    private void recordUpdateServiceCategoryActivity() {
+        try {
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Update Service Category",
+                    serviceTypeId + " Updated"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
+    }
+    
+    private void updateServiceCategory() {
+        String name = nameField.getText().trim();
+        String duration = durationField.getText().trim();
+
+        try {
+            String validationResult =
+                    validateServiceCategoryUpdate(name, duration);
+
+            if (!validationResult.equals("VALID")) {
+                JOptionPane.showMessageDialog(this, validationResult);
+                return;
+            }
+
+            boolean updated =
+                    FileManager.updateServiceType(
+                            serviceTypeId,
+                            name,
+                            duration,
+                            currentUserId
+                    );
+
+            if (updated) {
+                recordUpdateServiceCategoryActivity();
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Service category updated successfully."
+                );
+
+                new ServiceCategory(currentUserId).setVisible(true);
+                dispose();
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Update failed.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error updating category.");
+        }
+    }
 
 
     @SuppressWarnings("unchecked")
@@ -149,40 +222,7 @@ public class UpdateServiceCate extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        String name = nameField.getText().trim();
-        String duration = durationField.getText().trim();
-
-        if (name.isEmpty() || duration.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
-
-        if (!FileManager.isValidDuration(duration)) {
-            JOptionPane.showMessageDialog(this, "Duration must be a valid number greater than 0 (e.g., 1 or 1.5).");
-            return;
-        }
-
-        try {
-            
-            if (FileManager.serviceTypeNameExistsExcept(name, serviceTypeId)) {
-                JOptionPane.showMessageDialog(this, "Category name already exists.");
-                return;
-            }
-            
-            boolean updated = FileManager.updateServiceType(serviceTypeId, name, duration, currentUserId);
-
-            if (updated) {
-                JOptionPane.showMessageDialog(this, "Service category updated successfully.");
-                FileManager.addActivityLog(currentUserId, "Update Service Category", serviceTypeId + " Updated");
-                new ServiceCategory(currentUserId).setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Update failed.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error updating category.");
-        }
+        updateServiceCategory();
     }//GEN-LAST:event_saveBtnActionPerformed
 
 

@@ -8,6 +8,138 @@ public class SignUpPage extends javax.swing.JFrame {
     public SignUpPage() {
         initComponents();     
     }
+    
+    private String validateSignUpInput(
+            String username,
+            String password,
+            String tp,
+            String name,
+            String phone,
+            String email,
+            String vrn,
+            String model,
+            String selectedVehicleType,
+            String vehicleYear
+    ) throws IOException {
+
+        if (FileManager.isEmpty(username) || FileManager.isEmpty(password) ||
+            FileManager.isEmpty(tp) || FileManager.isEmpty(name) ||
+            FileManager.isEmpty(phone) || FileManager.isEmpty(email) ||
+            FileManager.isEmpty(vrn) || FileManager.isEmpty(model) ||
+            FileManager.isEmpty(selectedVehicleType) || FileManager.isEmpty(vehicleYear)) {
+
+            return "Please fill in all fields before signing up.";
+        }
+
+        if (!FileManager.isValidTP(tp)) {
+            return "TP Number must start with TP followed by 6 digits.";
+        }
+
+        if (!FileManager.isValidPhone(phone)) {
+            return "Phone number must be 10-11 digits.";
+        }
+
+        if (!FileManager.isValidEmail(email)) {
+            return "Please enter a valid email address.";
+        }
+
+        if (!FileManager.isFourDigitYear(vehicleYear)) {
+            return "Year of Manufacture must be 4 digits.";
+        }
+
+        if (!FileManager.isNotFutureYear(vehicleYear)) {
+            return "Year of Manufacture cannot be more than current year.";
+        }
+
+        if (FileManager.usernameExists(username)) {
+            return "Username already exists.";
+        }
+
+        if (FileManager.tpExists(tp)) {
+            return "TP Number already exists.";
+        }
+
+        if (FileManager.phoneExists(phone)) {
+            return "Phone number already exists.";
+        }
+
+        if (FileManager.emailExists(email)) {
+            return "Email already exists.";
+        }
+
+        if (FileManager.vehicleRegExists(vrn)) {
+            return "Vehicle registration number already exists.";
+        }
+
+        return "VALID";
+    }
+    
+    private void signUpCustomer() {
+        try {
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+            String tp = tpNumField.getText().trim();
+            String name = nameField.getText().trim();
+            String phone = phoneNumField.getText().trim();
+            String email = emailField.getText().trim();
+            String vrn = vrnField.getText().trim();
+            String model = vehicleModelField.getText().trim();
+            String selectedVehicleType = (String) vehicleType.getSelectedItem();
+            String vehicleYear = YOM.getText().trim();
+
+            String validationResult = validateSignUpInput(
+                    username,
+                    password,
+                    tp,
+                    name,
+                    phone,
+                    email,
+                    vrn,
+                    model,
+                    selectedVehicleType,
+                    vehicleYear
+            );
+
+            if (!validationResult.equals("VALID")) {
+                JOptionPane.showMessageDialog(this, validationResult);
+                return;
+            }
+
+            FileManager.registerCustomer(
+                    username,
+                    password,
+                    tp,
+                    name,
+                    phone,
+                    email,
+                    vrn,
+                    selectedVehicleType,
+                    model,
+                    vehicleYear
+            );
+            recordCustomerSignUpActivity(username);
+
+            JOptionPane.showMessageDialog(this, "Sign up successful! You can now login.");
+            this.dispose();
+            new LoginPage().setVisible(true);
+
+        } catch (IOException e) {
+            logger.severe("Error during sign up: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "An error occurred while signing up. Please try again.");
+        }
+    }
+    
+    private void recordCustomerSignUpActivity(String username) {
+        try {
+            FileManager.addActivityLog(
+                    "SYSTEM",
+                    "Customer Sign Up",
+                    username + " registered a new account"
+            );
+        } catch (IOException e) {
+            logger.warning("Failed to record sign up activity: " + e.getMessage());
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -185,88 +317,7 @@ layout.setHorizontalGroup(
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpActionPerformed
-        try {
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword()).trim();
-            String tp = tpNumField.getText().trim();
-            String name = nameField.getText().trim();
-            String phone = phoneNumField.getText().trim();
-            String email = emailField.getText().trim();
-            String vrn = vrnField.getText().trim();
-            String model = vehicleModelField.getText().trim();
-            String selectedvehicleType = (String) vehicleType.getSelectedItem();
-            String vehicleYear = YOM.getText().trim();
-
-
-            if (FileManager.isEmpty(username) || FileManager.isEmpty(password) ||
-                FileManager.isEmpty(tp) || FileManager.isEmpty(name) ||
-                FileManager.isEmpty(phone) || FileManager.isEmpty(email) ||
-                FileManager.isEmpty(vrn) || FileManager.isEmpty(model) ||
-                FileManager.isEmpty(selectedvehicleType) || FileManager.isEmpty(vehicleYear)) {
-                JOptionPane.showMessageDialog(this, "Please fill in all fields before signing up.");
-                return;
-            }
-
-            if (!FileManager.isValidTP(tp)) {
-                JOptionPane.showMessageDialog(this, "TP Number must start with TP followed by 6 digits.");
-                return;
-            }
-
-            if (!FileManager.isValidPhone(phone)) {
-                JOptionPane.showMessageDialog(this, "Phone number must be 10-11 digits.");
-                return;
-            }
-
-            if (!FileManager.isValidEmail(email)) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
-                return;
-            }
-            
-            if (!FileManager.isFourDigitYear(vehicleYear)) {
-                JOptionPane.showMessageDialog(this, "Year of Manufacture must be 4 digits.");
-                return;
-            }
-
-            if (!FileManager.isNotFutureYear(vehicleYear)) {
-                JOptionPane.showMessageDialog(this, "Year of Manufacture cannot be more than current year.");
-                return;
-            }
-
-            if (FileManager.usernameExists(username)) {
-                JOptionPane.showMessageDialog(this, "Username already exists.");
-                return;
-            }
-
-            if (FileManager.tpExists(tp)) {
-                JOptionPane.showMessageDialog(this, "TP Number already exists.");
-                return;
-            }
-
-            if (FileManager.phoneExists(phone)) {
-                JOptionPane.showMessageDialog(this, "Phone number already exists.");
-                return;
-            }
-
-            if (FileManager.emailExists(email)) {
-                JOptionPane.showMessageDialog(this, "Email already exists.");
-                return;
-            }
-
-            if (FileManager.vehicleRegExists(vrn)) {
-                JOptionPane.showMessageDialog(this, "Vehicle registration number already exists.");
-                return;
-            }
-
-            FileManager.registerCustomer(username, password, tp, name, phone, email, vrn, selectedvehicleType, model, vehicleYear);
-
-            JOptionPane.showMessageDialog(this, "Sign up successful! You can now login.");
-            this.dispose();
-            new LoginPage().setVisible(true);
-
-        } catch (IOException e) {
-            logger.severe("Error during sign up: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "An error occurred while signing up. Please try again.");
-        }
+        signUpCustomer();
     }//GEN-LAST:event_btnSignUpActionPerformed
 
     private void vehicleTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_vehicleTypeItemStateChanged

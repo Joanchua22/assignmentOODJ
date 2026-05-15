@@ -59,6 +59,60 @@ public class ServiceItem extends javax.swing.JFrame {
         }
     }
     
+    private void deleteSelectedServiceItem() {
+        int selectedRow = itemsTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a service item to delete.");
+            return;
+        }
+
+        String serviceItemId = itemsTable.getValueAt(selectedRow, 0).toString();
+        String serviceName = itemsTable.getValueAt(selectedRow, 2).toString();
+
+        if (!confirmDeleteServiceItem(serviceName)) {
+            return;
+        }
+
+        try {
+            boolean deleted = FileManager.deleteServiceItem(serviceItemId);
+
+            if (deleted) {
+                JOptionPane.showMessageDialog(this, "Service item deleted successfully.");
+                recordDeleteServiceItemActivity(serviceItemId, serviceName);
+                loadServiceItemTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Delete failed.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error deleting service item.");
+        }
+    }
+    
+    private boolean confirmDeleteServiceItem(String serviceName) {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to delete service item \"" + serviceName + "\"?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        return confirm == JOptionPane.YES_OPTION;
+    }
+    
+    private void recordDeleteServiceItemActivity(String serviceItemId, String serviceName) {
+        try {
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Delete Service Item",
+                    serviceItemId + " " + serviceName + " Deleted"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Failed to record activity log.");
+        }
+    }
+    
 
 
     @SuppressWarnings("unchecked")
@@ -164,39 +218,7 @@ public class ServiceItem extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        int selectedRow = itemsTable.getSelectedRow();
-
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a service item to delete.");
-            return;
-        }
-
-        String serviceItemId = itemsTable.getValueAt(selectedRow, 0).toString();
-        String serviceName = itemsTable.getValueAt(selectedRow, 2).toString();
-
-        int confirm = JOptionPane.showConfirmDialog(
-                this,
-                "Are you sure you want to delete service item \"" + serviceName + "\"?",
-                "Confirm Delete",
-                JOptionPane.YES_NO_OPTION
-        );
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                boolean deleted = FileManager.deleteServiceItem(serviceItemId);
-
-                if (deleted) {
-                    JOptionPane.showMessageDialog(this, "Service item deleted successfully.");
-                    FileManager.addActivityLog(currentUserId, "Delete Service Item", serviceItemId + " Deleted");
-                    loadServiceItemTable();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Delete failed.");
-                }
-
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error deleting service item.");
-            }
-        }
+        deleteSelectedServiceItem();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
 

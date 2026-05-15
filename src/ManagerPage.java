@@ -18,6 +18,64 @@ public class ManagerPage extends javax.swing.JFrame {
         this.currentUserId = "USR0001"; 
     }
     
+    private boolean confirmLogout() {
+
+        Object[] options = {"No", "Yes"};
+
+        int confirm = JOptionPane.showOptionDialog(
+                this,
+                "Are you sure you want to logout?",
+                "Logout",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        return confirm == 1;
+    }
+    
+    private void recordLogoutActivity() {
+
+        try {
+
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Logout",
+                    "Manager logged out"
+            );
+
+        } catch (IOException ex) {
+
+            System.getLogger(
+                    ManagerPage.class.getName()
+            ).log(
+                    System.Logger.Level.ERROR,
+                    (String) null,
+                    ex
+            );
+        }
+    }
+    
+    private void logout() {
+
+        if (!confirmLogout()) {
+            return;
+        }
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Logout successful."
+        );
+
+        recordLogoutActivity();
+
+        new HomePage().setVisible(true);
+
+        this.dispose();
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -118,29 +176,7 @@ public class ManagerPage extends javax.swing.JFrame {
     }//GEN-LAST:event_myProfileBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-        Object[] options = { "No", "Yes" };
-
-        int confirm = JOptionPane.showOptionDialog(
-                this,
-                "Are you sure you want to logout?",
-                "Logout",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0] 
-        );
-        if (confirm == 1) { 
-
-            JOptionPane.showMessageDialog(this, "Logout successful.");
-            try {
-                FileManager.addActivityLog(currentUserId, "Logout", "Manager logged out");
-            } catch (IOException ex) {
-                System.getLogger(ManagerPage.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            }
-            new HomePage().setVisible(true);
-            this.dispose();
-        }
+        logout();
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     private void viewFeedbackCommentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewFeedbackCommentBtnActionPerformed

@@ -19,6 +19,168 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
         loadFeedbackHistory();
         addTableDoubleClickEvent();
     }
+    
+    private void loadFeedbackHistory() {
+        try {
+            feedbackDetails = FileManager.getCustomerFeedbackHistory(currentUserId);
+
+            DefaultTableModel model = (DefaultTableModel) feedbackTable.getModel();
+            model.setRowCount(0);
+
+            for (String[] record : feedbackDetails) {
+                model.addRow(new Object[] {
+                    record[0], // appointment date
+                    record[1], // vehicle
+                    record[3], // service name
+                    record[4]  // status
+                });
+            }
+
+            if (feedbackDetails.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No feedback history found.");
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading feedback history.");
+        }
+    }
+    
+    private void addTableDoubleClickEvent() {
+        feedbackTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    int row = feedbackTable.getSelectedRow();
+                    if (row >= 0) {
+                        showFeedbackDetails(row);
+                    }
+                }
+            }
+        });
+    }
+
+    private void showFeedbackDetails(int row) {
+        if (row < 0 || row >= feedbackDetails.size()) {
+            return;
+        }
+
+        String[] details = feedbackDetails.get(row);
+
+        String message =
+                "Appointment Date: " + details[0] + "\n" +
+                "Vehicle: " + details[1] + "\n" +
+                "Service Type: " + details[2] + "\n" +
+                "Service Name: " + details[3] + "\n" +
+                "Status: " + details[4] + "\n" +
+                "Feedback Text: " + details[5] + "\n" +
+                "Feedback Date: " + details[6];
+
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Feedback Details",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+    
+    private LocalDate parseFilterDate(String dateText, String fieldName) {
+        if (dateText.isEmpty()) {
+            return null;
+        }
+
+        if (!FileManager.isValidDate(dateText)) {
+            JOptionPane.showMessageDialog(this, fieldName + " must be in yyyy-MM-dd format.");
+            return null;
+        }
+
+        if (!FileManager.isNotFutureDate(dateText)) {
+            JOptionPane.showMessageDialog(this, fieldName + " cannot be in the future.");
+            return null;
+        }
+
+        return LocalDate.parse(dateText);
+    }
+    
+    private boolean isFeedbackWithinDateRange(
+            String appointmentDateText,
+            LocalDate fromDate,
+            LocalDate toDate
+    ) {
+        try {
+            LocalDate appointmentDate = LocalDate.parse(appointmentDateText);
+
+            if (fromDate != null && appointmentDate.isBefore(fromDate)) {
+                return false;
+            }
+
+            if (toDate != null && appointmentDate.isAfter(toDate)) {
+                return false;
+            }
+
+            return true;
+
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+    
+    private void loadFilteredFeedbackTable(List<String[]> allFeedback, LocalDate fromDate, LocalDate toDate) {
+        feedbackDetails.clear();
+
+        DefaultTableModel model = (DefaultTableModel) feedbackTable.getModel();
+        model.setRowCount(0);
+
+        for (String[] record : allFeedback) {
+            if (isFeedbackWithinDateRange(record[0], fromDate, toDate)) {
+                feedbackDetails.add(record);
+
+                model.addRow(new Object[]{
+                    record[0],
+                    record[1],
+                    record[3],
+                    record[4]
+                });
+            }
+        }
+    }
+    
+    private void filterFeedbackHistory() {
+        try {
+            List<String[]> allFeedback =
+                    FileManager.getCustomerFeedbackHistory(currentUserId);
+
+            String fromText = fromDateField.getText().trim();
+            String toText = toDateField.getText().trim();
+
+            LocalDate fromDate = parseFilterDate(fromText, "From Date");
+
+            if (!fromText.isEmpty() && fromDate == null) {
+                return;
+            }
+
+            LocalDate toDate = parseFilterDate(toText, "To Date");
+
+            if (!toText.isEmpty() && toDate == null) {
+                return;
+            }
+
+            if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
+                JOptionPane.showMessageDialog(this, "From Date cannot be later than To Date.");
+                return;
+            }
+
+            loadFilteredFeedbackTable(allFeedback, fromDate, toDate);
+
+            if (feedbackDetails.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No records found for the selected date range.");
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error filtering history.");
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -155,93 +317,7 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
-        try {
-            List<String[]> allFeedback = FileManager.getCustomerFeedbackHistory(currentUserId);
-
-            String fromText = fromDateField.getText().trim();
-            String toText = toDateField.getText().trim();
-
-            LocalDate fromDate = null;
-            LocalDate toDate = null;
-
-            if (!fromText.isEmpty()) {
-                if (!FileManager.isValidDate(fromText)) {
-                    JOptionPane.showMessageDialog(this, "From Date must be in yyyy-MM-dd format.");
-                    return;
-                }
-
-                if (!FileManager.isNotFutureDate(fromText)) {
-                    JOptionPane.showMessageDialog(this, "From Date cannot be in the future.");
-                    return;
-                }
-
-                fromDate = LocalDate.parse(fromText);
-            }
-
-            if (!toText.isEmpty()) {
-                if (!FileManager.isValidDate(toText)) {
-                    JOptionPane.showMessageDialog(this, "To Date must be in yyyy-MM-dd format.");
-                    return;
-                }
-
-                if (!FileManager.isNotFutureDate(toText)) {
-                    JOptionPane.showMessageDialog(this, "To Date cannot be in the future.");
-                    return;
-                }
-
-                toDate = LocalDate.parse(toText);
-            }
-
-            if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
-                JOptionPane.showMessageDialog(this, "From Date cannot be later than To Date.");
-                return;
-            }
-
-            feedbackDetails.clear();
-
-            DefaultTableModel model = (DefaultTableModel) feedbackTable.getModel();
-            model.setRowCount(0);
-
-            for (String[] record : allFeedback) {
-                String appointmentDateText = record[0];
-                LocalDate appointmentDate;
-
-                try {
-                    appointmentDate = LocalDate.parse(appointmentDateText);
-                } catch (DateTimeParseException e) {
-                    continue;
-                }
-
-                boolean match = true;
-
-                if (fromDate != null && appointmentDate.isBefore(fromDate)) {
-                    match = false;
-                }
-
-                if (toDate != null && appointmentDate.isAfter(toDate)) {
-                    match = false;
-                }
-
-                if (match) {
-                    feedbackDetails.add(record);
-
-                    model.addRow(new Object[] {
-                        record[0],  // appointment date
-                        record[1], // vehicle
-                        record[3], // service name
-                        record[4] // status
-                    });
-                }
-            }
-
-            if (feedbackDetails.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No records found for the selected date range.");
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error filtering history.");
-        }
+        filterFeedbackHistory();
     }//GEN-LAST:event_btnFilterActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -250,69 +326,6 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
         loadFeedbackHistory();
     }//GEN-LAST:event_btnResetActionPerformed
  
-    private void loadFeedbackHistory() {
-        try {
-            feedbackDetails = FileManager.getCustomerFeedbackHistory(currentUserId);
-
-            DefaultTableModel model = (DefaultTableModel) feedbackTable.getModel();
-            model.setRowCount(0);
-
-            for (String[] record : feedbackDetails) {
-                model.addRow(new Object[] {
-                    record[0], // appointment date
-                    record[1], // vehicle
-                    record[3], // service name
-                    record[4]  // status
-                });
-            }
-
-            if (feedbackDetails.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No feedback history found.");
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading feedback history.");
-        }
-    }
-    
-    private void addTableDoubleClickEvent() {
-        feedbackTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    int row = feedbackTable.getSelectedRow();
-                    if (row >= 0) {
-                        showFeedbackDetails(row);
-                    }
-                }
-            }
-        });
-    }
-
-    private void showFeedbackDetails(int row) {
-        if (row < 0 || row >= feedbackDetails.size()) {
-            return;
-        }
-
-        String[] details = feedbackDetails.get(row);
-
-        String message =
-                "Appointment Date: " + details[0] + "\n" +
-                "Vehicle: " + details[1] + "\n" +
-                "Service Type: " + details[2] + "\n" +
-                "Service Name: " + details[3] + "\n" +
-                "Status: " + details[4] + "\n" +
-                "Feedback Text: " + details[5] + "\n" +
-                "Feedback Date: " + details[6];
-
-        JOptionPane.showMessageDialog(
-                this,
-                message,
-                "Feedback Details",
-                JOptionPane.INFORMATION_MESSAGE
-        );
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
