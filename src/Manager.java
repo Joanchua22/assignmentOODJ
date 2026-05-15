@@ -171,7 +171,7 @@ public class Manager extends javax.swing.JFrame {
     }//GEN-LAST:event_setServicePriceBtnActionPerformed
 
     private void myProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myProfileBtnActionPerformed
-        new MyProfile(currentUserId).setVisible(true);
+        new MyProfile(currentUserId, "ManagerProfile").setVisible(true);
         this.dispose();
     }//GEN-LAST:event_myProfileBtnActionPerformed
 

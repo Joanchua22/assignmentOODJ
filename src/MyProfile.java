@@ -5,16 +5,17 @@ import javax.swing.JOptionPane;
 public class MyProfile extends javax.swing.JFrame {
     
     private String currentUserId;
+    private String returnPage;
     private String originalPhone = "";
     private String originalEmail = "";
     private String originalName = "";
     private String originalUsername = "";
         
-    public MyProfile(String currentUserId) {
+    public MyProfile(String currentUserId, String returnPage) {
         initComponents();
         this.currentUserId = currentUserId;
+        this.returnPage = returnPage;
         loadProfileData();
-        saveBtn.addActionListener(this::saveBtnActionPerformed);
     }
     
     private void loadProfileData() {
@@ -190,7 +191,7 @@ public class MyProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void changePasswordBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordBtnActionPerformed
-        new ChangePassword(currentUserId, "ManagerProfile").setVisible(true);
+        new ChangePassword(currentUserId, returnPage).setVisible(true);
         dispose();
     }//GEN-LAST:event_changePasswordBtnActionPerformed
 
@@ -214,7 +215,12 @@ public class MyProfile extends javax.swing.JFrame {
             }
         }
 
-        new Manager(currentUserId).setVisible(true);
+        if (returnPage.equalsIgnoreCase("CustomerProfile")) {
+            new UpdateCustomerProfile(currentUserId).setVisible(true);
+        } else if (returnPage.equalsIgnoreCase("ManagerProfile")) {
+            new Manager(currentUserId).setVisible(true);
+        }
+
         dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 

@@ -232,10 +232,11 @@ public class ChangePassword extends javax.swing.JFrame {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         if (returnPage.equalsIgnoreCase("ManagerProfile")) {
-            new MyProfile(currentUserId).setVisible(true);
-        } else {
-            new UpdateCustomerProfilePage(currentUserId).setVisible(true);
-        }
+            new MyProfile(currentUserId, "ManagerProfile").setVisible(true);
+        } else if (returnPage.equalsIgnoreCase("CustomerProfile")) {
+            new MyProfile(currentUserId, "CustomerProfile").setVisible(true);
+        } 
+        
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 

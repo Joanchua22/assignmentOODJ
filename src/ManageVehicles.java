@@ -4,19 +4,19 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class ManageVehiclesPage extends javax.swing.JFrame {
+public class ManageVehicles extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageVehiclesPage.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageVehicles.class.getName());
     private String currentUserId;
     private List<String[]> vehicleDetails = new ArrayList<>();
     
-    public ManageVehiclesPage(String currentUserId) {
+    public ManageVehicles(String currentUserId) {
         this.currentUserId = currentUserId;
         initComponents();
         loadVehicleTable();
         addTableDoubleClickEvent();
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -82,7 +82,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,7 +93,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBack)
                     .addComponent(btnAddVehicle))
@@ -104,35 +104,35 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new UpdateCustomerProfilePage(currentUserId).setVisible(true);
+        new UpdateCustomerProfile(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnAddVehicleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddVehicleActionPerformed
         showAddVehiclePopup();
     }//GEN-LAST:event_btnAddVehicleActionPerformed
-    
+
     private void loadVehicleTable() {
-        try {
-            vehicleDetails = FileManager.getCustomerVehicles(currentUserId);
+            try {
+                vehicleDetails = FileManager.getCustomerVehicles(currentUserId);
 
-            DefaultTableModel model = (DefaultTableModel) vehicleTable.getModel();
-            model.setRowCount(0);
+                DefaultTableModel model = (DefaultTableModel) vehicleTable.getModel();
+                model.setRowCount(0);
 
-            for (String[] vehicle : vehicleDetails) {
-                model.addRow(new Object[] {
-                    vehicle[2],
-                    vehicle[3],
-                    vehicle[4],
-                    vehicle[5]
-                });
+                for (String[] vehicle : vehicleDetails) {
+                    model.addRow(new Object[] {
+                        vehicle[2],
+                        vehicle[3],
+                        vehicle[4],
+                        vehicle[5]
+                    });
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error loading vehicles.");
             }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading vehicles.");
         }
-    }
 
     private void addTableDoubleClickEvent() {
         vehicleTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -184,7 +184,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
         if (choice == 1) {
             showEditVehiclePopup(vehicle);
         } else if (choice == 2) {
-            deleteVehicleWithDoubleConfirm(vehicleId);
+            deleteVehicleWithDoubleConfirm(vehicleId, plateNo);
         }
     }
 
@@ -245,6 +245,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
 
                 if (added) {
                     JOptionPane.showMessageDialog(this, "Vehicle added successfully.");
+                    FileManager.addActivityLog(currentUserId, "Add Vehicle", "Added vehicle: " + plateNo);
                     loadVehicleTable();
                 } else {
                     JOptionPane.showMessageDialog(this, "Vehicle could not be added. Plate number may already exist.");
@@ -322,6 +323,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
 
                 if (updated) {
                     JOptionPane.showMessageDialog(this, "Vehicle updated successfully.");
+                    FileManager.addActivityLog(currentUserId, "Update Vehicle", "Updated vehicle: " + oldPlateNo);
                     loadVehicleTable();
                 } else {
                     JOptionPane.showMessageDialog(this, "Vehicle could not be updated. Plate number may already exist.");
@@ -333,7 +335,7 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
         }
     }
     
-    private void deleteVehicleWithDoubleConfirm(String vehicleId) {
+    private void deleteVehicleWithDoubleConfirm(String vehicleId, String plateNo) {
         Object[] options = { "Cancel", "Delete" };
 
         // First confirmation
@@ -373,7 +375,8 @@ public class ManageVehiclesPage extends javax.swing.JFrame {
 
             if (deleted) {
                 JOptionPane.showMessageDialog(this, "Vehicle deleted successfully.");
-                loadVehicleTable(); // refresh table
+                FileManager.addActivityLog(currentUserId, "Delete Vehicle", "Deleted vehicle: " + plateNo);
+                loadVehicleTable();
             } else {
                 JOptionPane.showMessageDialog(this, "Vehicle not found.");
             }

@@ -6,25 +6,29 @@ import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-public class ViewServiceNPaymentPage extends javax.swing.JFrame {
+public class ViewServiceNPayment extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewServiceNPaymentPage.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewServiceNPayment.class.getName());
 
     private String currentUserId;
     
     private List<String[]> historyDetails = new ArrayList<>();
     
-    public ViewServiceNPaymentPage(String currentUserId) {
+    public ViewServiceNPayment(String currentUserId) {
         this.currentUserId = currentUserId;
         initComponents();
         loadHistory();
         addTableDoubleClickEvent();
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        toDateField = new javax.swing.JTextField();
+        btnFilter = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         HistoryTable = new javax.swing.JTable();
@@ -32,12 +36,18 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         fromDateField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        toDateField = new javax.swing.JTextField();
-        btnFilter = new javax.swing.JButton();
-        btnReset = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        btnFilter.setText("Filter");
+        btnFilter.addActionListener(this::btnFilterActionPerformed);
+
+        btnReset.setText("Reset");
+        btnReset.addActionListener(this::btnResetActionPerformed);
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel4.setText("*Date Format: yyyy-MM-dd");
 
         jLabel1.setText("Service & Payment History");
 
@@ -69,16 +79,6 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
         jLabel2.setText("From Date:");
 
         jLabel3.setText("To Date:");
-
-        btnFilter.setText("Filter");
-        btnFilter.addActionListener(this::btnFilterActionPerformed);
-
-        btnReset.setText("Reset");
-        btnReset.addActionListener(this::btnResetActionPerformed);
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel4.setText("*Date Format: yyyy-MM-dd");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,7 +112,7 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(btnBack)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 498, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,114 +139,12 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
                             .addComponent(btnReset))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel4)
-                        .addContainerGap(25, Short.MAX_VALUE))))
+                        .addContainerGap(21, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new CustomerPage(currentUserId).setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnBackActionPerformed
-
-    private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
-        try {
-                List<String[]> allHistory = FileManager.getCustomerHistory(currentUserId);
-
-                String fromText = fromDateField.getText().trim();
-                String toText = toDateField.getText().trim();
-
-                LocalDate fromDate = null;
-                LocalDate toDate = null;
-
-                if (!fromText.isEmpty()) {
-                    if (!FileManager.isValidDate(fromText)) {
-                        JOptionPane.showMessageDialog(this, "From Date must be in yyyy-MM-dd format.");
-                        return;
-                    }
-                    
-                    if (!FileManager.isNotFutureDate(fromText)) {
-                        JOptionPane.showMessageDialog(this, "From Date cannot be in the future.");
-                        return;
-                    }
-                    
-                    fromDate = LocalDate.parse(fromText);
-                }
-
-                if (!toText.isEmpty()) {
-                    if (!FileManager.isValidDate(toText)) {
-                        JOptionPane.showMessageDialog(this, "To Date must be in yyyy-MM-dd format.");
-                        return;
-                    }
-                    
-                    if (!FileManager.isNotFutureDate(toText)) {
-                        JOptionPane.showMessageDialog(this, "To Date cannot be in the future.");
-                        return;
-                    }
-                    
-                    toDate = LocalDate.parse(toText);
-                }
-
-                if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
-                    JOptionPane.showMessageDialog(this, "From Date cannot be later than To Date.");
-                    return;
-                }
-
-                historyDetails.clear();
-
-                DefaultTableModel model = (DefaultTableModel) HistoryTable.getModel();
-                model.setRowCount(0);
-
-                for (String[] record : allHistory) {
-                    String appointmentDateText = record[3];
-                    LocalDate appointmentDate;
-
-                    try {
-                        appointmentDate = LocalDate.parse(appointmentDateText);
-                    } catch (DateTimeParseException e) {
-                        continue;
-                    }
-
-                    boolean match = true;
-
-                    if (fromDate != null && appointmentDate.isBefore(fromDate)) {
-                        match = false;
-                    }
-
-                    if (toDate != null && appointmentDate.isAfter(toDate)) {
-                        match = false;
-                    }
-
-                    if (match) {
-                        historyDetails.add(record);
-
-                        model.addRow(new Object[] {
-                            record[1], // vehicle
-                            record[2], // service type
-                            record[3], // appointment date
-                            record[4], // amount
-                            record[5]  // payment status
-                        });
-                    }
-                }
-
-                if (historyDetails.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "No records found for the selected date range.");
-                }
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error filtering history.");
-            }
-    }//GEN-LAST:event_btnFilterActionPerformed
-
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-            fromDateField.setText("");
-            toDateField.setText("");
-            loadHistory();
-    }//GEN-LAST:event_btnResetActionPerformed
- 
+    
     private void loadHistory() {
         try {
             historyDetails = FileManager.getCustomerHistory(currentUserId);
@@ -315,6 +213,138 @@ public class ViewServiceNPaymentPage extends javax.swing.JFrame {
                 JOptionPane.INFORMATION_MESSAGE
         );
     }
+    
+    private void filterHistory() {
+        try {
+            List<String[]> allHistory = FileManager.getCustomerHistory(currentUserId);
+
+            String fromText = fromDateField.getText().trim();
+            String toText = toDateField.getText().trim();
+
+            LocalDate fromDate = null;
+            LocalDate toDate = null;
+
+            if (!fromText.isEmpty()) {
+
+                if (!FileManager.isValidDate(fromText)) {
+                    JOptionPane.showMessageDialog(this,
+                            "From Date must be in yyyy-MM-dd format.");
+                    return;
+                }
+
+                if (!FileManager.isNotFutureDate(fromText)) {
+                    JOptionPane.showMessageDialog(this,
+                            "From Date cannot be in the future.");
+                    return;
+                }
+
+                fromDate = LocalDate.parse(fromText);
+            }
+
+            if (!toText.isEmpty()) {
+
+                if (!FileManager.isValidDate(toText)) {
+                    JOptionPane.showMessageDialog(this,
+                            "To Date must be in yyyy-MM-dd format.");
+                    return;
+                }
+
+                if (!FileManager.isNotFutureDate(toText)) {
+                    JOptionPane.showMessageDialog(this,
+                            "To Date cannot be in the future.");
+                    return;
+                }
+
+                toDate = LocalDate.parse(toText);
+            }
+
+            if (fromDate != null
+                    && toDate != null
+                    && fromDate.isAfter(toDate)) {
+
+                JOptionPane.showMessageDialog(this,
+                        "From Date cannot be later than To Date.");
+                return;
+            }
+
+            historyDetails.clear();
+
+            DefaultTableModel model =
+                    (DefaultTableModel) HistoryTable.getModel();
+
+            model.setRowCount(0);
+
+            for (String[] record : allHistory) {
+
+                String appointmentDateText = record[3];
+                LocalDate appointmentDate;
+
+                try {
+                    appointmentDate =
+                            LocalDate.parse(appointmentDateText);
+
+                } catch (DateTimeParseException e) {
+                    continue;
+                }
+
+                boolean match = true;
+
+                if (fromDate != null
+                        && appointmentDate.isBefore(fromDate)) {
+
+                    match = false;
+                }
+
+                if (toDate != null
+                        && appointmentDate.isAfter(toDate)) {
+
+                    match = false;
+                }
+
+                if (match) {
+
+                    historyDetails.add(record);
+
+                    model.addRow(new Object[]{
+                        record[1],
+                        record[2],
+                        record[3],
+                        record[4],
+                        record[5]
+                    });
+                }
+            }
+
+            if (historyDetails.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "No records found for the selected date range.");
+            }
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+
+            JOptionPane.showMessageDialog(this,
+                    "Error filtering history.");
+        }
+    }
+    
+    private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
+        filterHistory();
+    }//GEN-LAST:event_btnFilterActionPerformed
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        fromDateField.setText("");
+        toDateField.setText("");
+        loadHistory();
+    }//GEN-LAST:event_btnResetActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        new Customer(currentUserId).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable HistoryTable;
     private javax.swing.JButton btnBack;

@@ -6,14 +6,14 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class ViewFeedbackPage extends javax.swing.JFrame {
+public class ViewFeedback extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewFeedbackPage.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewFeedback.class.getName());
     
     private String currentUserId;
     private List<String[]> feedbackDetails = new ArrayList<>();
     
-    public ViewFeedbackPage(String currentUserId) {
+    public ViewFeedback(String currentUserId) {
         this.currentUserId = currentUserId;
         initComponents();
         loadFeedbackHistory();
@@ -21,30 +21,30 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
     }
     
     private void loadFeedbackHistory() {
-        try {
-            feedbackDetails = FileManager.getCustomerFeedbackHistory(currentUserId);
+            try {
+                feedbackDetails = FileManager.getCustomerFeedbackHistory(currentUserId);
 
-            DefaultTableModel model = (DefaultTableModel) feedbackTable.getModel();
-            model.setRowCount(0);
+                DefaultTableModel model = (DefaultTableModel) feedbackTable.getModel();
+                model.setRowCount(0);
 
-            for (String[] record : feedbackDetails) {
-                model.addRow(new Object[] {
-                    record[0], // appointment date
-                    record[1], // vehicle
-                    record[3], // service name
-                    record[4]  // status
-                });
+                for (String[] record : feedbackDetails) {
+                    model.addRow(new Object[] {
+                        record[0], // appointment date
+                        record[1], // vehicle
+                        record[3], // service name
+                        record[4]  // status
+                    });
+                }
+
+                if (feedbackDetails.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No feedback history found.");
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error loading feedback history.");
             }
-
-            if (feedbackDetails.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No feedback history found.");
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading feedback history.");
         }
-    }
     
     private void addTableDoubleClickEvent() {
         feedbackTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -181,14 +181,11 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error filtering history.");
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        feedbackTable = new javax.swing.JTable();
         btnBack = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -197,11 +194,35 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
         toDateField = new javax.swing.JTextField();
         btnFilter = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        feedbackTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        btnBack.setText("Back");
+        btnBack.addActionListener(this::btnBackActionPerformed);
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel2.setText("*Double Click to View Full Details");
+
+        jLabel3.setText("From Date:");
+
+        jLabel4.setText("To Date:");
+
+        btnFilter.setText("Filter");
+        btnFilter.addActionListener(this::btnFilterActionPerformed);
+
+        btnReset.setText("Reset");
+        btnReset.addActionListener(this::btnResetActionPerformed);
+
         jLabel1.setText("Appointment Feedback History");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel5.setText("*Date Format: yyyy-MM-dd");
 
         feedbackTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -223,27 +244,6 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(feedbackTable);
-
-        btnBack.setText("Back");
-        btnBack.addActionListener(this::btnBackActionPerformed);
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel2.setText("*Double Click to View Full Details");
-
-        jLabel3.setText("From Date:");
-
-        jLabel4.setText("To Date:");
-
-        btnFilter.setText("Filter");
-        btnFilter.addActionListener(this::btnFilterActionPerformed);
-
-        btnReset.setText("Reset");
-        btnReset.addActionListener(this::btnResetActionPerformed);
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel5.setText("*Date Format: yyyy-MM-dd");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -277,7 +277,7 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel2)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -288,7 +288,7 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(fromDateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -302,7 +302,7 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
                             .addComponent(btnReset))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel5)
-                        .addContainerGap(20, Short.MAX_VALUE))
+                        .addContainerGap(16, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnBack)
                         .addGap(33, 33, 33))))
@@ -312,7 +312,7 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new CustomerPage(currentUserId).setVisible(true);
+        new Customer(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
@@ -325,8 +325,7 @@ public class ViewFeedbackPage extends javax.swing.JFrame {
         toDateField.setText("");
         loadFeedbackHistory();
     }//GEN-LAST:event_btnResetActionPerformed
- 
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnFilter;
