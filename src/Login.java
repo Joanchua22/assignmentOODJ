@@ -48,7 +48,7 @@ public class Login extends javax.swing.JFrame {
         this.dispose();
 
         switch (role.toLowerCase()) {
-            case "manager" -> new ManagerPage(currentUserId).setVisible(true);
+            case "manager" -> new Manager(currentUserId).setVisible(true);
             // case "counter staff" -> new CounterStaffPage(currentUserId).setVisible(true);
             case "technician" -> new TechnicianPage(currentUserId).setVisible(true);
             case "customer" -> new CustomerPage(currentUserId).setVisible(true);

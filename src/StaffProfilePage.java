@@ -234,7 +234,7 @@ public class StaffProfilePage extends javax.swing.JFrame {
             }
         }
 
-        new ManageStaffPage(currentUserId).setVisible(true);
+        new ManageStaff(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
@@ -309,7 +309,7 @@ public class StaffProfilePage extends javax.swing.JFrame {
             
             this.dispose();
             FileManager.addActivityLog(currentUserId, "Update Staff Profile", selectedUserId + " Profile Updated");
-            new ManageStaffPage(currentUserId).setVisible(true);
+            new ManageStaff(currentUserId).setVisible(true);
 
         } else {
             JOptionPane.showMessageDialog(this, "Staff profile update failed.");
@@ -338,7 +338,7 @@ public class StaffProfilePage extends javax.swing.JFrame {
             if(success){
                 JOptionPane.showMessageDialog(this, "Staff record deleted successful.");
                 FileManager.addActivityLog(currentUserId, "Delete Staff", selectedUserId + " Deleted");
-                new ManageStaffPage(currentUserId).setVisible(true);
+                new ManageStaff(currentUserId).setVisible(true);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Staff record not found.");

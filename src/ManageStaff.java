@@ -4,12 +4,12 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class ManageStaffPage extends javax.swing.JFrame {
+public class ManageStaff extends javax.swing.JFrame {
     
     private DefaultTableModel tableModel;
     private final String currentUserId;
     
-    public ManageStaffPage(String currentUserId) {
+    public ManageStaff(String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
         initializeTable();
@@ -234,7 +234,7 @@ public class ManageStaffPage extends javax.swing.JFrame {
     }//GEN-LAST:event_addBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ManagerPage(currentUserId).setVisible(true);
+        new Manager(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 

@@ -214,7 +214,7 @@ public class MyProfile extends javax.swing.JFrame {
             }
         }
 
-        new ManagerPage(currentUserId).setVisible(true);
+        new Manager(currentUserId).setVisible(true);
         dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 

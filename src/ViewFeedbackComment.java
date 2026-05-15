@@ -185,7 +185,7 @@ public class ViewFeedbackComment extends javax.swing.JFrame {
     }//GEN-LAST:event_feedbackBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ManagerPage(currentUserId).setVisible(true);
+        new Manager(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 

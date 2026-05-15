@@ -1,19 +1,19 @@
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
-public class ManagerPage extends javax.swing.JFrame {
+public class Manager extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManagerPage.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Manager.class.getName());
 
     private final String currentUserId;
 
-    public ManagerPage(String currentUserId) {
+    public Manager(String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
     }
     
 
-    public ManagerPage() {
+    public Manager() {
         initComponents();
         this.currentUserId = "USR0001"; 
     }
@@ -49,7 +49,7 @@ public class ManagerPage extends javax.swing.JFrame {
         } catch (IOException ex) {
 
             System.getLogger(
-                    ManagerPage.class.getName()
+                    Manager.class.getName()
             ).log(
                     System.Logger.Level.ERROR,
                     (String) null,
@@ -161,7 +161,7 @@ public class ManagerPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void manageStaffBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageStaffBtnActionPerformed
-        new ManageStaffPage(currentUserId).setVisible(true);
+        new ManageStaff(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_manageStaffBtnActionPerformed
 
@@ -196,7 +196,7 @@ public class ManagerPage extends javax.swing.JFrame {
 
 
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new ManagerPage().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new Manager().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

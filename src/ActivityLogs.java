@@ -378,7 +378,7 @@ public class ActivityLogs extends BaseReport {
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new ManagerPage(currentUserId).setVisible(true);
+        new Manager(currentUserId).setVisible(true);
         dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
