@@ -1,16 +1,13 @@
-
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
 
-public class ChangePasswordPage extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ChangePasswordPage.class.getName());
+public class ChangePassword extends javax.swing.JFrame {
     
     private String currentUserId;
     private String returnPage;
     
-    public ChangePasswordPage(String currentUserId, String returnPage) {
+    public ChangePassword(String currentUserId, String returnPage) {
         this.currentUserId = currentUserId;
         this.returnPage = returnPage;
         initComponents();

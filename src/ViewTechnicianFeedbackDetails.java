@@ -2,14 +2,14 @@
 import java.io.IOException;
 import javax.swing.JOptionPane;
 
-public class TechnicianFeedbackDetails extends javax.swing.JFrame {
+public class ViewTechnicianFeedbackDetails extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TechnicianFeedbackDetails.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewTechnicianFeedbackDetails.class.getName());
 
     private final String feedbackId;
     private final String currentUserId;
 
-    public TechnicianFeedbackDetails(String feedbackId, String currentUserId) {
+    public ViewTechnicianFeedbackDetails(String feedbackId, String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
         this.feedbackId = feedbackId;
@@ -46,6 +46,120 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error loading feedback details.");
         }
+    }
+    
+    private void viewVehicleDetails() {
+
+        String vehicleId = vehicleIdField.getText().trim();
+
+        if (vehicleId.isEmpty() || vehicleId.equals("-")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No vehicle selected."
+            );
+
+            return;
+        }
+
+        try {
+
+            String[] vehicle =
+                    FileManager.getVehicleDetailsById(vehicleId);
+
+            if (vehicle == null) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Vehicle details not found."
+                );
+
+                return;
+            }
+
+            showVehicleDetailsPopup(vehicle);
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error loading vehicle details."
+            );
+        }
+    }
+    
+    private void showVehicleDetailsPopup(String[] vehicle) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Customer ID: " + vehicle[1] +
+                "\nCustomer Username: " + vehicle[2] +
+                "\nVehicle Plate No: " + vehicle[3] +
+                "\nVehicle Type: " + vehicle[4] +
+                "\nVehicle Model: " + vehicle[5] +
+                "\nYear of Manufacture: " + vehicle[6],
+                "Vehicle Details",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+    
+    private void viewAppointmentDetails() {
+
+        String appointmentId =
+                appointmentIdField.getText().trim();
+
+        if (appointmentId.isEmpty()
+                || appointmentId.equals("-")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No appointment selected."
+            );
+
+            return;
+        }
+
+        try {
+
+            String[] appt =
+                    FileManager.getAppointmentDetailsById(
+                            appointmentId
+                    );
+
+            if (appt == null) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Appointment details not found."
+                );
+
+                return;
+            }
+
+            showAppointmentDetailsPopup(appt);
+
+        } catch (IOException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error loading appointment details."
+            );
+        }
+    }
+    
+    private void showAppointmentDetailsPopup(String[] appt) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "\nCustomer ID: " + appt[5] +
+                "\nCustomer Username: " + appt[6] +
+                "\nDate: " + appt[0] +
+                "\nTime: " + appt[1] + " - " + appt[2] +
+                "\nStatus: " + appt[3] +
+                "\nCounter Staff: " + appt[4],
+                "Appointment Details",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
     
     @SuppressWarnings("unchecked")
@@ -226,74 +340,16 @@ public class TechnicianFeedbackDetails extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new TechnicianFeedback(currentUserId).setVisible(true);
+        new ViewTechnicianFeedback(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void viewDetailsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewDetailsBtnActionPerformed
-        String vehicleId = vehicleIdField.getText().trim();
-
-        if (vehicleId.isEmpty() || vehicleId.equals("-")) {
-            JOptionPane.showMessageDialog(this, "No vehicle selected.");
-            return;
-        }
-
-        try {
-            String[] vehicle = FileManager.getVehicleDetailsById(vehicleId);
-
-            if (vehicle == null) {
-                JOptionPane.showMessageDialog(this, "Vehicle details not found.");
-                return;
-            }
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Customer ID: " + vehicle[1] +
-                    "\nCustomer Username: " + vehicle[2] +
-                    "\nVehicle Plate No: " + vehicle[3] +
-                    "\nVehicle Type: " + vehicle[4] +
-                    "\nVehicle Model: " + vehicle[5] +
-                    "\nYear of Manufacture: " + vehicle[6],
-                    "Vehicle Details",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error loading vehicle details.");
-        }
+        viewVehicleDetails();
     }//GEN-LAST:event_viewDetailsBtnActionPerformed
 
     private void appoinmentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_appoinmentBtnActionPerformed
-        String appointmentId = appointmentIdField.getText().trim();
-
-        if (appointmentId.isEmpty() || appointmentId.equals("-")) {
-            JOptionPane.showMessageDialog(this, "No appointment selected.");
-            return;
-        }
-
-        try {
-            String[] appt = FileManager.getAppointmentDetailsById(appointmentId);
-
-            if (appt == null) {
-                JOptionPane.showMessageDialog(this, "Appointment details not found.");
-                return;
-            }
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "\nCustomer ID: " + appt[5] +
-                    "\nCustomer Username: " + appt[6] +
-                    "\nDate: " + appt[0] +
-                    "\nTime: " + appt[1] + " - " + appt[2] +
-                    "\nStatus: " + appt[3] +
-                    "\nCounter Staff: " + appt[4],
-                    "Appointment Details",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error loading appointment details.");
-        }
+        viewAppointmentDetails();
     }//GEN-LAST:event_appoinmentBtnActionPerformed
 
 

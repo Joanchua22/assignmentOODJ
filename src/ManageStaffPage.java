@@ -229,7 +229,7 @@ public class ManageStaffPage extends javax.swing.JFrame {
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        new AddNewStaffPage(currentUserId).setVisible(true);
+        new AddNewStaff(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addBtnActionPerformed
 

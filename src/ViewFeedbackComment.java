@@ -180,7 +180,7 @@ public class ViewFeedbackComment extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void feedbackBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_feedbackBtnActionPerformed
-        new TechnicianFeedback(currentUserId).setVisible(true);
+        new ViewTechnicianFeedback(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_feedbackBtnActionPerformed
 
@@ -190,7 +190,7 @@ public class ViewFeedbackComment extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void commentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentBtnActionPerformed
-        new CustomerComment(currentUserId).setVisible(true);
+        new ViewCustomerComment(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_commentBtnActionPerformed
 

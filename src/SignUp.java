@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.io.IOException;
 
-public class SignUpPage extends javax.swing.JFrame {
+public class SignUp extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SignUpPage.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SignUp.class.getName());
 
-    public SignUpPage() {
+    public SignUp() {
         initComponents();     
     }
     
@@ -121,7 +121,7 @@ public class SignUpPage extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Sign up successful! You can now login.");
             this.dispose();
-            new LoginPage().setVisible(true);
+            new Login().setVisible(true);
 
         } catch (IOException e) {
             logger.severe("Error during sign up: " + e.getMessage());
@@ -312,7 +312,7 @@ layout.setHorizontalGroup(
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new HomePage().setVisible(true);
+        new Home().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 

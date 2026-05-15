@@ -71,7 +71,7 @@ public class ManagerPage extends javax.swing.JFrame {
 
         recordLogoutActivity();
 
-        new HomePage().setVisible(true);
+        new Home().setVisible(true);
 
         this.dispose();
     }

@@ -1,8 +1,6 @@
-public class HomePage extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(HomePage.class.getName());
+public class Home extends javax.swing.JFrame {
 
-    public HomePage() {
+    public Home() {
         initComponents();
     }
 
@@ -56,12 +54,12 @@ public class HomePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        new LoginPage().setVisible(true);
+        new Login().setVisible(true);
         this.dispose(); 
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnSignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpActionPerformed
-        new SignUpPage().setVisible(true);
+        new SignUp().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnSignUpActionPerformed
 

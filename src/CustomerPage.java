@@ -118,7 +118,7 @@ import javax.swing.JOptionPane;
         if (confirm == 1) { 
 
             JOptionPane.showMessageDialog(this, "Logout successful.");
-            new HomePage().setVisible(true);
+            new Home().setVisible(true);
             this.dispose();
         }
     }//GEN-LAST:event_btnLogoutActionPerformed

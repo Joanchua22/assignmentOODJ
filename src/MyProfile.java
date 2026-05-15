@@ -190,7 +190,7 @@ public class MyProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void changePasswordBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordBtnActionPerformed
-        new ChangePasswordPage(currentUserId, "ManagerProfile").setVisible(true);
+        new ChangePassword(currentUserId, "ManagerProfile").setVisible(true);
         dispose();
     }//GEN-LAST:event_changePasswordBtnActionPerformed
 

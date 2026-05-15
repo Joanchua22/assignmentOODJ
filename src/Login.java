@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.io.IOException;
 
-public class LoginPage extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginPage.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
-    public LoginPage() {
+    public Login() {
         initComponents();
         forgotPasswordLabel.setText("<html><u>Forget Password?</u></html>");
         forgotPasswordLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -169,7 +169,7 @@ public class LoginPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new HomePage().setVisible(true);
+        new Home().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 

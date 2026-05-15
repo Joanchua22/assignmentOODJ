@@ -85,7 +85,7 @@ public class UpdateCustomerProfilePage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnChangePassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePassActionPerformed
-        new ChangePasswordPage(currentUserId, "CustomerProfile").setVisible(true);
+        new ChangePassword(currentUserId, "CustomerProfile").setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnChangePassActionPerformed
 

@@ -5,11 +5,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 
-public class TechnicianFeedback extends javax.swing.JFrame {
+public class ViewTechnicianFeedback extends javax.swing.JFrame {
     
     private final String currentUserId;
 
-    public TechnicianFeedback(String currentUserId) {
+    public ViewTechnicianFeedback(String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
         loadFeedbackTable();
@@ -35,7 +35,7 @@ public class TechnicianFeedback extends javax.swing.JFrame {
 
         String feedbackId = feedbackTable.getValueAt(selectedRow, 0).toString();
 
-        new TechnicianFeedbackDetails(feedbackId, currentUserId).setVisible(true);
+        new ViewTechnicianFeedbackDetails(feedbackId, currentUserId).setVisible(true);
         dispose();
     }
     
@@ -75,6 +75,124 @@ public class TechnicianFeedback extends javax.swing.JFrame {
             });
         }
     }
+    
+    private String validateSearchInput(String startDate, String endDate) {
+
+        if (!startDate.isEmpty()) {
+            if (!FileManager.isValidDateFormat(startDate)
+                    || !FileManager.isValidDate(startDate)) {
+                return "Start date must be valid (YYYY-MM-DD).";
+            }
+        }
+
+        if (!endDate.isEmpty()) {
+            if (!FileManager.isValidDateFormat(endDate)
+                    || !FileManager.isValidDate(endDate)) {
+                return "End date must be valid (YYYY-MM-DD).";
+            }
+        }
+
+        if (!FileManager.isValidDateRange(startDate, endDate)) {
+            return "Start date cannot be after end date.";
+        }
+
+        return "VALID";
+    }
+    
+    private List<String[]> filterTechnicianFeedbacks(
+            List<String[]> allFeedbacks,
+            String startDate,
+            String endDate,
+            String feedbackId,
+            String appointmentId,
+            String technicianUsername
+    ) {
+        List<String[]> filteredList = new ArrayList<>();
+
+        for (String[] row : allFeedbacks) {
+            String rowFeedbackId = row[0].toLowerCase();
+            String rowAppointmentId = row[1].toLowerCase();
+            String rowDate = row[3];
+            String rowTechnicianUsername = row[4].toLowerCase();
+
+            boolean matches = true;
+
+            if (!startDate.isEmpty() && rowDate.compareTo(startDate) < 0) {
+                matches = false;
+            }
+
+            if (!endDate.isEmpty() && rowDate.compareTo(endDate) > 0) {
+                matches = false;
+            }
+
+            if (!feedbackId.isEmpty() && !rowFeedbackId.contains(feedbackId)) {
+                matches = false;
+            }
+
+            if (!appointmentId.isEmpty() && !rowAppointmentId.contains(appointmentId)) {
+                matches = false;
+            }
+
+            if (!technicianUsername.isEmpty()
+                    && !rowTechnicianUsername.contains(technicianUsername)) {
+                matches = false;
+            }
+
+            if (matches) {
+                filteredList.add(row);
+            }
+        }
+
+        return filteredList;
+    }
+    
+    private void searchTechnicianFeedbacks() {
+        String startDate = startDateField.getText().trim();
+        String endDate = endDateField.getText().trim();
+
+        String feedbackId =
+                feedbackIdField.getText().trim().toLowerCase();
+
+        String appointmentId =
+                appointmentIdField.getText().trim().toLowerCase();
+
+        String technicianUsername =
+                technicianField.getText().trim().toLowerCase();
+
+        String validationResult =
+                validateSearchInput(startDate, endDate);
+
+        if (!validationResult.equals("VALID")) {
+            JOptionPane.showMessageDialog(this, validationResult);
+            return;
+        }
+
+        try {
+            List<String[]> allFeedbacks =
+                    FileManager.getAllTechnicianFeedbacks();
+
+            List<String[]> filteredList =
+                    filterTechnicianFeedbacks(
+                            allFeedbacks,
+                            startDate,
+                            endDate,
+                            feedbackId,
+                            appointmentId,
+                            technicianUsername
+                    );
+
+            loadFeedbackTable(filteredList);
+
+            if (filteredList.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No matching feedback found.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error searching feedback data.");
+        }
+    }
+    
+    
 
 
     @SuppressWarnings("unchecked")
@@ -233,77 +351,7 @@ public class TechnicianFeedback extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
-        String startDate = startDateField.getText().trim();
-        String endDate = endDateField.getText().trim();
-        String feedbackId = feedbackIdField.getText().trim().toLowerCase();
-        String appointmentId = appointmentIdField.getText().trim().toLowerCase();
-        String technicianUsername = technicianField.getText().trim().toLowerCase();
-
-        if (!startDate.isEmpty()) {
-            if (!FileManager.isValidDateFormat(startDate) || !FileManager.isValidDate(startDate)) {
-                JOptionPane.showMessageDialog(this, "Start date must be valid (YYYY-MM-DD).");
-                return;
-            }
-        }
-
-        if (!endDate.isEmpty()) {
-            if (!FileManager.isValidDateFormat(endDate) || !FileManager.isValidDate(endDate)) {
-                JOptionPane.showMessageDialog(this, "End date must be valid (YYYY-MM-DD).");
-                return;
-            }
-        }
-
-        if (!FileManager.isValidDateRange(startDate, endDate)) {
-            JOptionPane.showMessageDialog(this, "Start date cannot be after end date.");
-            return;
-        }
-
-        try {
-            List<String[]> allFeedbacks = FileManager.getAllTechnicianFeedbacks();
-            List<String[]> filteredList = new ArrayList<>();
-
-            for (String[] row : allFeedbacks) {
-                String rowFeedbackId = row[0].toLowerCase();
-                String rowAppointmentId = row[1].toLowerCase();
-                String rowDate = row[3];
-                String rowTechnicianUsername = row[4].toLowerCase();
-
-                boolean matches = true;
-
-                if (!startDate.isEmpty() && rowDate.compareTo(startDate) < 0) {
-                    matches = false;
-                }
-
-                if (!endDate.isEmpty() && rowDate.compareTo(endDate) > 0) {
-                    matches = false;
-                }
-
-                if (!feedbackId.isEmpty() && !rowFeedbackId.contains(feedbackId)) {
-                    matches = false;
-                }
-
-                if (!appointmentId.isEmpty() && !rowAppointmentId.contains(appointmentId)) {
-                    matches = false;
-                }
-
-                if (!technicianUsername.isEmpty() && !rowTechnicianUsername.contains(technicianUsername)) {
-                    matches = false;
-                }
-
-                if (matches) {
-                    filteredList.add(row);
-                }
-            }
-
-            loadFeedbackTable(filteredList);
-
-            if (filteredList.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No matching feedback found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error searching feedback data.");
-        }
+        searchTechnicianFeedbacks();
     }//GEN-LAST:event_searchBtnActionPerformed
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed

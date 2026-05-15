@@ -205,7 +205,7 @@ public class ServiceCategory extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        new AddServiceCate(currentUserId).setVisible(true);
+        new AddNewServiceCate(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_addBtnActionPerformed
 

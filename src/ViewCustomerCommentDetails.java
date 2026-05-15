@@ -2,12 +2,12 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 
-public class CustomerCommentDetails extends javax.swing.JFrame {
+public class ViewCustomerCommentDetails extends javax.swing.JFrame {
    
     private final String commentId;
     private final String currentUserId;
 
-    public CustomerCommentDetails(String commentId, String currentUserId) {
+    public ViewCustomerCommentDetails(String commentId, String currentUserId) {
         initComponents();
         this.commentId = commentId;
         this.currentUserId = currentUserId;
@@ -284,7 +284,7 @@ public class CustomerCommentDetails extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new CustomerComment(currentUserId).setVisible(true);
+        new ViewCustomerComment(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 

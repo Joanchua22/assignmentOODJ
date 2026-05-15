@@ -111,7 +111,7 @@ public class ForgetPassword extends javax.swing.JFrame {
                         "Password reset successfully. Please login again."
                 );
 
-                new LoginPage().setVisible(true);
+                new Login().setVisible(true);
                 dispose();
 
             } else {
@@ -218,7 +218,7 @@ public class ForgetPassword extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        new LoginPage().setVisible(true);
+        new Login().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 

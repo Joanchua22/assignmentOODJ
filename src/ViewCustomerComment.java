@@ -4,11 +4,11 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class CustomerComment extends javax.swing.JFrame {
+public class ViewCustomerComment extends javax.swing.JFrame {
     
     private final String currentUserId;
     
-    public CustomerComment(String currentUserId) {
+    public ViewCustomerComment(String currentUserId) {
         initComponents();
         this.currentUserId = currentUserId;
         loadCommentTable();
@@ -33,7 +33,7 @@ public class CustomerComment extends javax.swing.JFrame {
 
         String commentId = commentTable.getValueAt(selectedRow, 0).toString();
 
-        new CustomerCommentDetails(commentId, currentUserId).setVisible(true);
+        new ViewCustomerCommentDetails(commentId, currentUserId).setVisible(true);
         dispose();
     }
     
