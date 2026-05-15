@@ -223,7 +223,7 @@ private String validatePasswordInput(
         if (returnPage.equalsIgnoreCase("TechEditProfile")) {
             new TechEditProfile(currentUserId).setVisible(true);
         } else {
-            new UpdateCustomerProfilePage(currentUserId).setVisible(true);
+            new TechEditProfile(currentUserId).setVisible(true);
         }
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
