@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.io.IOException;
 
 public class Login extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
 
     public Login() {
         initComponents();
@@ -83,6 +81,11 @@ public class Login extends javax.swing.JFrame {
 
         recordLoginActivity(currentUserId);
         openPageByRole(role, currentUserId);
+    }
+    
+    private void openHomePage(){
+        new Home().setVisible(true);
+        this.dispose();
     }
       
 
@@ -169,8 +172,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        new Home().setVisible(true);
-        this.dispose();
+        openHomePage();
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
