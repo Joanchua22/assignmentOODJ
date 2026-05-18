@@ -3,6 +3,16 @@ public class Home extends javax.swing.JFrame {
     public Home() {
         initComponents();
     }
+    
+    private void login() {
+        new Login().setVisible(true);
+        this.dispose();
+    }
+
+    private void signUp() {
+        new SignUp().setVisible(true);
+        this.dispose();
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -54,13 +64,11 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        new Login().setVisible(true);
-        this.dispose(); 
+        login();
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnSignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignUpActionPerformed
-        new SignUp().setVisible(true);
-        this.dispose();
+        signUp();
     }//GEN-LAST:event_btnSignUpActionPerformed
 
 
