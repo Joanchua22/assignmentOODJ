@@ -60,6 +60,129 @@ public class StaffProfilePage extends javax.swing.JFrame {
                !emailField.getText().trim().equals(originalEmail) ||
                !((String) statusComboBox.getSelectedItem()).equals(originalStatus);
     }
+    
+    private String validateStaffProfileInput(String username,String role,String fullName,
+                                            String tp,String phone,String email,String status) throws IOException {
+
+        if (FileManager.isEmpty(username) || FileManager.isEmpty(role) ||
+            FileManager.isEmpty(fullName) || FileManager.isEmpty(tp) ||
+            FileManager.isEmpty(phone) || FileManager.isEmpty(email) ||
+            FileManager.isEmpty(status)) {
+            return "Please fill in all fields.";
+        }
+
+        if (!FileManager.isValidTP(tp)) {
+            return "TP Number must start with TP followed by 6 digits.";
+        }
+
+        if (!FileManager.isValidPhone(phone)) {
+            return "Phone number must be 10-11 digits.";
+        }
+
+        if (!FileManager.isValidEmail(email)) {
+            return "Please enter a valid email address.";
+        }
+
+        if (FileManager.usernameExistsExcept(username, selectedUserId)) {
+            return "Username already exists.";
+        }
+
+        if (FileManager.tpExistsExcept(tp, selectedUserId)) {
+            return "TP Number already exists.";
+        }
+
+        if (FileManager.phoneExistsExcept(phone, selectedUserId)) {
+            return "Phone number already exists.";
+        }
+
+        if (FileManager.emailExistsExcept(email, selectedUserId)) {
+            return "Email already exists.";
+        }
+
+        return "VALID";
+    }
+    
+    private void updateProfile() {
+        try {
+            String username = usernameField.getText().trim();
+            String role = (String) roleComboBox.getSelectedItem();
+            String fullName = fullNameField.getText().trim();
+            String tp = tpField.getText().trim();
+            String phone = phoneField.getText().trim();
+            String email = emailField.getText().trim();
+            String status = (String) statusComboBox.getSelectedItem();
+
+            String validationResult = validateStaffProfileInput(
+                    username, role, fullName, tp, phone, email, status
+            );
+
+            if (!validationResult.equals("VALID")) {
+                JOptionPane.showMessageDialog(this, validationResult);
+                return;
+            }
+
+            boolean success = FileManager.updateStaff(
+                    selectedUserId, username, role, fullName, tp, phone, email, status
+            );
+
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Staff profile updated successfully.");
+
+                originalUsername = username;
+                originalRole = role;
+                originalName = fullName;
+                originalTP = tp;
+                originalPhone = phone;
+                originalEmail = email;
+                originalStatus = status;
+
+                FileManager.addActivityLog(
+                        currentUserId,
+                        "Update Staff Profile",
+                        selectedUserId + " Profile Updated"
+                );
+
+                this.dispose();
+                new ManageStaff(currentUserId).setVisible(true);
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Staff profile update failed.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error updating staff profile.");
+        }
+    }
+    
+    private void deleteStaff(){
+        int confirm = JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure you want to delete this staff record?", 
+                "Confirm Delete", 
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+                );
+        
+        if (confirm != JOptionPane.YES_OPTION){
+            return;
+        }
+        
+        try {
+            boolean success = FileManager.deleteStaff(selectedUserId);
+            
+            if(success){
+                JOptionPane.showMessageDialog(this, "Staff record deleted successful.");
+                FileManager.addActivityLog(currentUserId, "Delete Staff", selectedUserId + " Deleted");
+                new ManageStaff(currentUserId).setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Staff record not found.");
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error deleting staff record.");
+        }
+    }
 
     
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -239,114 +362,11 @@ public class StaffProfilePage extends javax.swing.JFrame {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-    try {
-        String username = usernameField.getText().trim();
-        String role = (String) roleComboBox.getSelectedItem();
-        String fullName = fullNameField.getText().trim();
-        String tp = tpField.getText().trim();
-        String phone = phoneField.getText().trim();
-        String email = emailField.getText().trim();
-        String status = (String) statusComboBox.getSelectedItem();
-
-        if (FileManager.isEmpty(username) || FileManager.isEmpty(role) ||
-            FileManager.isEmpty(fullName) || FileManager.isEmpty(tp) ||
-            FileManager.isEmpty(phone) || FileManager.isEmpty(email) ||
-            FileManager.isEmpty(status)) {
-
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
-
-        if (!FileManager.isValidTP(tp)) {
-            JOptionPane.showMessageDialog(this, "TP Number must start with TP followed by 6 digits.");
-            return;
-        }
-
-        if (!FileManager.isValidPhone(phone)) {
-            JOptionPane.showMessageDialog(this, "Phone number must be 10-11 digits.");
-            return;
-        }
-
-        if (!FileManager.isValidEmail(email)) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid email address.");
-            return;
-        }
-
-        if (FileManager.usernameExistsExcept(username, selectedUserId)) {
-            JOptionPane.showMessageDialog(this, "Username already exists.");
-            return;
-        }
-
-        if (FileManager.tpExistsExcept(tp, selectedUserId)) {
-            JOptionPane.showMessageDialog(this, "TP Number already exists.");
-            return;
-        }
-
-        if (FileManager.phoneExistsExcept(phone, selectedUserId)) {
-            JOptionPane.showMessageDialog(this, "Phone number already exists.");
-            return;
-        }
-
-        if (FileManager.emailExistsExcept(email, selectedUserId)) {
-            JOptionPane.showMessageDialog(this, "Email already exists.");
-            return;
-        }
-
-        boolean success = FileManager.updateStaff(
-                selectedUserId, username, role, fullName, tp, phone, email, status
-        );
-
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Staff profile updated successfully.");
-
-            originalUsername = username;
-            originalRole = role;
-            originalName = fullName;
-            originalTP = tp;
-            originalPhone = phone;
-            originalEmail = email;
-            originalStatus = status;
-            
-            this.dispose();
-            FileManager.addActivityLog(currentUserId, "Update Staff Profile", selectedUserId + " Profile Updated");
-            new ManageStaff(currentUserId).setVisible(true);
-
-        } else {
-            JOptionPane.showMessageDialog(this, "Staff profile update failed.");
-        }
-
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error updating staff profile.");}
+        updateProfile();
     }//GEN-LAST:event_updateBtnActionPerformed
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
-        int confirm = JOptionPane.showConfirmDialog(
-                this, 
-                "Are you sure you want to delete this staff record?", 
-                "Confirm Delete", 
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE
-                );
-        
-        if (confirm != JOptionPane.YES_OPTION){
-            return;
-        }
-        
-        try {
-            boolean success = FileManager.deleteStaff(selectedUserId);
-            
-            if(success){
-                JOptionPane.showMessageDialog(this, "Staff record deleted successful.");
-                FileManager.addActivityLog(currentUserId, "Delete Staff", selectedUserId + " Deleted");
-                new ManageStaff(currentUserId).setVisible(true);
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Staff record not found.");
-            }
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error deleting staff record.");
-        }
+        deleteStaff();
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

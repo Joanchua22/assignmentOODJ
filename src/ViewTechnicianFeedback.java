@@ -13,7 +13,6 @@ public class ViewTechnicianFeedback extends javax.swing.JFrame {
         initComponents();
         this.currentUserId = currentUserId;
         loadFeedbackTable();
-        // FileManager.addActivityLog(currentUserId, " View Technician Feedback", " ");
         
         feedbackTable.addMouseListener(new java.awt.event.MouseAdapter() {
         @Override
@@ -149,18 +148,10 @@ public class ViewTechnicianFeedback extends javax.swing.JFrame {
     private void searchTechnicianFeedbacks() {
         String startDate = startDateField.getText().trim();
         String endDate = endDateField.getText().trim();
-
-        String feedbackId =
-                feedbackIdField.getText().trim().toLowerCase();
-
-        String appointmentId =
-                appointmentIdField.getText().trim().toLowerCase();
-
-        String technicianUsername =
-                technicianField.getText().trim().toLowerCase();
-
-        String validationResult =
-                validateSearchInput(startDate, endDate);
+        String feedbackId = feedbackIdField.getText().trim().toLowerCase();
+        String appointmentId = appointmentIdField.getText().trim().toLowerCase();
+        String technicianUsername = technicianField.getText().trim().toLowerCase();
+        String validationResult = validateSearchInput(startDate, endDate);
 
         if (!validationResult.equals("VALID")) {
             JOptionPane.showMessageDialog(this, validationResult);
@@ -168,9 +159,7 @@ public class ViewTechnicianFeedback extends javax.swing.JFrame {
         }
 
         try {
-            List<String[]> allFeedbacks =
-                    FileManager.getAllTechnicianFeedbacks();
-
+            List<String[]> allFeedbacks = FileManager.getAllTechnicianFeedbacks();
             List<String[]> filteredList =
                     filterTechnicianFeedbacks(
                             allFeedbacks,
@@ -182,11 +171,9 @@ public class ViewTechnicianFeedback extends javax.swing.JFrame {
                     );
 
             loadFeedbackTable(filteredList);
-
             if (filteredList.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No matching feedback found.");
             }
-
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error searching feedback data.");
         }
@@ -363,8 +350,8 @@ public class ViewTechnicianFeedback extends javax.swing.JFrame {
         );
         
         if (confirm == JOptionPane.YES_OPTION) {
-            startDateField.setText("YYYY-MM-DD");
-            endDateField.setText("YYYY-MM-DD");
+            startDateField.setText("");
+            endDateField.setText("");
             feedbackIdField.setText("");
             appointmentIdField.setText("");
             technicianField.setText("");

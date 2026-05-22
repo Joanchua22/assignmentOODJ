@@ -95,6 +95,8 @@ public class TechnicianWorkloadReport extends BaseReport {
 
         highestCapacityField.setText(most[1] + " (" + most[4] + " Tasks)");
         lowestCapacityField.setText(least[1] + " (" + least[4] + " Tasks)");
+        highestCapacityField.setEditable(false);
+        lowestCapacityField.setEditable(false);
     }
     
     private String validateSearchInput(
@@ -258,7 +260,7 @@ public class TechnicianWorkloadReport extends BaseReport {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

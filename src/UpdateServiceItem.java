@@ -142,87 +142,46 @@ public class UpdateServiceItem extends javax.swing.JFrame {
     }
     
     private void updateServiceItem() {
-
         Object selectedObj = cateComboBox.getSelectedItem();
-
         if (selectedObj == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please select a category."
+            JOptionPane.showMessageDialog(this,"Please select a category."
             );
-
             return;
         }
 
-        String cateId =
-                selectedObj.toString().split(" - ")[0];
-
-        String serviceName =
-                itemField.getText().trim();
-
-        String description =
-                descriptionTextArea.getText().trim();
-
-        String price =
-                priceField.getText().trim();
+        String cateId = selectedObj.toString().split(" - ")[0];
+        String serviceName = itemField.getText().trim();
+        String description = descriptionTextArea.getText().trim();
+        String price = priceField.getText().trim();
 
         try {
-
-            String validationResult =
-                    validateServiceItemUpdate(
-                            cateId,
-                            serviceName,
-                            description,
-                            price
-                    );
+            String validationResult = validateServiceItemUpdate(
+                    cateId,serviceName,description,price);
 
             if (!validationResult.equals("VALID")) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        validationResult
+                JOptionPane.showMessageDialog(this,validationResult
                 );
-
                 return;
             }
 
-            boolean updated =
-                    FileManager.updateServiceItem(
-                            serviceItemId,
-                            cateId,
-                            serviceName,
-                            description,
-                            price,
-                            currentUserId
+            boolean updated = FileManager.updateServiceItem(
+                            serviceItemId,cateId,serviceName,description,price,currentUserId
                     );
 
             if (updated) {
-
                 recordUpdateServiceItemActivity();
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Service item updated successfully."
+                JOptionPane.showMessageDialog(this,"Service item updated successfully."
                 );
-
                 new ServiceItem(currentUserId).setVisible(true);
-
                 dispose();
 
             } else {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Update failed."
+                JOptionPane.showMessageDialog(this,"Update failed."
                 );
             }
 
         } catch (IOException e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error updating service item."
+            JOptionPane.showMessageDialog(this,"Error updating service item."
             );
         }
     }
@@ -260,7 +219,7 @@ public class UpdateServiceItem extends javax.swing.JFrame {
 
         jLabel2.setText("Category:");
 
-        jLabel1.setText("Update Service Category");
+        jLabel1.setText("Update Service Item");
 
         jLabel3.setText("Item Name:");
 
@@ -293,16 +252,14 @@ public class UpdateServiceItem extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(38, 38, 38)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jScrollPane1)
-                                    .addComponent(cateComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(itemField)
-                                    .addComponent(priceField))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jScrollPane1)
+                                        .addComponent(cateComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(itemField)
+                                        .addComponent(priceField)))))
                         .addGap(59, 59, 59))))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -53,80 +53,42 @@ public class ForgetPassword extends javax.swing.JFrame {
     }
     
     private void resetPassword() {
-
         String email = emailField.getText().trim();
         String tp = tpField.getText().trim();
 
-        String newPassword =
-                new String(newPasswordField.getPassword()).trim();
+        String newPassword = new String(newPasswordField.getPassword()).trim();
 
-        String confirmPassword =
-                new String(confirmPasswordField.getPassword()).trim();
+        String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
 
-        String validationResult =
-                validateResetPasswordInput(
-                        email,
-                        tp,
-                        newPassword,
-                        confirmPassword
-                );
+        String validationResult = validateResetPasswordInput(email,tp,newPassword,confirmPassword);
 
         if (!validationResult.equals("VALID")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    validationResult
-            );
-
+            JOptionPane.showMessageDialog(this,validationResult);
             return;
         }
 
-        try {
-
-            String userId =
-                    FileManager.getUserIdByEmailAndTP(email, tp);
-
+        try {String userId = FileManager.getUserIdByEmailAndTP(email, tp);
             if (userId == null) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Email and TP Number do not match any account."
-                );
-
+                JOptionPane.showMessageDialog(this,"Email and TP Number do not match any account.");
                 return;
             }
-
-            boolean updated =
-                    FileManager.updatePasswordByUserId(
-                            userId,
-                            newPassword
+            
+            boolean updated = FileManager.updatePasswordByUserId( userId, newPassword
                     );
 
             if (updated) {
-
                 sendResetPasswordEmail(email);
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Password reset successfully. Please login again."
+                JOptionPane.showMessageDialog(this,"Password reset successfully. Please login again."
                 );
-
                 new Login().setVisible(true);
                 dispose();
 
             } else {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Failed to reset password."
+                JOptionPane.showMessageDialog(this,"Failed to reset password."
                 );
             }
-
         } catch (IOException e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error resetting password."
+            JOptionPane.showMessageDialog(this,"Error resetting password."
             );
         }
     }

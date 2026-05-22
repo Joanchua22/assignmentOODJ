@@ -17,3 +17,21 @@ LOG0016,USR0001,Add New Staff,Counter Staff bryan Added,2026-05-14 23:55:59
 LOG0017,USR0005,Login,User logged in,2026-05-15 17:11:31
 LOG0018,USR0005,Update Profile,Updated phone/email in profile.,2026-05-15 17:11:49
 LOG0019,USR0005,Update Profile,Updated phone/email in profile.,2026-05-15 17:11:50
+LOG0020,SYSTEM,Customer Sign Up,cust3 registered a new account,2026-05-20 00:13:47
+LOG0021,SYSTEM,Customer Sign Up,cust4 registered a new account,2026-05-21 13:25:59
+LOG0022,USR0001,Login,User logged in,2026-05-21 14:55:13
+LOG0023,USR0001,Update Staff Profile,USR0001 Profile Updated,2026-05-21 16:29:57
+LOG0024,USR0001,Delete Staff,USR0007 Deleted,2026-05-21 16:30:43
+LOG0025,USR0001,Add New Staff,Manager Pier Added,2026-05-21 16:40:53
+LOG0026,USR0001,Delete Service Category,SC0003 Service Checking Deleted,2026-05-21 17:27:17
+LOG0027,USR0001,Delete Staff,USR0007 Deleted,2026-05-21 17:56:24
+LOG0028,USR0001,Update Service Category,SC0001 Updated,2026-05-21 18:01:17
+LOG0029,USR0001,Update Service Category,SC0001 Updated,2026-05-21 18:04:05
+LOG0030,USR0001,Update Service Category,SC0001 Updated,2026-05-21 18:04:22
+LOG0031,USR0001,Update Service Category,SC0001 Updated,2026-05-21 18:11:27
+LOG0032,USR0001,Add New Service Category,Checking Service Added,2026-05-21 20:22:46
+LOG0033,USR0001,Update Service Category,SC0001 Updated,2026-05-21 20:33:55
+LOG0034,USR0001,Delete Service Item,SER0006 Battery Check Deleted,2026-05-21 20:54:37
+LOG0035,USR0001,Add New Service Item,Battery Change Added,2026-05-21 21:19:15
+LOG0036,USR0001,Update Service Item,SER0001 Updated,2026-05-21 22:14:03
+LOG0037,USR0001,Update Service Item,SER0001 Updated,2026-05-21 22:20:56
