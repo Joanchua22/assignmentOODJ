@@ -35,3 +35,6 @@ LOG0034,USR0001,Delete Service Item,SER0006 Battery Check Deleted,2026-05-21 20:
 LOG0035,USR0001,Add New Service Item,Battery Change Added,2026-05-21 21:19:15
 LOG0036,USR0001,Update Service Item,SER0001 Updated,2026-05-21 22:14:03
 LOG0037,USR0001,Update Service Item,SER0001 Updated,2026-05-21 22:20:56
+LOG0038,USR0001,Login,User logged in,2026-05-22 14:38:22
+LOG0039,USR0001,Logout,Manager logged out,2026-05-22 14:50:58
+LOG0040,USR0004,Login,User logged in,2026-05-22 18:59:52

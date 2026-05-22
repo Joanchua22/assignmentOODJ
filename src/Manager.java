@@ -59,20 +59,12 @@ public class Manager extends javax.swing.JFrame {
     }
     
     private void logout() {
-
         if (!confirmLogout()) {
             return;
         }
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Logout successful."
-        );
-
+        JOptionPane.showMessageDialog(this,"Logout successful.");
         recordLogoutActivity();
-
         new Home().setVisible(true);
-
         this.dispose();
     }
     
