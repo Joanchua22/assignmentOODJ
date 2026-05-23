@@ -1055,6 +1055,20 @@ public class FileManager {
             }
         }
 
+        java.util.Map<String, String> serviceItemMap = new java.util.HashMap<>();
+        File serviceItemFile = new File(SERVICE_ITEM_FILE);
+        if (serviceItemFile.exists()) {
+            List<String> serviceItemLines = Files.readAllLines(serviceItemFile.toPath());
+            for (String line : serviceItemLines) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] parts = line.split(",");
+                if (parts.length >= 3) {
+                    serviceItemMap.put(parts[0].trim(), parts[2].trim());
+                }
+            }
+        }
+
         java.util.Set<String> commentedAppointments = new java.util.HashSet<>();
         File commentFile = new File(CUSTOMER_COMMENT_FILE);
         if (commentFile.exists()) {
@@ -1062,10 +1076,13 @@ public class FileManager {
             for (String line : commentLines) {
                 if (line.trim().isEmpty()) continue;
 
-                String[] parts = line.split(",");
-                if (parts.length >= 4) {
-                    commentedAppointments.add(parts[1].trim());
-                }
+                int firstComma = line.indexOf(',');
+                int secondComma = line.indexOf(',', firstComma + 1);
+
+                if (firstComma == -1 || secondComma == -1) continue;
+
+                String appointmentId = line.substring(firstComma + 1, secondComma).trim();
+                commentedAppointments.add(appointmentId);
             }
         }
 
@@ -1081,9 +1098,9 @@ public class FileManager {
                 String appointmentId = parts[0].trim();
                 String vehicleId = parts[1].trim();
                 String appointmentCustomerId = parts[2].trim();
+                String serviceItemId = parts[5].trim();
                 String appointmentDate = parts[6].trim();
                 String status = parts[9].trim();
-                String serviceName = parts[10].trim(); // remarks
 
                 if (!appointmentCustomerId.equalsIgnoreCase(customerId)) {
                     continue;
@@ -1094,15 +1111,16 @@ public class FileManager {
                 }
 
                 String vehiclePlate = vehicleMap.getOrDefault(vehicleId, "N/A");
+                String serviceName = serviceItemMap.getOrDefault(serviceItemId, serviceItemId);
                 String commentStatus = commentedAppointments.contains(appointmentId) ? "Submitted" : "-";
 
                 appointmentList.add(new String[] {
-                    appointmentId,     // 0
-                    appointmentDate,   // 1
-                    vehiclePlate,      // 2
-                    serviceName,       // 3
-                    status,            // 4
-                    commentStatus      // 5
+                    appointmentId,
+                    appointmentDate,
+                    vehiclePlate,
+                    serviceName,
+                    status,
+                    commentStatus
                 });
             }
         }
