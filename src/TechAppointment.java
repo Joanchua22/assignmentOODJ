@@ -211,6 +211,14 @@ private void completeAppointment() {
         while ((line = br.readLine()) != null) {
             String[] d = line.split(",");
             if(d[0].equals(appointmentId)) {
+                if (d[9].equalsIgnoreCase("Completed")) {
+
+                    JOptionPane.showMessageDialog(this,
+                            "Appointment already completed. Cannot modify.");
+
+                    valid = false;
+                    break;
+                }
                 String serviceId = d[5];  
                 String startTime = d[7];  
                 if (startTime == null || startTime.trim().isEmpty()
@@ -237,6 +245,8 @@ private void completeAppointment() {
 
         input.delete();
         temp.renameTo(input);
+        JOptionPane.showMessageDialog(this,
+                "Status updated successfully.");
 
         loadAppointments();
     } else {
