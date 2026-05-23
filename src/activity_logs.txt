@@ -17,3 +17,20 @@ LOG0016,USR0001,Add New Staff,Counter Staff bryan Added,2026-05-14 23:55:59
 LOG0017,USR0005,Login,User logged in,2026-05-15 17:11:31
 LOG0018,USR0005,Update Profile,Updated phone/email in profile.,2026-05-15 17:11:49
 LOG0019,USR0005,Update Profile,Updated phone/email in profile.,2026-05-15 17:11:50
+LOG0020,USR0005,Login,User logged in,2026-05-20 16:12:27
+LOG0021,USR0005,Update Profile,Updated phone/email in profile.,2026-05-20 17:04:26
+LOG0022,USR0005,Update Profile,Updated phone/email in profile.,2026-05-20 17:04:29
+LOG0023,USR0005,Update Password,Password Updated,2026-05-20 17:36:06
+LOG0024,USR0005,Update Password,Password Updated,2026-05-20 17:49:34
+LOG0025,USR0005,Login,User logged in,2026-05-21 15:41:19
+LOG0026,USR0005,Update Vehicle,Updated vehicle: ABC1234,2026-05-21 16:48:37
+LOG0027,USR0005,Delete Vehicle,Deleted vehicle: ABC1234,2026-05-21 16:55:27
+LOG0028,USR0005,Add Vehicle,Added vehicle: VFA929,2026-05-21 17:35:30
+LOG0029,USR0005,Login,User logged in,2026-05-21 20:53:25
+LOG0030,USR0005,Login,User logged in,2026-05-21 20:57:42
+LOG0031,USR0005,Login,User logged in,2026-05-23 00:06:00
+LOG0032,USR0005,Login,User logged in,2026-05-23 11:46:41
+LOG0033,USR0005,Login,User logged in,2026-05-23 12:27:02
+LOG0034,USR0005,Login,User logged in,2026-05-23 12:37:55
+LOG0035,USR0005,Login,User logged in,2026-05-23 12:38:44
+LOG0036,USR0005,Login,User logged in,2026-05-23 12:43:06

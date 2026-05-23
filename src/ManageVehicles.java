@@ -338,7 +338,6 @@ public class ManageVehicles extends javax.swing.JFrame {
     private void deleteVehicleWithDoubleConfirm(String vehicleId, String plateNo) {
         Object[] options = { "Cancel", "Delete" };
 
-        // First confirmation
         int confirm1 = JOptionPane.showOptionDialog(
                 this,
                 "Are you sure you want to delete this vehicle?",
@@ -354,7 +353,6 @@ public class ManageVehicles extends javax.swing.JFrame {
             return;
         }
 
-        // Second confirmation
         int confirm2 = JOptionPane.showOptionDialog(
                 this,
                 "This action cannot be undone.\nDelete permanently?",

@@ -65,7 +65,6 @@ public class ChangePassword extends javax.swing.JFrame {
     private void updatePassword() {
 
         try {
-
             String currentPassword =
                     new String(CurrentPasswordField.getPassword()).trim();
 
@@ -83,12 +82,10 @@ public class ChangePassword extends javax.swing.JFrame {
                     );
 
             if (!validationResult.equals("VALID")) {
-
                 JOptionPane.showMessageDialog(
                         this,
                         validationResult
                 );
-
                 return;
             }
 
@@ -99,12 +96,10 @@ public class ChangePassword extends javax.swing.JFrame {
                     );
 
             if (!isCurrentPasswordCorrect) {
-
                 JOptionPane.showMessageDialog(
                         this,
                         "Current password is incorrect."
                 );
-
                 return;
             }
 
@@ -115,16 +110,13 @@ public class ChangePassword extends javax.swing.JFrame {
                     );
 
             if (updated) {
-
                 recordPasswordUpdateActivity();
 
                 JOptionPane.showMessageDialog(
                         this,
                         "Password updated successfully."
                 );
-
                 clearPasswordFields();
-
             } else {
 
                 JOptionPane.showMessageDialog(
@@ -132,7 +124,6 @@ public class ChangePassword extends javax.swing.JFrame {
                         "User not found."
                 );
             }
-
         } catch (IOException ex) {
 
             JOptionPane.showMessageDialog(
