@@ -220,11 +220,7 @@ private String validatePasswordInput(
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        if (returnPage.equalsIgnoreCase("TechEditProfile")) {
-            new TechEditProfile(currentUserId).setVisible(true);
-        } else {
-            new TechEditProfile(currentUserId).setVisible(true);
-        }
+      new TechEditProfile(currentUserId).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
