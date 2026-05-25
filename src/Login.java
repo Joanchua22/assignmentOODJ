@@ -47,7 +47,7 @@ public class Login extends javax.swing.JFrame {
 
         switch (role.toLowerCase()) {
             case "manager" -> new Manager(currentUserId).setVisible(true);
-            // case "counter staff" -> new CounterStaffPage(currentUserId).setVisible(true);
+            case "counter staff" -> new StaffMain(currentUserId).setVisible(true);
             case "technician" -> new Technician(currentUserId).setVisible(true);
             case "customer" -> new Customer(currentUserId).setVisible(true);
             default -> JOptionPane.showMessageDialog(this, "Role not recognized. Please contact staff.");

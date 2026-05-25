@@ -297,7 +297,6 @@ public class FileManager {
                 String tp = parts[5].trim();
                 String status = parts[8].trim();
                 
-                
                 if (isStaffRole(role) &&
                     (userId.toLowerCase().contains(searchText) ||
                      username.toLowerCase().contains(searchText) ||
@@ -1390,7 +1389,8 @@ public class FileManager {
         return serviceItemList;
     }
     
-    public static boolean addServiceItem(String cateId, String serviceName, String description, String price, String updatedBy) throws IOException {
+    public static boolean addServiceItem(String cateId, String serviceName, 
+            String description, String price, String updatedBy) throws IOException {
         String serviceItemId = generateNextId(SERVICE_ITEM_FILE, "SER");
         String updatedAt = getCurrentDateTime();
 
@@ -1836,8 +1836,6 @@ public class FileManager {
 
             String[] v = line.split(",");
 
-            // vehicle.txt:
-            // 0=vehicle_id, 1=customer_id, 2=plate_no, 3=vehicle_type, 4=model, 5=year
             if (v.length >= 6 && v[0].trim().equalsIgnoreCase(vehicleId)) {
                 String customerId = v[1].trim();
                 String customerUserId = getUserIdByCustomerId(customerId);
@@ -2124,9 +2122,6 @@ public class FileManager {
 
             String[] appt = line.split(",");
 
-            // 0=appointment_id, 1=vehicle_id, 2=customer_id, 3=counter_staff_id,
-            // 4=technician_id, 5=service_item_id, 6=appointment_date,
-            // 7=start_time, 8=end_time, 9=status
             if (appt.length >= 10) {
                 String appointmentId = appt[0].trim();
                 String customerId = appt[2].trim();
@@ -2151,7 +2146,7 @@ public class FileManager {
             }
         }
 
-        reportList.sort((a, b) -> b[1].compareTo(a[1])); // latest date first
+        reportList.sort((a, b) -> b[1].compareTo(a[1]));
 
         return reportList;
     }

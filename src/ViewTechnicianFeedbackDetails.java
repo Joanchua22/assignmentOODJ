@@ -49,38 +49,23 @@ public class ViewTechnicianFeedbackDetails extends javax.swing.JFrame {
     }
     
     private void viewVehicleDetails() {
-
         String vehicleId = vehicleIdField.getText().trim();
-
         if (vehicleId.isEmpty() || vehicleId.equals("-")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No vehicle selected."
+            JOptionPane.showMessageDialog(this,"No vehicle selected."
             );
-
             return;
         }
 
         try {
-
-            String[] vehicle =
-                    FileManager.getVehicleDetailsById(vehicleId);
-
+            String[] vehicle = FileManager.getVehicleDetailsById(vehicleId);
             if (vehicle == null) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Vehicle details not found."
+                JOptionPane.showMessageDialog(this,"Vehicle details not found."
                 );
-
                 return;
             }
-
             showVehicleDetailsPopup(vehicle);
 
         } catch (IOException e) {
-
             JOptionPane.showMessageDialog(
                     this,
                     "Error loading vehicle details."
@@ -105,45 +90,26 @@ public class ViewTechnicianFeedbackDetails extends javax.swing.JFrame {
     
     private void viewAppointmentDetails() {
 
-        String appointmentId =
-                appointmentIdField.getText().trim();
+        String appointmentId = appointmentIdField.getText().trim();
 
-        if (appointmentId.isEmpty()
-                || appointmentId.equals("-")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No appointment selected."
+        if (appointmentId.isEmpty()|| appointmentId.equals("-")) {
+            JOptionPane.showMessageDialog(this, "No appointment selected."
             );
-
             return;
         }
 
         try {
-
-            String[] appt =
-                    FileManager.getAppointmentDetailsById(
-                            appointmentId
-                    );
-
+            String[] appt = FileManager.getAppointmentDetailsById(appointmentId);
             if (appt == null) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Appointment details not found."
-                );
+                JOptionPane.showMessageDialog(this,"Appointment details not found.");
 
                 return;
             }
-
             showAppointmentDetailsPopup(appt);
 
         } catch (IOException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error loading appointment details."
-            );
+            JOptionPane.showMessageDialog(this,"Error loading appointment details.");
         }
     }
     
