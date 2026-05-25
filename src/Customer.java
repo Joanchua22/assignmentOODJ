@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import javax.swing.JOptionPane;
 
 public class Customer extends javax.swing.JFrame {
@@ -114,6 +115,19 @@ public class Customer extends javax.swing.JFrame {
             options[0]
         );
         if (confirm == 1) {
+            
+            try {
+            FileManager.addActivityLog(
+                    currentUserId,
+                    "Logout",
+                    "User logged out"
+            );
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to record activity log."
+            );
+        }
 
             JOptionPane.showMessageDialog(this, "Logout successful.");
             new Home().setVisible(true);

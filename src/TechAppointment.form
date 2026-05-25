@@ -61,9 +61,9 @@
               <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="275" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnBack" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="btnComplete" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnBack" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="20" max="32767" attributes="0"/>
           </Group>
@@ -87,7 +87,7 @@
                 <Column editable="false" title="customer_id" type="java.lang.Object"/>
                 <Column editable="false" title="service_type_id" type="java.lang.Object"/>
                 <Column editable="false" title="date" type="java.lang.Object"/>
-                <Column editable="false" title="start" type="java.lang.Object"/>
+                <Column editable="true" title="start" type="java.lang.Object"/>
                 <Column editable="false" title="end" type="java.lang.Object"/>
                 <Column editable="false" title="status" type="java.lang.Object"/>
                 <Column editable="false" title="remarks" type="java.lang.Object"/>
@@ -149,7 +149,7 @@
               </TableColumnModel>
             </Property>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
             </Property>
           </Properties>
         </Component>

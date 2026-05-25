@@ -1,6 +1,7 @@
-USR0001,manager1,joan1190,Manager,Joan,TP075315,0123456789,joanchua1190@gmail.com,Active,2026-04-01 17:37:52
-USR0002,tech1,123,Technician,Available,TP076623,0121111111,tech1@email.com,Active,2026-04-01 17:37:52
-USR0003,tech2,123,Technician,Available,TP050001,0122222222,tech2@email.com,Active,2026-04-01 17:37:52
+USR0001,manager1,joan1234,Manager,Joan,TP075315,0123456789,joanchua1190@gmail.com,Active,2026-04-01 17:37:52
+USR0002,tech1,123,Technician,Tech One,TP076623,0121111111,tech1@email.com,Active,2026-04-01 17:37:52
+USR0003,tech2,123,Technician,Tech Two,TP050001,0122222222,tech2@email.com,Active,2026-04-01 17:37:52
 USR0004,staff1,123,Counter Staff,Staff One,TP050002,0123333333,staff@email.com,Active,2026-04-01 17:37:52
 USR0005,cust1,123,Customer,Customer One,TP076245,0124444444,cust1@email.com,Active,2026-04-01 17:37:52
 USR0006,cust2,123,Customer,Customer Two,TP050003,0125555555,cust2@email.com,Active,2026-04-01 17:37:52
+USR0007,bryan,bryan123,Counter Staff,Bryan Chua,TP892753,0189283746,bryan123@gmail.com,Active,2026-05-14 23:55:53

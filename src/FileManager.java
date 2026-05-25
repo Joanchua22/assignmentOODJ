@@ -562,13 +562,42 @@ public class FileManager {
 
         File appointmentFile = new File(APPOINTMENT_FILE);
         File serviceTypeFile = new File(SERVICE_TYPE_FILE);
+        File serviceItemFile = new File(SERVICE_ITEM_FILE);
         File paymentFile = new File(PAYMENT_FILE);
         File vehicleFile = new File(VEHICLE_FILE);
 
         List<String> appointmentLines = appointmentFile.exists() ? Files.readAllLines(appointmentFile.toPath()) : new ArrayList<>();
         List<String> serviceTypeLines = serviceTypeFile.exists() ? Files.readAllLines(serviceTypeFile.toPath()) : new ArrayList<>();
+        List<String> serviceItemLines = serviceItemFile.exists() ? Files.readAllLines(serviceItemFile.toPath()) : new ArrayList<>();
         List<String> paymentLines = paymentFile.exists() ? Files.readAllLines(paymentFile.toPath()) : new ArrayList<>();
         List<String> vehicleLines = vehicleFile.exists() ? Files.readAllLines(vehicleFile.toPath()) : new ArrayList<>();
+
+        java.util.Map<String, String> serviceCategoryMap = new java.util.HashMap<>();
+        for (String serviceLine : serviceTypeLines) {
+            if (serviceLine.trim().isEmpty()) continue;
+
+            String[] svc = serviceLine.split(",");
+            if (svc.length >= 2) {
+                serviceCategoryMap.put(svc[0].trim(), svc[1].trim());
+            }
+        }
+
+        java.util.Map<String, String[]> serviceItemMap = new java.util.HashMap<>();
+        for (String itemLine : serviceItemLines) {
+            if (itemLine.trim().isEmpty()) continue;
+
+            String[] item = itemLine.split(",");
+            if (item.length >= 3) {
+                String serviceItemId = item[0].trim();
+                String serviceCategoryId = item[1].trim();
+                String serviceName = item[2].trim();
+
+                serviceItemMap.put(serviceItemId, new String[] {
+                    serviceCategoryId,
+                    serviceName
+                });
+            }
+        }
 
         for (String appointmentLine : appointmentLines) {
             if (appointmentLine.trim().isEmpty()) continue;
@@ -579,7 +608,7 @@ public class FileManager {
             String appointmentId = appt[0].trim();
             String vehicleId = appt[1].trim();
             String appointmentCustomerId = appt[2].trim();
-            String serviceTypeId = appt[5].trim();
+            String serviceItemId = appt[5].trim();
             String appointmentDate = appt[6].trim();
             String startTime = appt[7].trim();
             String endTime = appt[8].trim();
@@ -589,7 +618,7 @@ public class FileManager {
             if (!appointmentCustomerId.equalsIgnoreCase(customerId)) {
                 continue;
             }
-            
+
             String vehiclePlate = "N/A";
             for (String vehicleLine : vehicleLines) {
                 if (vehicleLine.trim().isEmpty()) continue;
@@ -600,22 +629,14 @@ public class FileManager {
                     break;
                 }
             }
-            String serviceTypeName = serviceTypeId;
 
-            // service_type.txt
-            // 0 = service_type_id
-            // 1 = service_type_name
-            // 2 = duration
-            // 3 = price
-            // 4 = updated_by
-            for (String serviceLine : serviceTypeLines) {
-                if (serviceLine.trim().isEmpty()) continue;
+            String serviceTypeName = serviceItemId;
+            String serviceName = remarks;
 
-                String[] svc = serviceLine.split(",");
-                if (svc.length >= 4 && svc[0].trim().equalsIgnoreCase(serviceTypeId)) {
-                    serviceTypeName = svc[1].trim();
-                    break;
-                }
+            if (serviceItemMap.containsKey(serviceItemId)) {
+                String categoryId = serviceItemMap.get(serviceItemId)[0];
+                serviceName = serviceItemMap.get(serviceItemId)[1];
+                serviceTypeName = serviceCategoryMap.getOrDefault(categoryId, categoryId);
             }
 
             String amount = "-";
@@ -637,19 +658,20 @@ public class FileManager {
             }
 
             historyList.add(new String[] {
-                appointmentId,
-                vehiclePlate,
-                serviceTypeName,   
-                appointmentDate,   
-                amount,            
-                paymentStatus,     
-                paymentMethod,     
-                paymentDate,       
-                remarks,           
-                startTime,         
-                endTime,           
-                appointmentStatus,  
-                vehicleId 
+                appointmentId,       // 0
+                vehiclePlate,        // 1
+                serviceTypeName,     // 2
+                appointmentDate,     // 3
+                amount,              // 4
+                paymentStatus,       // 5
+                paymentMethod,       // 6
+                paymentDate,         // 7
+                remarks,             // 8
+                startTime,           // 9
+                endTime,             // 10
+                appointmentStatus,   // 11
+                vehicleId,           // 12
+                serviceName          // 13
             });
         }
 
@@ -887,12 +909,12 @@ public class FileManager {
 
                 String[] parts = line.split(",");
                 if (parts.length >= 6) {
-                    vehicleMap.put(parts[0].trim(), parts[2].trim()); // vehicleId -> plate no
+                    vehicleMap.put(parts[0].trim(), parts[2].trim());
                 }
             }
         }
 
-        java.util.Map<String, String> serviceTypeMap = new java.util.HashMap<>();
+        java.util.Map<String, String> serviceCategoryMap = new java.util.HashMap<>();
         File serviceTypeFile = new File(SERVICE_TYPE_FILE);
         if (serviceTypeFile.exists()) {
             List<String> serviceLines = Files.readAllLines(serviceTypeFile.toPath());
@@ -901,7 +923,25 @@ public class FileManager {
 
                 String[] parts = line.split(",");
                 if (parts.length >= 2) {
-                    serviceTypeMap.put(parts[0].trim(), parts[1].trim()); // serviceTypeId -> service type name
+                    serviceCategoryMap.put(parts[0].trim(), parts[1].trim());
+                }
+            }
+        }
+
+        java.util.Map<String, String[]> serviceItemMap = new java.util.HashMap<>();
+        File serviceItemFile = new File(SERVICE_ITEM_FILE);
+        if (serviceItemFile.exists()) {
+            List<String> itemLines = Files.readAllLines(serviceItemFile.toPath());
+            for (String line : itemLines) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] parts = line.split(",");
+                if (parts.length >= 3) {
+                    String serviceItemId = parts[0].trim();
+                    String categoryId = parts[1].trim();
+                    String serviceName = parts[2].trim();
+
+                    serviceItemMap.put(serviceItemId, new String[] { categoryId, serviceName });
                 }
             }
         }
@@ -936,32 +976,40 @@ public class FileManager {
                 String appointmentId = parts[0].trim();
                 String vehicleId = parts[1].trim();
                 String appointmentCustomerId = parts[2].trim();
-                String serviceTypeId = parts[5].trim();
+                String serviceItemId = parts[5].trim();
                 String appointmentDate = parts[6].trim();
                 String status = parts[9].trim();
-                String serviceName = parts[10].trim(); // remarks
 
                 if (!appointmentCustomerId.equalsIgnoreCase(customerId)) {
                     continue;
                 }
 
                 if (!feedbackMap.containsKey(appointmentId)) {
-                    continue; // show only appointments that have feedback
+                    continue;
                 }
 
                 String vehiclePlate = vehicleMap.getOrDefault(vehicleId, "N/A");
-                String serviceType = serviceTypeMap.getOrDefault(serviceTypeId, serviceTypeId);
+
+                String serviceType = serviceItemId;
+                String serviceName = parts[10].trim();
+
+                if (serviceItemMap.containsKey(serviceItemId)) {
+                    String categoryId = serviceItemMap.get(serviceItemId)[0];
+                    serviceName = serviceItemMap.get(serviceItemId)[1];
+                    serviceType = serviceCategoryMap.getOrDefault(categoryId, categoryId);
+                }
+
                 String feedbackText = feedbackMap.get(appointmentId)[0];
                 String feedbackDate = feedbackMap.get(appointmentId)[1];
 
                 feedbackList.add(new String[] {
-                    appointmentDate, // 0
-                    vehiclePlate,    // 1
-                    serviceType,     // 2
-                    serviceName,     // 3
-                    status,          // 4
-                    feedbackText,    // 5
-                    feedbackDate     // 6
+                    appointmentDate,
+                    vehiclePlate,
+                    serviceType,
+                    serviceName,
+                    status,
+                    feedbackText,
+                    feedbackDate
                 });
             }
         }
@@ -1006,6 +1054,20 @@ public class FileManager {
             }
         }
 
+        java.util.Map<String, String> serviceItemMap = new java.util.HashMap<>();
+        File serviceItemFile = new File(SERVICE_ITEM_FILE);
+        if (serviceItemFile.exists()) {
+            List<String> serviceItemLines = Files.readAllLines(serviceItemFile.toPath());
+            for (String line : serviceItemLines) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] parts = line.split(",");
+                if (parts.length >= 3) {
+                    serviceItemMap.put(parts[0].trim(), parts[2].trim());
+                }
+            }
+        }
+
         java.util.Set<String> commentedAppointments = new java.util.HashSet<>();
         File commentFile = new File(CUSTOMER_COMMENT_FILE);
         if (commentFile.exists()) {
@@ -1013,10 +1075,13 @@ public class FileManager {
             for (String line : commentLines) {
                 if (line.trim().isEmpty()) continue;
 
-                String[] parts = line.split(",");
-                if (parts.length >= 4) {
-                    commentedAppointments.add(parts[1].trim());
-                }
+                int firstComma = line.indexOf(',');
+                int secondComma = line.indexOf(',', firstComma + 1);
+
+                if (firstComma == -1 || secondComma == -1) continue;
+
+                String appointmentId = line.substring(firstComma + 1, secondComma).trim();
+                commentedAppointments.add(appointmentId);
             }
         }
 
@@ -1032,9 +1097,9 @@ public class FileManager {
                 String appointmentId = parts[0].trim();
                 String vehicleId = parts[1].trim();
                 String appointmentCustomerId = parts[2].trim();
+                String serviceItemId = parts[5].trim();
                 String appointmentDate = parts[6].trim();
                 String status = parts[9].trim();
-                String serviceName = parts[10].trim(); // remarks
 
                 if (!appointmentCustomerId.equalsIgnoreCase(customerId)) {
                     continue;
@@ -1045,15 +1110,16 @@ public class FileManager {
                 }
 
                 String vehiclePlate = vehicleMap.getOrDefault(vehicleId, "N/A");
+                String serviceName = serviceItemMap.getOrDefault(serviceItemId, serviceItemId);
                 String commentStatus = commentedAppointments.contains(appointmentId) ? "Submitted" : "-";
 
                 appointmentList.add(new String[] {
-                    appointmentId,     // 0
-                    appointmentDate,   // 1
-                    vehiclePlate,      // 2
-                    serviceName,       // 3
-                    status,            // 4
-                    commentStatus      // 5
+                    appointmentId,
+                    appointmentDate,
+                    vehiclePlate,
+                    serviceName,
+                    status,
+                    commentStatus
                 });
             }
         }

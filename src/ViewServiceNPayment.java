@@ -196,6 +196,7 @@ public class ViewServiceNPayment extends javax.swing.JFrame {
         String message =
                 "Vehicle: " + details[1] + "\n" +
                 "Service Type: " + details[2] + "\n" +
+                "Service Name: " + details[13] + "\n" +
                 "Appointment Date: " + details[3] + "\n" +
                 "Start Time: " + details[9] + "\n" +
                 "End Time: " + details[10] + "\n" +
@@ -275,7 +276,6 @@ public class ViewServiceNPayment extends javax.swing.JFrame {
             model.setRowCount(0);
 
             for (String[] record : allHistory) {
-
                 String appointmentDateText = record[3];
                 LocalDate appointmentDate;
 
@@ -291,20 +291,16 @@ public class ViewServiceNPayment extends javax.swing.JFrame {
 
                 if (fromDate != null
                         && appointmentDate.isBefore(fromDate)) {
-
                     match = false;
                 }
 
                 if (toDate != null
                         && appointmentDate.isAfter(toDate)) {
-
                     match = false;
                 }
 
                 if (match) {
-
                     historyDetails.add(record);
-
                     model.addRow(new Object[]{
                         record[1],
                         record[2],
@@ -314,16 +310,12 @@ public class ViewServiceNPayment extends javax.swing.JFrame {
                     });
                 }
             }
-
             if (historyDetails.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
                         "No records found for the selected date range.");
             }
-
         } catch (IOException ex) {
-
             ex.printStackTrace();
-
             JOptionPane.showMessageDialog(this,
                     "Error filtering history.");
         }
