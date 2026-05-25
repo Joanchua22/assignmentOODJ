@@ -69,18 +69,26 @@ private void addTime(){
 }
 
 private void loadAppointments() {
-    DefaultTableModel model = (DefaultTableModel) tblAppointments.getModel();
+    DefaultTableModel model =
+            (DefaultTableModel) tblAppointments.getModel();
     model.setRowCount(0);
-    try (BufferedReader br = new BufferedReader(new FileReader(FileManager.APPOINTMENT_FILE))) {
+    try (BufferedReader br = new BufferedReader(
+            new FileReader(FileManager.APPOINTMENT_FILE))) {
         String line;
-
         while ((line = br.readLine()) != null) {
-            String[] d = line.split(",");
-            if (d.length <= 11) continue;
-            if (!d[4].trim().equalsIgnoreCase(currentUserId.trim())) continue;
+            String[] d = line.split(",", -1);
+            if (d.length < 11) {
+                continue;
+            }
+            if (!d[4].trim().equalsIgnoreCase(currentUserId.trim())) {
+                continue;
+            }
+            String completedDate = "";
+            if (d.length > 11) {
+                completedDate = d[11];
+            }
             model.addRow(new Object[]{
-                d[0], d[1], d[2], d[5],
-                d[6], d[7], d[8], d[9], d[10] , d[11]
+                d[0],d[1],d[2],d[5],d[6],d[7],d[8],d[9],d[10],completedDate
             });
         }
     } catch (Exception e) {
@@ -89,44 +97,31 @@ private void loadAppointments() {
 }
 
 private void setStartTime(String appointmentId,String startTime) {
-
     if (startTime == null ||!startTime.matches("^(?:[0-9]|[01]\\d|2[0-3]):[0-5]\\d$")) {
-
         JOptionPane.showMessageDialog(
                 this,
                 "Invalid time format.\nUse HH:mm OR H:MM"
         );
-
         return;
     }
     File input = new File(FileManager.APPOINTMENT_FILE);
     File temp = new File("temp.txt");
-
     try (
         BufferedReader br = new BufferedReader(new FileReader(input));
         PrintWriter pw = new PrintWriter(new FileWriter(temp))
     ) {
-
         String line;
-
         while ((line = br.readLine()) != null) {
-
             String[] d = line.split(",", -1);
-
             if (d[0].trim().equals(appointmentId.trim())) {
-
                 d[7] = startTime;
-
                 line = String.join(",", d);
             }
-
             pw.println(line);
         }
-
     } catch (Exception e) {
         e.printStackTrace();
     }
-
     input.delete();
     temp.renameTo(input);
     loadAppointments();
@@ -145,95 +140,91 @@ private String calculateEndTime(String startTime, double duration) {
 }
 
 private double getServiceDuration(String serviceItemId) {
-
     String serviceTypeId = "";
-
     // FIND SERVICE TYPE ID
     try (BufferedReader br = new BufferedReader(
             new FileReader(FileManager.SERVICE_ITEM_FILE))) {
-
         String line;
-
         while ((line = br.readLine()) != null) {
-
             String[] d = line.split(",");
 
             if (d[0].trim().equalsIgnoreCase(
-                    serviceItemId.trim())) {
-
+                serviceItemId.trim())) {
                 serviceTypeId = d[1].trim();
-
                 break;
             }
         }
-
     } catch (Exception e) {
         e.printStackTrace();
     }
-
     // FIND DURATION
     try (BufferedReader br = new BufferedReader(
             new FileReader(FileManager.SERVICE_TYPE_FILE))) {
-
         String line;
-
         while ((line = br.readLine()) != null) {
-
             String[] d = line.split(",");
-
             if (d[0].trim().equalsIgnoreCase(
                     serviceTypeId)) {
-
                 return Double.parseDouble(d[2].trim());
             }
         }
-
     } catch (Exception e) {
         e.printStackTrace();
     }
-
     return 0.0;
 }
 
 private void completeAppointment() {
     int row = tblAppointments.getSelectedRow();
     if (row == -1) {
-        JOptionPane.showMessageDialog(this, "Select a row first");
+        JOptionPane.showMessageDialog(this,
+                "Select a row first");
         return;
     }
-    String appointmentId = tblAppointments.getValueAt(row, 0).toString();
+    String appointmentId =
+            tblAppointments.getValueAt(row,0).toString();
     File input = new File(FileManager.APPOINTMENT_FILE);
     File temp = new File("temp.txt");
     boolean valid = true;
-    try (BufferedReader br = new BufferedReader(new FileReader(input));
-         PrintWriter pw = new PrintWriter(new FileWriter(temp))) {
+    try (BufferedReader br =
+            new BufferedReader(new FileReader(input));
+         PrintWriter pw =
+            new PrintWriter(new FileWriter(temp))) {
         String line;
         while ((line = br.readLine()) != null) {
-            String[] d = line.split(",");
-            if(d[0].equals(appointmentId)) {
+            String[] d = line.split(",", -1);
+            if (d.length < 12) {
+                d = java.util.Arrays.copyOf(d, 12);
+                for (int i = 0; i < d.length; i++) {
+                    if (d[i] == null) {
+                        d[i] = "";
+                    }
+                }
+            }
+            if (d[0].equals(appointmentId)) {
                 if (d[9].equalsIgnoreCase("Completed")) {
-
                     JOptionPane.showMessageDialog(this,
                             "Appointment already completed. Cannot modify.");
-
                     valid = false;
                     break;
                 }
-                String serviceId = d[5];  
-                String startTime = d[7];  
-                if (startTime == null || startTime.trim().isEmpty()
-                    || startTime.equals("-")) {
-                    JOptionPane.showMessageDialog(this,"Please set start time first");
-                valid = false;
+                String serviceId = d[5];
+                String startTime = d[7];
+                if (startTime == null
+                        || startTime.trim().isEmpty()
+                        || startTime.equals("-")) {
+                    JOptionPane.showMessageDialog(this,
+                            "Please set start time first");
+                    valid = false;
                     break;
                 }
-                double duration = getServiceDuration(serviceId);
-                String endTime = calculateEndTime(startTime, duration);
-                d[8] = endTime; 
-                d[9] = "Completed";                
-                d[11] = java.time.LocalDate.now()
-                        .toString()
-                        .replace("T", " ");
+                double duration =
+                        getServiceDuration(serviceId);
+                String endTime =
+                        calculateEndTime(startTime,duration);
+                d[8] = endTime;
+                d[9] = "Completed";
+                d[11] = java.time.LocalDate.now().toString();
                 line = String.join(",", d);
             }
             pw.println(line);
@@ -242,15 +233,12 @@ private void completeAppointment() {
         e.printStackTrace();
     }
     if (valid) {
-
         input.delete();
         temp.renameTo(input);
         JOptionPane.showMessageDialog(this,
                 "Status updated successfully.");
-
         loadAppointments();
     } else {
-
         temp.delete();
     }
 }
@@ -259,19 +247,16 @@ private void searchAppointments() {
     String key = txtSearch.getText().trim().toLowerCase();
     DefaultTableModel model =
             (DefaultTableModel) tblAppointments.getModel();
-
     model.setRowCount(0);
     try (BufferedReader br = new BufferedReader(
         new FileReader(FileManager.APPOINTMENT_FILE))) {
         String line;
         while ((line = br.readLine()) != null) {
             String[] d = line.split(",");
-
             if (!d[4].equals(currentUserId)) {
                 continue;
             }
             boolean match = false;
-
             for (String field : d) {
                 if (field.toLowerCase().contains(key)) {
                     match = true;
@@ -280,15 +265,7 @@ private void searchAppointments() {
             }
             if (match) {
                 model.addRow(new Object[]{
-                    d[0],
-                    d[1],
-                    d[2],
-                    d[5],
-                    d[6],
-                    d[7],
-                    d[8],
-                    d[9],
-                    d[10]
+                    d[0], d[1],d[2],d[5],d[6],d[7],d[8],d[9],d[10]
                 });
             }
         }
@@ -305,7 +282,6 @@ private void clearSearch() {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         jScrollPane1 = new javax.swing.JScrollPane();
         tblAppointments = new javax.swing.JTable();
         btnBack = new javax.swing.JButton();
@@ -314,9 +290,7 @@ private void clearSearch() {
         btnSearch = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
         tblAppointments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null, null},
