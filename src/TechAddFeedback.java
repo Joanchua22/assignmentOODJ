@@ -222,27 +222,28 @@ public class TechAddFeedback extends javax.swing.JFrame {
         }
     }
     
-    private void updateTechnicianFeedback(String feedbackId, String appointmentId, String feedbackText, String feedbackDate) {
-        java.io.File input = new java.io.File(FileManager.FEEDBACK_FILE);
-        java.io.File temp = new java.io.File("temp_feedback.txt");
-        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(input));
-            java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(temp))) {
+    private void updateFeedbackStatus(String appointmentId, String newStatus) {
+        File input = new File(FileManager.APPOINTMENT_FILE);
+        File temp = new File("temp.txt");
+        try (
+            BufferedReader br = new BufferedReader(new FileReader(input));
+            PrintWriter pw = new PrintWriter(new FileWriter(temp))
+        ) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] data = line.split(",", 4);
-                if (data.length >= 2 && data[1].trim().equalsIgnoreCase(appointmentId.trim())) {
-                    line = feedbackId + "," + appointmentId + "," + feedbackText + "," + feedbackDate;
+                String[] data = line.split(",");
+                if (data[0].trim().equalsIgnoreCase(appointmentId.trim())) {
+                    data[10] = newStatus;
+                    line = String.join(",", data);
                 }
                 pw.println(line);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Error updating feedback: " + e.getMessage());
             return;
         }
         if (input.delete()) {
             temp.renameTo(input);
-            javax.swing.JOptionPane.showMessageDialog(this, "Feedback updated successfully.");
         }
     }
     
@@ -263,16 +264,41 @@ public class TechAddFeedback extends javax.swing.JFrame {
     return null;
     }
     
-    private void saveTechnicianFeedback(String feedbackId, String appointmentId,String feedbackText, String feedbackDate) {
-        try (java.io.PrintWriter pw = new java.io.PrintWriter(
-                new java.io.FileWriter(FileManager.FEEDBACK_FILE, true))) {
-            pw.println(feedbackId + "," + appointmentId + "," + feedbackText + "," + feedbackDate);
-            javax.swing.JOptionPane.showMessageDialog(this, "Feedback submitted successfully.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this, "Error saving feedback: " + e.getMessage());
+   private void saveTechnicianFeedback(String feedbackId, String appointmentId,String feedbackText, String feedbackDate) {
+    try {
+        boolean appointmentCompleted = false;
+        BufferedReader br = new BufferedReader(
+                new FileReader(FileManager.APPOINTMENT_FILE));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            if (data[0].trim().equalsIgnoreCase(appointmentId.trim())) {
+                String appointmentStatus = data[9].trim();
+                if (appointmentStatus.equalsIgnoreCase("Completed")) {
+                    appointmentCompleted = true;
+                }
+                break;
+            }
         }
+        br.close();
+        if (!appointmentCompleted) {
+            JOptionPane.showMessageDialog(this,
+                    "Feedback can only be submitted for completed appointments.");
+            return;
+        }
+        PrintWriter pw = new PrintWriter(
+                new FileWriter(FileManager.FEEDBACK_FILE, true));
+        pw.println(feedbackId + "," + appointmentId + "," +feedbackText + "," + feedbackDate);
+        pw.close();
+        updateFeedbackStatus(appointmentId, "Provided");
+        JOptionPane.showMessageDialog(this,
+                "Feedback submitted successfully.");
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+                "Error saving feedback: " + e.getMessage());
     }
+}
     
     private String generateFeedbackId() {
         int max = 0;
