@@ -1,7 +1,7 @@
 
 public class Main {
     public static void main(String[] args) {
-        DataInitializer.initialize();
+        FileCreation.creation();
 
         javax.swing.SwingUtilities.invokeLater(() -> new Home().setVisible(true));
     }

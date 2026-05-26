@@ -1,7 +1,14 @@
-USR0001,manager1,joan1234,Manager,Joan,TP075315,0123456789,joanchua1190@gmail.com,Active,2026-04-01 17:37:52
-USR0002,tech1,123,Technician,Tech One,TP076623,0121111111,tech1@email.com,Active,2026-04-01 17:37:52
-USR0003,tech2,123,Technician,Tech Two,TP050001,0122222222,tech2@email.com,Active,2026-04-01 17:37:52
-USR0004,staff1,123,Counter Staff,Staff One,TP050002,0123333333,staff@email.com,Active,2026-04-01 17:37:52
-USR0005,cust1,123,Customer,Customer One,TP076245,0124444444,cust1@email.com,Active,2026-04-01 17:37:52
-USR0006,cust2,123,Customer,Customer Two,TP050003,0125555555,cust2@email.com,Active,2026-04-01 17:37:52
-USR0007,bryan,bryan123,Counter Staff,Bryan Chua,TP892753,0189283746,bryan123@gmail.com,Active,2026-05-14 23:55:53
+USR0001,manager1,manager123,Manager,Joan Chua Yong Xin,TP075315,0178252215,chow@gmail.com,Active,2026-04-01 17:37:52
+USR0002,tech1,tech123,Technician,Cyndie Wong Xin Wei,TP076623,0121111111,tech1@email.com,Active,2026-04-01 17:37:52
+USR0003,staff1,staff123,Counter Staff,Yeo Pei Wen,TP050002,0123333333,staff@email.com,Active,2026-04-01 17:37:52
+USR0004,cust2,cust2123,Customer,Alice Tan,TP076667,0132222222,alice@gmail.com,Active,2026-04-02 10:15:20
+USR0005,cust3,cust3123,Customer,Ben Lim,TP076668,0143333333,ben@gmail.com,Active,2026-04-02 11:20:15
+USR0006,cust4,cust4123,Customer,Chris Wong,TP076669,0154444444,chris@gmail.com,Active,2026-04-02 12:05:40
+USR0007,cust5,cust5123,Customer,Diana Lee,TP076670,0165555555,diana@gmail.com,Active,2026-04-03 09:10:25
+USR0008,cust6,cust6123,Customer,Ethan Ng,TP076671,0176666666,ethan@gmail.com,Active,2026-04-03 10:45:18
+USR0009,cust7,cust7123,Customer,Fiona Yap,TP076672,0187777777,fiona@gmail.com,Active,2026-04-03 14:22:30
+USR0010,cust8,cust8123,Customer,Grace Chin,TP076673,0198888888,grace@gmail.com,Active,2026-04-04 08:55:12
+USR0011,cust9,cust9123,Customer,Henry Ooi,TP076674,0129999999,henry@gmail.com,Active,2026-04-04 13:40:50
+USR0012,cust10,cust10123,Customer,Ivy Low,TP076675,0111234567,ivy@gmail.com,Active,2026-04-05 15:12:05
+USR0013,cust11,cust11123,Customer,Jason Teh,TP076676,0102345678,jason@gmail.com,Active,2026-04-05 16:18:44
+USR0014,cust1,cus123,Customer,Chow Yan Ping,TP076245,0162181000,yp9966@gmail.com,Active,2026-04-01 17:37:52
