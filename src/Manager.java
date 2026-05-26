@@ -3,7 +3,6 @@ import javax.swing.JOptionPane;
 
 public class Manager extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Manager.class.getName());
 
     private final String currentUserId;
 
@@ -12,11 +11,6 @@ public class Manager extends javax.swing.JFrame {
         this.currentUserId = currentUserId;
     }
     
-
-    public Manager() {
-        initComponents();
-        this.currentUserId = "USR0001"; 
-    }
     
     private boolean confirmLogout() {
 
@@ -186,10 +180,6 @@ public class Manager extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_viewReportsBtnActionPerformed
 
-
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new Manager().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton activityLogsBtn;
