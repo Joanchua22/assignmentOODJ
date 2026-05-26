@@ -5,3 +5,5 @@ LOG0004,USR0003,Login,User logged in,2026-05-26 18:13:32
 LOG0005,USR0003,Login,User logged in,2026-05-26 18:15:16
 LOG0006,USR0003,Login,User logged in,2026-05-26 18:17:02
 LOG0007,USR0001,Login,User logged in,2026-05-26 18:25:54
+LOG0008,USR0001,Login,User logged in,2026-05-26 18:42:40
+LOG0009,USR0001,Logout,Manager logged out,2026-05-26 18:44:30
