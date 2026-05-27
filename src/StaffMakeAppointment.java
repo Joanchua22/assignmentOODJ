@@ -42,22 +42,127 @@ public class StaffMakeAppointment {
         loadServiceTypes();
 
         //customer info
-        JLabel custLabel = new JLabel("Customer ID:");
+        //username
+        JLabel custLabel = new JLabel("Username:");
         custLabel.setBounds(200, 130, 200, 30);
         frame.add(custLabel);
 
-        JTextField custIDF = new JTextField();
-        custIDF.setBounds(320, 130, 200, 30);
-        frame.add(custIDF);
+        JTextField usernameF = new JTextField();
+        usernameF.setBounds(320, 130, 200, 30);
+        frame.add(usernameF);
+        
+        //search button
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setBounds(540,130,100,30);
+        frame.add(searchBtn);
 
+        //vehicleID
         JLabel vehicleIDLabel = new JLabel("Vehicle ID:");
         vehicleIDLabel.setBounds(200, 180, 200, 30);
         frame.add(vehicleIDLabel);
 
-        JTextField vehicleIDF = new JTextField();
-        vehicleIDF.setBounds(320, 180, 200, 30);
-        frame.add(vehicleIDF);
+        JComboBox<String> vehicleBox = new JComboBox<>();
+        vehicleBox.setBounds(320, 180, 200, 30);
+        frame.add(vehicleBox);
+        
+        searchBtn.addActionListener(e -> {
 
+            vehicleBox.removeAllItems();
+
+            String enteredUsername = usernameF.getText().trim();
+
+            String userID = "";
+            String custID = "";
+
+            try {
+
+                BufferedReader userBR = new BufferedReader(
+                        new FileReader("src/users.txt"));
+
+                String line;
+
+                while ((line = userBR.readLine()) != null) {
+
+                    String[] data = line.split(",");
+
+                    String fileUserID = data[0];
+                    String fileUsername = data[1];
+
+                    if (fileUsername.equals(enteredUsername)) {
+
+                        userID = fileUserID;
+                        break;
+                    }
+                }
+
+                userBR.close();
+
+                if (userID.isEmpty()) {
+
+                    JOptionPane.showMessageDialog(frame,
+                            "Username not found!");
+
+                    return;
+                }
+
+                BufferedReader custBR = new BufferedReader(
+                        new FileReader("src/customers.txt"));
+
+                while ((line = custBR.readLine()) != null) {
+
+                    String[] data = line.split(",");
+
+                    String fileCustID = data[0];
+                    String fileUserID = data[1];
+
+                    if (fileUserID.equals(userID)) {
+
+                        custID = fileCustID;
+                        break;
+                    }
+                }
+
+                custBR.close();
+
+                if (custID.isEmpty()) {
+
+                    JOptionPane.showMessageDialog(frame,
+                            "Customer record not found!");
+
+                    return;
+                }
+
+                //show vehicleID
+                BufferedReader vehicleBR = new BufferedReader(
+                        new FileReader("src/vehicles.txt"));
+
+                while ((line = vehicleBR.readLine()) != null) {
+
+                    String[] data = line.split(",");
+
+                    String vehicleID = data[0];
+                    String vehicleCustID = data[1];
+
+                    if (vehicleCustID.equals(custID)) {
+
+                        vehicleBox.addItem(vehicleID);
+                    }
+                }
+
+                vehicleBR.close();
+
+                if (vehicleBox.getItemCount() == 0) {
+
+                    JOptionPane.showMessageDialog(frame,
+                            "No vehicle found!");
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        //time
         JLabel startTimeLabel = new JLabel("Start Time (HH:MM):");
         startTimeLabel.setBounds(200, 230, 200, 30);
         frame.add(startTimeLabel);
@@ -66,6 +171,17 @@ public class StaffMakeAppointment {
         startTimeF.setBounds(320, 230, 200, 30);
         frame.add(startTimeF);
 
+        //remark
+        JLabel remarkLabel = new JLabel("Remark:");
+        remarkLabel.setBounds(200, 280, 200, 30);
+        frame.add(remarkLabel);
+
+        JTextArea remarkArea = new JTextArea();
+
+        JScrollPane scrollPane = new JScrollPane(remarkArea);
+        scrollPane.setBounds(320, 280, 250, 80);
+        frame.add(scrollPane);
+        
         //back button
         JButton backBtn = new JButton("BACK");
         backBtn.setBounds(10, 10, 80, 30);
@@ -78,24 +194,70 @@ public class StaffMakeAppointment {
 
         //create button
         JButton createBtn = new JButton("CREATE APPOINTMENT");
-        createBtn.setBounds(300, 330, 200, 40);
+        createBtn.setBounds(300, 400, 200, 40);
         frame.add(createBtn);
 
         createBtn.addActionListener(e -> {
 
-            String custID = custIDF.getText().trim();
-            String vehicleID = vehicleIDF.getText().trim();
+            String username = usernameF.getText().trim();
+
+            if (vehicleBox.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(frame, "Please select vehicle!");
+                return;
+            }
+
+            String vehicleID = vehicleBox.getSelectedItem().toString();
             String startTime = startTimeF.getText().trim();
+
+            if (!startTime.matches("^([01]\\d|2[0-3]):([0-5]\\d)$")) {
+                JOptionPane.showMessageDialog(frame, "Invalid time format!");
+                return;
+            }
 
             String serviceName = (String) serviceBox.getSelectedItem();
 
-            if (custID.isEmpty() || vehicleID.isEmpty() || serviceName == null || startTime.isEmpty()) {
+            if (username.isEmpty() || serviceName == null || startTime.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Please fill all fields!");
                 return;
             }
 
-            String[] serviceData = serviceMap.get(serviceName);
+            String userID = "";
+            String custID = "";
 
+            try {
+                BufferedReader userBR = new BufferedReader(new FileReader("src/users.txt"));
+
+                String line;
+                while ((line = userBR.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (data[1].equals(username)) {
+                        userID = data[0];
+                        break;
+                    }
+                }
+                userBR.close();
+
+                BufferedReader custBR = new BufferedReader(new FileReader("src/customers.txt"));
+
+                while ((line = custBR.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (data[1].equals(userID)) {
+                        custID = data[0];
+                        break;
+                    }
+                }
+                custBR.close();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            if (custID.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Invalid customer!");
+                return;
+            }
+
+            String[] serviceData = serviceMap.get(serviceName);
             String serviceIDValue = serviceData[0];
             String serviceTypeID = serviceData[1];
 
@@ -105,42 +267,71 @@ public class StaffMakeAppointment {
             String endTime = calculateEndTime(startTime, durationMinutes);
 
             String appointmentID = generateAppointmentID();
-
             String staffID = currentUserId;
-            String techID = "NULL";
-            String status = "Assigned";
+            String techID = "Unassigned";
+            String status = "Pending";
 
-            String createdAt = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            String createdAt = new java.text.SimpleDateFormat("yyyy-MM-dd")
                     .format(new java.util.Date());
 
-            try {
-                File file = new File("src/appointments.txt");
-                file.createNewFile();
+            String lastUpdated = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .format(new java.util.Date());
 
-                FileWriter fw = new FileWriter(file, true);
+            String remark = remarkArea.getText();
+            if (remark == null) remark = "";
+            remark = remark.trim();
+
+            //save to appointments.txt
+            try {
+                FileWriter fw = new FileWriter("src/appointments.txt", true);
 
                 fw.write(
-                        appointmentID + "," +
-                        vehicleID + "," +
-                        custID + "," +
-                        staffID + "," +
-                        techID + "," +
-                        serviceIDValue + "," +
-                        createdAt.split(" ")[0] + "," +
-                        startTime + "," +
-                        endTime + "," +
-                        status + "," +
-                        "OK," +
-                        createdAt + "\n"
+                    appointmentID + "," +
+                    vehicleID + "," +
+                    custID + "," +
+                    staffID + "," +
+                    techID + "," +
+                    serviceIDValue + "," +
+                    createdAt + "," +
+                    startTime + "," +
+                    endTime + "," +
+                    status + "," +
+                    remark + "," +
+                    lastUpdated + "\n"
                 );
 
                 fw.close();
+                
+                //save to payments.txt
+                String paymentID = generatePaymentID();
+
+                String amount = "100"; 
+
+                String paymentMethod = "-";
+
+                String paymentStatus = "Unpaid";
+
+                FileWriter paymentFW =
+                        new FileWriter("src/payments.txt", true);
+
+                paymentFW.write(
+                    paymentID + "," +
+                    appointmentID + "," +
+                    amount + "," +
+                    paymentMethod + "," +
+                    createdAt + "," +
+                    paymentStatus + "," +
+                    staffID + "\n"
+                );
+
+                paymentFW.close();
 
                 JOptionPane.showMessageDialog(frame, "Appointment Created!");
 
-                custIDF.setText("");
-                vehicleIDF.setText("");
+                usernameF.setText("");
                 startTimeF.setText("");
+                remarkArea.setText("");
+                vehicleBox.removeAllItems();
                 serviceBox.setSelectedIndex(0);
 
             } catch (Exception ex) {
@@ -149,6 +340,36 @@ public class StaffMakeAppointment {
         });
 
         frame.setVisible(true);
+    }
+    
+    //paymentID
+    private String generatePaymentID() {
+
+        int max = 0;
+
+        try (BufferedReader br = new BufferedReader(
+                new FileReader("src/payments.txt"))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                if (data.length > 0) {
+
+                    String id = data[0];
+
+                    if (id.startsWith("PAY")) {
+                        int num = Integer.parseInt(id.substring(3));
+                        if (num > max) max = num;
+                    }
+                }
+            }
+
+        } catch (Exception e) {}
+
+        return String.format("PAY%04d", max + 1);
     }
 
     //load service_item.txt

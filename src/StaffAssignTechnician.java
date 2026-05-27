@@ -104,7 +104,8 @@ public class StaffAssignTechnician {
                 
                 String status = data[9];
                 
-                if (status.equalsIgnoreCase("Completed") ||
+                if (status.equalsIgnoreCase("Assigned") ||
+                    status.equalsIgnoreCase("Completed") ||
                     status.equalsIgnoreCase("Cancelled")){
                     continue;
                 }
