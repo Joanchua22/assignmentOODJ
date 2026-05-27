@@ -10,8 +10,7 @@ public class ViewServiceNPayment extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ViewServiceNPayment.class.getName());
 
-    private String currentUserId;
-    
+    private String currentUserId; 
     private List<String[]> historyDetails = new ArrayList<>();
     
     public ViewServiceNPayment(String currentUserId) {
