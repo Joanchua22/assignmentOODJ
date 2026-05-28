@@ -124,6 +124,7 @@ private void setStartTime(String appointmentId,String startTime) {
     }
     input.delete();
     temp.renameTo(input);
+    JOptionPane.showMessageDialog(this,"Start time set successfully.");
     loadAppointments();
 }
 
