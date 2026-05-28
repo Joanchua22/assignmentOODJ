@@ -9,8 +9,9 @@ public class TechChgPassword extends javax.swing.JFrame {
     private String currentUserId;
     private String returnPage;
     
-    public TechChgPassword() {
+       public TechChgPassword(String currentUserId) {
         initComponents();
+        this.currentUserId = currentUserId;
     }
 private String validatePasswordInput(
             String currentPassword,
