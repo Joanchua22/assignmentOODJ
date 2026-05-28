@@ -202,8 +202,8 @@ public class TechEditProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void changePasswordBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordBtnActionPerformed
-        new ChangePassword(currentUserId, "TechChgPassword").setVisible(true);
-        dispose();
+      new TechChgPassword(currentUserId).setVisible(true);
+      dispose();
     }//GEN-LAST:event_changePasswordBtnActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
