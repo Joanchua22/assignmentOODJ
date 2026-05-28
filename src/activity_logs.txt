@@ -19,3 +19,4 @@ LOG0018,USR0001,Add New Staff,Manager joan Added,2026-05-28 16:00:27
 LOG0019,USR0001,Update Staff Profile,USR0002 Profile Updated,2026-05-28 16:06:04
 LOG0020,USR0001,Delete Staff,USR0015 Deleted,2026-05-28 16:06:52
 LOG0021,USR0001,Add New Service Category,Checking Test Added,2026-05-28 16:09:46
+LOG0022,USR0001,Login,User logged in,2026-05-28 16:16:24

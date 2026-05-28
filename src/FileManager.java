@@ -1226,7 +1226,7 @@ public class FileManager {
             }
 
             String[] parts = line.split(",");
-            if (parts.length >= 5) {
+            if (parts.length >= 4) {
                 serviceTypeList.add(parts);
             }
         }
