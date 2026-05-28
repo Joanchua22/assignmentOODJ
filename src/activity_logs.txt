@@ -28,3 +28,5 @@ LOG0027,USR0001,Update Staff Profile,USR0001 Profile Updated,2026-05-28 16:29:29
 LOG0028,USR0001,Update Staff Profile,USR0002 Profile Updated,2026-05-28 16:37:05
 LOG0029,USR0001,Login,User logged in,2026-05-28 16:42:41
 LOG0030,USR0001,Update Staff Profile,USR0015 Profile Updated,2026-05-28 16:42:58
+LOG0031,USR0001,Add New Service Item,Oil Added,2026-05-28 16:45:07
+LOG0032,USR0001,Login,User logged in,2026-05-28 16:47:18
