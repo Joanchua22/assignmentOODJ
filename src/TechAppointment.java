@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.swing.JOptionPane;
@@ -175,7 +176,7 @@ private double getServiceDuration(String serviceItemId) {
     return 0.0;
 }
 
-private void completeAppointment() {
+private void completeAppointment() throws IOException {
     int row = tblAppointments.getSelectedRow();
     if (row == -1) {
         JOptionPane.showMessageDialog(this,
