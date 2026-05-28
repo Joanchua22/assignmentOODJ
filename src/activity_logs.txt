@@ -49,3 +49,4 @@ LOG0048,USR0001,Add New Service Item,Oil Change Test Added,2026-05-28 17:19:44
 LOG0049,USR0001,Update Service Item,SER0001 Updated,2026-05-28 17:20:14
 LOG0050,USR0001,Delete Service Item,SER0007 Oil Change Test Deleted,2026-05-28 17:20:39
 LOG0051,USR0001,Login,User logged in,2026-05-28 17:49:54
+LOG0052,USR0001,Logout,Manager logged out,2026-05-28 18:03:57
