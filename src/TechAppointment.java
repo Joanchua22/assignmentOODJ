@@ -193,8 +193,8 @@ private void completeAppointment() {
         String line;
         while ((line = br.readLine()) != null) {
             String[] d = line.split(",", -1);
-            if (d.length < 12) {
-                d = java.util.Arrays.copyOf(d, 12);
+            if (d.length < 13) {
+                d = java.util.Arrays.copyOf(d, 13);
                 for (int i = 0; i < d.length; i++) {
                     if (d[i] == null) {
                         d[i] = "";
