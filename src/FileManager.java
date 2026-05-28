@@ -1263,7 +1263,7 @@ public class FileManager {
             }
 
             String[] parts = line.split(",");
-            if (parts.length >= 5 && parts[0].trim().equalsIgnoreCase(serviceTypeId)) {
+            if (parts.length >= 4 && parts[0].trim().equalsIgnoreCase(serviceTypeId)) {
                 return parts;
             }
         }
@@ -1280,7 +1280,6 @@ public class FileManager {
 
         List<String> updatedLines = new ArrayList<>();
         boolean updated = false;
-        String updatedAt = getCurrentDateTime();
 
         for (String line : Files.readAllLines(file.toPath())) {
             if (line.trim().isEmpty()) {
@@ -1289,7 +1288,7 @@ public class FileManager {
 
             String[] parts = line.split(",");
 
-            if (parts.length >= 5) {
+            if (parts.length >= 4) {
                 String currentId = parts[0].trim();
 
                 if (currentId.equalsIgnoreCase(serviceTypeId)) {
@@ -1297,8 +1296,7 @@ public class FileManager {
                             serviceTypeId,
                             name,
                             duration,
-                            updatedBy,
-                            updatedAt
+                            updatedBy
                     );
                     updatedLines.add(updatedLine);
                     updated = true;
@@ -1329,7 +1327,7 @@ public class FileManager {
 
             String[] parts = line.split(",");
 
-            if (parts.length >= 5) {
+            if (parts.length >= 4) {
                 String currentId = parts[0].trim();
 
                 if (currentId.equalsIgnoreCase(serviceTypeId)) {

@@ -31,3 +31,10 @@ LOG0030,USR0001,Update Staff Profile,USR0015 Profile Updated,2026-05-28 16:42:58
 LOG0031,USR0001,Add New Service Item,Oil Added,2026-05-28 16:45:07
 LOG0032,USR0001,Login,User logged in,2026-05-28 16:47:18
 LOG0033,USR0001,Add New Staff,Technician joan Added,2026-05-28 16:51:18
+LOG0034,USR0001,Login,User logged in,2026-05-28 16:55:34
+LOG0035,USR0001,Add New Staff,Manager joan Added,2026-05-28 16:57:53
+LOG0036,USR0001,Update Staff Profile,USR0002 Profile Updated,2026-05-28 17:01:07
+LOG0037,USR0001,Delete Staff,USR0015 Deleted,2026-05-28 17:01:54
+LOG0038,USR0001,Add New Service Category,Service testing Added,2026-05-28 17:03:30
+LOG0039,USR0001,Login,User logged in,2026-05-28 17:05:55
+LOG0040,USR0001,Add New Service Category,Checking Service Added,2026-05-28 17:10:28
