@@ -44,3 +44,8 @@ LOG0043,USR0001,Update Service Category,SC0001 Updated,2026-05-28 17:13:31
 LOG0044,USR0001,Add New Service Category,Checking Service Added,2026-05-28 17:13:52
 LOG0045,USR0001,Update Service Category,SC0001 Updated,2026-05-28 17:14:26
 LOG0046,USR0001,Delete Service Category,SC0003 Checking Service Deleted,2026-05-28 17:15:09
+LOG0047,USR0001,Login,User logged in,2026-05-28 17:17:40
+LOG0048,USR0001,Add New Service Item,Oil Change Test Added,2026-05-28 17:19:44
+LOG0049,USR0001,Update Service Item,SER0001 Updated,2026-05-28 17:20:14
+LOG0050,USR0001,Delete Service Item,SER0007 Oil Change Test Deleted,2026-05-28 17:20:39
+LOG0051,USR0001,Login,User logged in,2026-05-28 17:49:54
