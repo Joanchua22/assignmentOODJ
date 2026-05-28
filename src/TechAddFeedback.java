@@ -87,29 +87,28 @@ public class TechAddFeedback extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void loadAppointments() {
-        DefaultTableModel model = (DefaultTableModel) appointmentTable.getModel();
-        model.setRowCount(0);
-        try (BufferedReader br = new BufferedReader(
-                new FileReader(FileManager.APPOINTMENT_FILE))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] d = line.split(",");
-                if (d.length < 11) continue;
-                if (!d[4].trim().equalsIgnoreCase(currentUserId.trim()))
-                    continue;
-                String appointmentId = d[0];
-                String feedbackStatus = hasFeedback(appointmentId)
-                        ? "Provided"
-                        : "Not Provided";
-                model.addRow(new Object[]{
-                    d[0], d[1], d[2], d[5], d[6],d[9],feedbackStatus
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        private void loadAppointments() {
+    DefaultTableModel model =
+            (DefaultTableModel) appointmentTable.getModel();
+    model.setRowCount(0);
+    try (BufferedReader br = new BufferedReader(
+        new FileReader(FileManager.APPOINTMENT_FILE))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] d = line.split(",");
+            if (d.length < 10) continue;
+            if (!d[4].trim().equalsIgnoreCase(currentUserId.trim()))
+                continue;
+            String appointmentId = d[0].trim();
+            boolean provided = hasFeedback(appointmentId);
+            model.addRow(new Object[]{d[0],d[1],d[2],d[5], d[6],d[9],
+                provided ? "Provided" : "Not Provided"
+            });
         }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
    
    private boolean hasFeedback(String appointmentId) {
     try (BufferedReader br = new BufferedReader(
