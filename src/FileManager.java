@@ -415,6 +415,7 @@ public class FileManager {
                                     String email, String status) throws IOException {
 
       File file = new File(USER_FILE);
+      String createdAt = getCurrentDateTime();
 
       if (!file.exists()) {
           return false;
@@ -437,7 +438,7 @@ public class FileManager {
                   String password = parts[2].trim();
 
                   String updatedLine = String.join(",",
-                          userId, username, password, role, fullName, tp, phone, email, status);
+                          userId, username, password, role, fullName, tp, phone, email, status, createdAt);
 
                   updatedLines.add(updatedLine);
                   updated = true;
