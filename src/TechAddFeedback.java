@@ -267,39 +267,37 @@ public class TechAddFeedback extends javax.swing.JFrame {
     return null;
     }
     
-   private void saveTechnicianFeedback(String feedbackId, String appointmentId,String feedbackText, String feedbackDate) {
+   private void saveTechnicianFeedback(String feedbackId, String appointmentId,
+        String feedbackText, String feedbackDate) {
     try {
-        boolean appointmentCompleted = false;
+        boolean completed = false;
         BufferedReader br = new BufferedReader(
                 new FileReader(FileManager.APPOINTMENT_FILE));
         String line;
         while ((line = br.readLine()) != null) {
             String[] data = line.split(",");
-            if (data[0].trim().equalsIgnoreCase(appointmentId.trim())) {
-                String appointmentStatus = data[9].trim();
-                if (appointmentStatus.equalsIgnoreCase("Completed")) {
-                    appointmentCompleted = true;
-                }
+            if (data[0].equalsIgnoreCase(appointmentId)
+                    && data[9].equalsIgnoreCase("Completed")) {
+                completed = true;
                 break;
             }
         }
         br.close();
-        if (!appointmentCompleted) {
+        if (!completed) {
             JOptionPane.showMessageDialog(this,
-                    "Feedback can only be submitted for completed appointments.");
+                    "Feedback only allowed for completed appointments.");
             return;
         }
         PrintWriter pw = new PrintWriter(
                 new FileWriter(FileManager.FEEDBACK_FILE, true));
-        pw.println(feedbackId + "," + appointmentId + "," +feedbackText + "," + feedbackDate);
+        pw.println(feedbackId + "," + appointmentId + ","
+                + feedbackText + "," + feedbackDate );
         pw.close();
-        updateFeedbackStatus(appointmentId, "Provided");
         JOptionPane.showMessageDialog(this,
                 "Feedback submitted successfully.");
     } catch (Exception e) {
-        e.printStackTrace();
         JOptionPane.showMessageDialog(this,
-                "Error saving feedback: " + e.getMessage());
+                "Error: " + e.getMessage());
     }
 }
     
