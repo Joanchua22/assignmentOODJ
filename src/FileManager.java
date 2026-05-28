@@ -412,7 +412,7 @@ public class FileManager {
     
     public static boolean updateStaff(String userId, String username, String role,
                                     String fullName, String tp, String phone,
-                                    String email, String status) throws IOException {
+                                    String email, String status, String updatedAt) throws IOException {
 
       File file = new File(USER_FILE);
       String createdAt = getCurrentDateTime();

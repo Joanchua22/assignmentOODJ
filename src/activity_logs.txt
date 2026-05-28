@@ -25,3 +25,6 @@ LOG0024,USR0001,Logout,Manager logged out,2026-05-28 16:20:09
 LOG0025,USR0001,Login,User logged in,2026-05-28 16:22:16
 LOG0026,USR0001,Add New Staff,Manager joan Added,2026-05-28 16:26:37
 LOG0027,USR0001,Update Staff Profile,USR0001 Profile Updated,2026-05-28 16:29:29
+LOG0028,USR0001,Update Staff Profile,USR0002 Profile Updated,2026-05-28 16:37:05
+LOG0029,USR0001,Login,User logged in,2026-05-28 16:42:41
+LOG0030,USR0001,Update Staff Profile,USR0015 Profile Updated,2026-05-28 16:42:58

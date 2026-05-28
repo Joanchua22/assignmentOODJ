@@ -111,6 +111,7 @@ public class StaffProfilePage extends javax.swing.JFrame {
             String phone = phoneField.getText().trim();
             String email = emailField.getText().trim();
             String status = (String) statusComboBox.getSelectedItem();
+            String updatedAt = FileManager.getCurrentDateTime();
 
             String validationResult = validateStaffProfileInput(
                     username, role, fullName, tp, phone, email, status
@@ -122,7 +123,7 @@ public class StaffProfilePage extends javax.swing.JFrame {
             }
 
             boolean success = FileManager.updateStaff(
-                    selectedUserId, username, role, fullName, tp, phone, email, status
+                    selectedUserId, username, role, fullName, tp, phone, email, status, updatedAt
             );
 
             if (success) {
