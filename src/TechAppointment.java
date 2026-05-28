@@ -202,9 +202,10 @@ private void completeAppointment() {
                 }
             }
             if (d[0].equals(appointmentId)) {
-                if (d[9].equalsIgnoreCase("Completed")) {
+               if (d[0].equals(appointmentId)) {
+                if (d[9].equalsIgnoreCase("Completed"  ) || d[9].equalsIgnoreCase("Cancelled")) {
                     JOptionPane.showMessageDialog(this,
-                            "Appointment already completed. Cannot modify.");
+                            "Appointment Cannot be modify.");
                     valid = false;
                     break;
                 }
