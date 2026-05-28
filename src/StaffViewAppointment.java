@@ -132,7 +132,7 @@ public class StaffViewAppointment {
         scrollPane.setBounds(100, 120, 800, 320);
         frame.add(scrollPane);
 
-        // LOAD FILE SAFELY
+        //load appointments.txt
         try (BufferedReader br = new BufferedReader(new FileReader("src/appointments.txt"))) {
 
             String line;
@@ -142,15 +142,22 @@ public class StaffViewAppointment {
 
                 String[] data = line.split(",");
 
-                // FIX: prevent corrupted JTextArea / bad rows
                 if (data.length < 12) continue;
 
                 Object[] rowData = new Object[13];
                 rowData[0] = rowNumber;
-
-                for (int i = 0; i < data.length && i + 1 < rowData.length; i++) {
-                    rowData[i + 1] = data[i];
-                }
+                rowData[1] = data[0];  //appointmentID
+                rowData[2] = data[1];  //vehicleID
+                rowData[3] = data[2];  //custID
+                rowData[4] = data[3];  //staffID
+                rowData[5] = data[4];  //techID
+                rowData[6] = data[5];  //servID
+                rowData[7] = data[6];  //date
+                rowData[8] = data[7];  //startTime
+                rowData[9] = data[8];  //endTime
+                rowData[10] = data[9]; //status
+                rowData[11] = data[10]; //remark
+                rowData[12] = data[11]; //lastUpdated
 
                 model.addRow(rowData);
                 rowNumber++;
@@ -241,8 +248,11 @@ public class StaffViewAppointment {
 
                 String[] data = line.split(",");
 
-                // keep only rows that do NOT match appointmentID
-                if (!data[1].equals(appointmentID)) {
+                if (data.length < 2) continue;
+
+                String payAppID = data[1].trim();
+
+                if (!payAppID.equals(appointmentID.trim())) {
                     bw.write(line);
                     bw.newLine();
                 }
@@ -252,7 +262,7 @@ public class StaffViewAppointment {
             e.printStackTrace();
         }
 
-        inputFile.delete();
+        if (inputFile.exists()) inputFile.delete();
         tempFile.renameTo(inputFile);
     }
 
@@ -276,11 +286,22 @@ public class StaffViewAppointment {
 
                 for (int j = 1; j < table.getColumnCount(); j++) {
 
+                    Object value = table.getValueAt(i, j);
+
+                    // Last Updated column
                     if (j == 12) {
-                        row.append(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()));
+
+                        Object existing = model.getValueAt(i, 12);
+
+                        if (existing == null || existing.toString().isEmpty()) {
+                            row.append(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()));
+                        } else {
+                            row.append(existing); //keep old timestamp
+                        }
+
                     } else {
-                        row.append(table.getValueAt(i, j));
+                        row.append(value);
                     }
 
                     if (j < table.getColumnCount() - 1) {
