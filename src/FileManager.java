@@ -1242,8 +1242,7 @@ public class FileManager {
                 serviceTypeId,
                 name,
                 duration,
-                updatedBy,
-                createdAt
+                updatedBy
         );
 
         appendLine(SERVICE_TYPE_FILE, newLine);

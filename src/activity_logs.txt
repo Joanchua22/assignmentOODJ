@@ -10,3 +10,12 @@ LOG0009,USR0001,Logout,Manager logged out,2026-05-26 18:44:30
 LOG0010,USR0014,Login,User logged in,2026-05-27 21:12:49
 LOG0011,USR0014,Login,User logged in,2026-05-27 21:16:03
 LOG0012,USR0014,Login,User logged in,2026-05-27 21:17:35
+LOG0013,USR0001,Login,User logged in,2026-05-28 15:49:03
+LOG0014,USR0001,Logout,Manager logged out,2026-05-28 15:49:08
+LOG0015,USR0001,Login,User logged in,2026-05-28 15:50:08
+LOG0016,USR0001,Add New Staff,Manager joan Added,2026-05-28 15:53:05
+LOG0017,USR0001,Login,User logged in,2026-05-28 15:57:55
+LOG0018,USR0001,Add New Staff,Manager joan Added,2026-05-28 16:00:27
+LOG0019,USR0001,Update Staff Profile,USR0002 Profile Updated,2026-05-28 16:06:04
+LOG0020,USR0001,Delete Staff,USR0015 Deleted,2026-05-28 16:06:52
+LOG0021,USR0001,Add New Service Category,Checking Test Added,2026-05-28 16:09:46

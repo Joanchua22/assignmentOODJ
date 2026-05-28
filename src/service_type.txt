@@ -1,2 +1,2 @@
-SC0001,Normal Service,1,80.00,USR0001
-SC0002,Major Service,3,200.00,USR0001
+SC0001,Normal Service,1,USR0001
+SC0002,Major Service,3,USR0001
