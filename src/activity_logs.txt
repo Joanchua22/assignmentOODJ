@@ -38,3 +38,9 @@ LOG0037,USR0001,Delete Staff,USR0015 Deleted,2026-05-28 17:01:54
 LOG0038,USR0001,Add New Service Category,Service testing Added,2026-05-28 17:03:30
 LOG0039,USR0001,Login,User logged in,2026-05-28 17:05:55
 LOG0040,USR0001,Add New Service Category,Checking Service Added,2026-05-28 17:10:28
+LOG0041,USR0001,Login,User logged in,2026-05-28 17:13:17
+LOG0042,USR0001,Update Service Category,SC0001 Updated,2026-05-28 17:13:24
+LOG0043,USR0001,Update Service Category,SC0001 Updated,2026-05-28 17:13:31
+LOG0044,USR0001,Add New Service Category,Checking Service Added,2026-05-28 17:13:52
+LOG0045,USR0001,Update Service Category,SC0001 Updated,2026-05-28 17:14:26
+LOG0046,USR0001,Delete Service Category,SC0003 Checking Service Deleted,2026-05-28 17:15:09

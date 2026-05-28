@@ -208,7 +208,7 @@ public class AddNewServiceItem extends javax.swing.JFrame {
 
         jLabel2.setText("Category:");
 
-        jLabel1.setText("New Service Category");
+        jLabel1.setText("New Service Item");
 
         jLabel3.setText("Item Name:");
 

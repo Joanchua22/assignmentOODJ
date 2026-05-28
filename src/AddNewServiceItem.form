@@ -122,7 +122,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="New Service Category"/>
+        <Property name="text" type="java.lang.String" value="New Service Item"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
