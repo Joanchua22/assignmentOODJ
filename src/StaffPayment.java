@@ -37,7 +37,7 @@ public class StaffPayment {
         model = new DefaultTableModel(columns, 0){
 
             public boolean isCellEditable(int row, int col){
-                return col == 3 || col == 6; // only status editable
+                return col == 3 || col == 6; //status and method editable
             }
         };
 

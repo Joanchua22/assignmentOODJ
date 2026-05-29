@@ -26,7 +26,7 @@ public class StaffViewAppointment {
         title.setBounds(40, 10, 800, 40);
         frame.add(title);
 
-        // search
+        //search
         JLabel searchLabel = new JLabel("Search: ");
         searchLabel.setBounds(200, 80, 60, 25);
         frame.add(searchLabel);
@@ -35,7 +35,7 @@ public class StaffViewAppointment {
         searchField.setBounds(250, 80, 550, 25);
         frame.add(searchField);
 
-        // columns
+        //columns
         String[] columns = {
                 "No.",
                 "Appointment ID",
@@ -52,7 +52,6 @@ public class StaffViewAppointment {
                 "Last Updated"
         };
 
-        // FIXED MODEL (IMPORTANT)
         model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -64,7 +63,7 @@ public class StaffViewAppointment {
         table.setRowHeight(25);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        // column sizes
+        //column sizes
         int[] widths = {50,120,120,120,120,120,120,100,100,100,120,150,150};
         for (int i = 0; i < widths.length; i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
@@ -72,7 +71,7 @@ public class StaffViewAppointment {
 
         table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
 
-        // SAFE STATUS RENDERER
+        //status
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(
@@ -113,7 +112,7 @@ public class StaffViewAppointment {
 
         table.setDefaultRenderer(Object.class, renderer);
 
-        // sorter + search
+        //sorter + search
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
         table.setRowSorter(sorter);
 
@@ -169,7 +168,7 @@ public class StaffViewAppointment {
 
         setupStatusColumn(table);
 
-        // BACK BUTTON
+        //back button
         JButton backBtn = new JButton("BACK");
         backBtn.setBounds(10, 20, 80, 40);
         frame.add(backBtn);
@@ -179,14 +178,14 @@ public class StaffViewAppointment {
             frame.dispose();
         });
 
-        // SAVE BUTTON
+        //save button
         JButton saveBtn = new JButton("SAVE");
         saveBtn.setBounds(330, 500, 100, 30);
         frame.add(saveBtn);
 
         saveBtn.addActionListener(e -> saveToFile(table));
 
-        // DELETE BUTTON
+        //delete button
         JButton deleteBtn = new JButton("DELETE");
         deleteBtn.setBounds(480, 500, 100, 30);
         frame.add(deleteBtn);
@@ -266,7 +265,7 @@ public class StaffViewAppointment {
         tempFile.renameTo(inputFile);
     }
 
-    // STATUS EDITOR
+    //status editor
     private void setupStatusColumn(JTable table) {
         String[] statusOptions = {"Pending", "Assigned", "Completed", "Cancelled"};
         JComboBox<String> comboBox = new JComboBox<>(statusOptions);
@@ -274,7 +273,7 @@ public class StaffViewAppointment {
                 .setCellEditor(new DefaultCellEditor(comboBox));
     }
 
-    // SAVE FILE
+    //save file
     private void saveToFile(JTable table) {
 
         try (BufferedWriter writer = new BufferedWriter(
@@ -288,7 +287,7 @@ public class StaffViewAppointment {
 
                     Object value = table.getValueAt(i, j);
 
-                    // Last Updated column
+                    //last Updated column
                     if (j == 12) {
 
                         Object existing = model.getValueAt(i, 12);
