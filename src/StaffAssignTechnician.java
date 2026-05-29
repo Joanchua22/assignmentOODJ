@@ -174,27 +174,20 @@ public class StaffAssignTechnician {
         assignBtn.setBounds(400,380,120,40);
         frame.add(assignBtn);
         
-        assignBtn.addActionListener(e ->{
-            
+        assignBtn.addActionListener(e -> {
+
             int appRow = appTable.getSelectedRow();
             int techRow = techTable.getSelectedRow();
-            
-            if(appRow == -1 || techRow == -1){
+
+            if (appRow == -1 || techRow == -1) {
                 JOptionPane.showMessageDialog(frame, "Select appointment and technician!");
                 return;
             }
-            
-            String currentTech = appTable.getValueAt(appRow,6).toString();
 
-            if(!currentTech.equals("NULL") && !currentTech.trim().isEmpty()){
-                JOptionPane.showMessageDialog(frame, "Appointment already assigned!");
-                return;
-            }
-            
-            String techStatus = techTable.getValueAt(techRow, 1).toString();
-            
-            if (!techStatus.equalsIgnoreCase("Available")){
-                JOptionPane.showMessageDialog(frame, "Technician not available!");
+            String techStatus = String.valueOf(techTable.getValueAt(techRow, 1));
+
+            if (!techStatus.equalsIgnoreCase("Available")) {
+                JOptionPane.showMessageDialog(frame, "Technician is not available!");
                 return;
             }
 
@@ -208,8 +201,7 @@ public class StaffAssignTechnician {
             saveAppointments(appTable);
 
             JOptionPane.showMessageDialog(null, "Assigned successfully!");
-                    
-        });  
+        });
         
         frame.setVisible(true);
         
@@ -250,8 +242,8 @@ public class StaffAssignTechnician {
 
                 if (app.length < 10) continue;
 
-                String assignedTech = app[4]; // FIXED INDEX
-                String status = app[9];       // FIXED INDEX (status in appTable model logic)
+                String assignedTech = app[4]; 
+                String status = app[9];
 
                 if (techID.equals(assignedTech) && status.equalsIgnoreCase("Assigned")) {
                     hasAssigned = true;
@@ -259,7 +251,7 @@ public class StaffAssignTechnician {
                 }
             }
 
-            // FIXED: correct column = 4 (status)
+            //status
             tech[4] = hasAssigned ? "Unavailable" : "Available";
         }
 

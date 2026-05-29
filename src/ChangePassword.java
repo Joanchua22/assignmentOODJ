@@ -226,6 +226,8 @@ public class ChangePassword extends javax.swing.JFrame {
             new MyProfile(currentUserId, "ManagerProfile").setVisible(true);
         } else if (returnPage.equalsIgnoreCase("CustomerProfile")) {
             new MyProfile(currentUserId, "CustomerProfile").setVisible(true);
+        } else if (returnPage.equalsIgnoreCase("StaffEditProfile")) {
+            new StaffEditProfile(currentUserId);
         } 
         
         this.dispose();

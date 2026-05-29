@@ -26,7 +26,7 @@ public class StaffViewAppointment {
         title.setBounds(40, 10, 800, 40);
         frame.add(title);
 
-        // search
+        //search
         JLabel searchLabel = new JLabel("Search: ");
         searchLabel.setBounds(200, 80, 60, 25);
         frame.add(searchLabel);
@@ -35,7 +35,7 @@ public class StaffViewAppointment {
         searchField.setBounds(250, 80, 550, 25);
         frame.add(searchField);
 
-        // columns
+        //columns
         String[] columns = {
                 "No.",
                 "Appointment ID",
@@ -52,7 +52,6 @@ public class StaffViewAppointment {
                 "Last Updated"
         };
 
-        // FIXED MODEL (IMPORTANT)
         model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -64,7 +63,7 @@ public class StaffViewAppointment {
         table.setRowHeight(25);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        // column sizes
+        //column sizes
         int[] widths = {50,120,120,120,120,120,120,100,100,100,120,150,150};
         for (int i = 0; i < widths.length; i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
@@ -72,7 +71,7 @@ public class StaffViewAppointment {
 
         table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
 
-        // SAFE STATUS RENDERER
+        //status
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(
@@ -113,7 +112,7 @@ public class StaffViewAppointment {
 
         table.setDefaultRenderer(Object.class, renderer);
 
-        // sorter + search
+        //sorter + search
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
         table.setRowSorter(sorter);
 
@@ -132,7 +131,7 @@ public class StaffViewAppointment {
         scrollPane.setBounds(100, 120, 800, 320);
         frame.add(scrollPane);
 
-        // LOAD FILE SAFELY
+        //load appointments.txt
         try (BufferedReader br = new BufferedReader(new FileReader("src/appointments.txt"))) {
 
             String line;
@@ -142,15 +141,22 @@ public class StaffViewAppointment {
 
                 String[] data = line.split(",");
 
-                // FIX: prevent corrupted JTextArea / bad rows
                 if (data.length < 12) continue;
 
                 Object[] rowData = new Object[13];
                 rowData[0] = rowNumber;
-
-                for (int i = 0; i < data.length && i + 1 < rowData.length; i++) {
-                    rowData[i + 1] = data[i];
-                }
+                rowData[1] = data[0];  //appointmentID
+                rowData[2] = data[1];  //vehicleID
+                rowData[3] = data[2];  //custID
+                rowData[4] = data[3];  //staffID
+                rowData[5] = data[4];  //techID
+                rowData[6] = data[5];  //servID
+                rowData[7] = data[6];  //date
+                rowData[8] = data[7];  //startTime
+                rowData[9] = data[8];  //endTime
+                rowData[10] = data[9]; //status
+                rowData[11] = data[10]; //remark
+                rowData[12] = data[11]; //lastUpdated
 
                 model.addRow(rowData);
                 rowNumber++;
@@ -162,7 +168,7 @@ public class StaffViewAppointment {
 
         setupStatusColumn(table);
 
-        // BACK BUTTON
+        //back button
         JButton backBtn = new JButton("BACK");
         backBtn.setBounds(10, 20, 80, 40);
         frame.add(backBtn);
@@ -172,14 +178,14 @@ public class StaffViewAppointment {
             frame.dispose();
         });
 
-        // SAVE BUTTON
+        //save button
         JButton saveBtn = new JButton("SAVE");
         saveBtn.setBounds(330, 500, 100, 30);
         frame.add(saveBtn);
 
         saveBtn.addActionListener(e -> saveToFile(table));
 
-        // DELETE BUTTON
+        //delete button
         JButton deleteBtn = new JButton("DELETE");
         deleteBtn.setBounds(480, 500, 100, 30);
         frame.add(deleteBtn);
@@ -241,8 +247,11 @@ public class StaffViewAppointment {
 
                 String[] data = line.split(",");
 
-                // keep only rows that do NOT match appointmentID
-                if (!data[1].equals(appointmentID)) {
+                if (data.length < 2) continue;
+
+                String payAppID = data[1].trim();
+
+                if (!payAppID.equals(appointmentID.trim())) {
                     bw.write(line);
                     bw.newLine();
                 }
@@ -252,11 +261,11 @@ public class StaffViewAppointment {
             e.printStackTrace();
         }
 
-        inputFile.delete();
+        if (inputFile.exists()) inputFile.delete();
         tempFile.renameTo(inputFile);
     }
 
-    // STATUS EDITOR
+    //status editor
     private void setupStatusColumn(JTable table) {
         String[] statusOptions = {"Pending", "Assigned", "Completed", "Cancelled"};
         JComboBox<String> comboBox = new JComboBox<>(statusOptions);
@@ -264,7 +273,7 @@ public class StaffViewAppointment {
                 .setCellEditor(new DefaultCellEditor(comboBox));
     }
 
-    // SAVE FILE
+    //save file
     private void saveToFile(JTable table) {
 
         try (BufferedWriter writer = new BufferedWriter(
@@ -276,11 +285,22 @@ public class StaffViewAppointment {
 
                 for (int j = 1; j < table.getColumnCount(); j++) {
 
+                    Object value = table.getValueAt(i, j);
+
+                    //last Updated column
                     if (j == 12) {
-                        row.append(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                .format(new java.util.Date()));
+
+                        Object existing = model.getValueAt(i, 12);
+
+                        if (existing == null || existing.toString().isEmpty()) {
+                            row.append(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                    .format(new java.util.Date()));
+                        } else {
+                            row.append(existing); //keep old timestamp
+                        }
+
                     } else {
-                        row.append(table.getValueAt(i, j));
+                        row.append(value);
                     }
 
                     if (j < table.getColumnCount() - 1) {

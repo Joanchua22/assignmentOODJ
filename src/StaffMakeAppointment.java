@@ -297,9 +297,10 @@ public class StaffMakeAppointment {
                     endTime + "," +
                     status + "," +
                     remark + "," +
-                    lastUpdated + "\n"
+                    lastUpdated
                 );
 
+                fw.write("\n");
                 fw.close();
                 
                 //save to payments.txt
@@ -320,8 +321,8 @@ public class StaffMakeAppointment {
                     amount + "," +
                     paymentMethod + "," +
                     createdAt + "," +
-                    paymentStatus + "," +
-                    staffID + "\n"
+                    staffID + "," +
+                    paymentStatus + "\n"
                 );
 
                 paymentFW.close();
@@ -342,7 +343,7 @@ public class StaffMakeAppointment {
         frame.setVisible(true);
     }
     
-    //paymentID
+    //generate paymentID
     private String generatePaymentID() {
 
         int max = 0;

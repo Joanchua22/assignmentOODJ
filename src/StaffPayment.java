@@ -30,14 +30,14 @@ public class StaffPayment {
                 "Amount",
                 "Method",
                 "Date",
-                "Status",
-                "Staff ID"
+                "Staff ID",
+                "Status"
         };
 
         model = new DefaultTableModel(columns, 0){
 
             public boolean isCellEditable(int row, int col){
-                return col == 3 || col == 5; // only status editable
+                return col == 3 || col == 6; //status and method editable
             }
         };
 
@@ -67,10 +67,10 @@ public class StaffPayment {
         JComboBox<String> statusBox =
                 new JComboBox<>(new String[]{"Unpaid", "Paid", "Cancelled"});
 
-        table.getColumnModel().getColumn(5)
+        table.getColumnModel().getColumn(6)
                 .setCellEditor(new DefaultCellEditor(statusBox));
 
-        // color
+        //color
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
 
             public Component getTableCellRendererComponent(
@@ -82,7 +82,7 @@ public class StaffPayment {
                         table, value, isSelected, hasFocus, row, col);
 
                 if (!isSelected){
-                    String status = table.getValueAt(row, 5).toString();
+                    String status = table.getValueAt(row, 6).toString();
 
                     if (status.equalsIgnoreCase("Paid")){
                         c.setBackground(Color.GREEN);
@@ -97,14 +97,14 @@ public class StaffPayment {
             }
         });
 
-        // SAVE
+        //save button
         JButton saveBtn = new JButton("SAVE");
         saveBtn.setBounds(250, 360, 100, 40);
         frame.add(saveBtn);
 
         saveBtn.addActionListener(e -> saveData());
 
-        // RECEIPT
+        //receipt button
         JButton receiptBtn = new JButton("RECEIPT");
         receiptBtn.setBounds(400, 360, 120, 40);
         frame.add(receiptBtn);
@@ -123,10 +123,10 @@ public class StaffPayment {
             String amount = table.getValueAt(row, 2).toString();
             String method = table.getValueAt(row, 3).toString();
             String date = table.getValueAt(row, 4).toString();
-            String status = table.getValueAt(row, 5).toString();
-            String staffID = table.getValueAt(row, 6).toString();
+            String staffID = table.getValueAt(row, 5).toString();
+            String status = table.getValueAt(row, 6).toString();
 
-            // only paid can print receipt
+            //only paid can print receipt
             if (!status.equalsIgnoreCase("Paid")) {
 
                 JOptionPane.showMessageDialog(
@@ -143,15 +143,15 @@ public class StaffPayment {
                     amount,
                     method,
                     date,
-                    status,
                     staffID,
+                    status,
                     currentUserId
             );
 
             frame.dispose();
         });
 
-        // BACK
+        //back button
         JButton backBtn = new JButton("BACK");
         backBtn.setBounds(10,20,80,40);
         frame.add(backBtn);
@@ -164,7 +164,7 @@ public class StaffPayment {
         frame.setVisible(true);
     }
 
-    // LOAD
+    //load payments.txt
     private void loadData(){
 
         try{
@@ -197,7 +197,7 @@ public class StaffPayment {
         }
     }
 
-    // SAVE
+    //save data to payments.txt
     private void saveData(){
 
         try{
