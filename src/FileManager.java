@@ -1237,7 +1237,6 @@ public class FileManager {
     
     public static boolean addServiceType(String name, String duration, String updatedBy) throws IOException {
         String serviceTypeId = generateNextId(SERVICE_TYPE_FILE, "SC");
-        String createdAt = getCurrentDateTime();
 
         String newLine = String.join(",",
                 serviceTypeId,

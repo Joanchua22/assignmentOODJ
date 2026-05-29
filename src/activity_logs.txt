@@ -50,3 +50,27 @@ LOG0049,USR0001,Update Service Item,SER0001 Updated,2026-05-28 17:20:14
 LOG0050,USR0001,Delete Service Item,SER0007 Oil Change Test Deleted,2026-05-28 17:20:39
 LOG0051,USR0001,Login,User logged in,2026-05-28 17:49:54
 LOG0052,USR0001,Logout,Manager logged out,2026-05-28 18:03:57
+LOG0053,USR0001,Login,User logged in,2026-05-28 21:44:03
+LOG0054,USR0001,Login,User logged in,2026-05-28 21:48:10
+LOG0055,USR0001,Logout,Manager logged out,2026-05-28 21:49:11
+LOG0056,USR0001,Login,User logged in,2026-05-28 21:49:40
+LOG0057,USR0001,Logout,Manager logged out,2026-05-28 21:51:31
+LOG0058,USR0001,Login,User logged in,2026-05-28 21:52:23
+LOG0059,USR0001,Add New Staff,Manager joan Added,2026-05-28 21:54:33
+LOG0060,USR0001,Update Staff Profile,USR0001 Profile Updated,2026-05-28 21:56:53
+LOG0061,USR0001,Delete Staff,USR0015 Deleted,2026-05-28 21:58:05
+LOG0062,USR0001,Add New Service Category,Service Test Added,2026-05-28 22:03:58
+LOG0063,USR0001,Update Service Category,SC0001 Updated,2026-05-28 22:05:08
+LOG0064,USR0001,Delete Service Category,SC0003 Service Test Deleted,2026-05-28 22:05:28
+LOG0065,USR0001,Logout,Manager logged out,2026-05-28 22:07:31
+LOG0066,USR0001,Login,User logged in,2026-05-28 22:09:21
+LOG0067,USR0001,Add New Staff,Manager joan Added,2026-05-28 22:12:32
+LOG0068,USR0001,Update Staff Profile,USR0001 Profile Updated,2026-05-28 22:14:51
+LOG0069,USR0001,Delete Staff,USR0015 Deleted,2026-05-28 22:15:07
+LOG0070,USR0001,Add New Service Category,Service test Added,2026-05-28 22:17:26
+LOG0071,USR0001,Update Service Category,SC0001 Updated,2026-05-28 22:18:25
+LOG0072,USR0001,Delete Service Category,SC0003 Service test Deleted,2026-05-28 22:18:52
+LOG0073,USR0001,Add New Service Item,Oil Added,2026-05-28 22:20:51
+LOG0074,USR0001,Update Service Item,SER0001 Updated,2026-05-28 22:22:34
+LOG0075,USR0001,Delete Service Item,SER0007 Oil Deleted,2026-05-28 22:22:52
+LOG0076,USR0001,Logout,Manager logged out,2026-05-28 22:47:55

@@ -1,4 +1,4 @@
-USR0001,manager1,manager123,Manager,Joan Chua Yong Xin,TP075380,0178252215,chow1190@gmail.com,Active,2026-04-01 17:37:52
+USR0001,manager,manager123,Manager,Joan Chua Yong Xin,TP075380,0178252215,chow1190@gmail.com,Active,2026-05-28 22:14:50
 USR0002,tech1,tech123,Technician,Cyndie Wong,TP075300,0178259915,chow@gmail.com,Active,2026-05-28 17:01:05
 USR0003,staff1,staff123,Counter Staff,Yeo Pei Wen,TP050002,0123333333,staff@email.com,Active,2026-04-01 17:37:52
 USR0004,cust2,cust2123,Customer,Alice Tan,TP076667,0132222222,alice@gmail.com,Active,2026-04-02 10:15:20
